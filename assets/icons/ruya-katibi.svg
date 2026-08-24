@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Rüya Kâtibi simgesi">
+  <defs>
+    <radialGradient id="bg" cx="34%" cy="22%" r="90%"><stop stop-color="#4338A8"/><stop offset=".55" stop-color="#171442"/><stop offset="1" stop-color="#09081D"/></radialGradient>
+    <linearGradient id="moon" x1="145" y1="104" x2="338" y2="362" gradientUnits="userSpaceOnUse"><stop stop-color="#FFF6C9"/><stop offset="1" stop-color="#D7B86A"/></linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <circle cx="256" cy="256" r="178" fill="none" stroke="#B7AEFF" stroke-opacity=".14" stroke-width="2"/>
+  <path d="M324 109c-78 18-127 96-109 174 18 78 96 127 174 109-30 53-86 88-151 88-96 0-174-78-174-174 0-93 72-169 164-174 34-2 67 7 96 25Z" fill="url(#moon)"/>
+  <path d="M287 311c42-66 80-100 118-102-6 40-31 85-83 123l-56 41 21-62Z" fill="#EFEAFF"/>
+  <path d="M274 365c35-16 69-43 101-83" stroke="#8D7CF5" stroke-width="10" stroke-linecap="round"/>
+  <path d="M164 151l8 19 19 8-19 8-8 19-8-19-19-8 19-8 8-19Zm118-46 5 12 12 5-12 5-5 12-5-12-12-5 12-5 5-12Z" fill="#FFF1B5"/>
+</svg>
