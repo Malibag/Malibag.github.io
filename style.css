@@ -48,7 +48,7 @@ img { max-width: 100%; display: block; }
 .section-head { display: grid; grid-template-columns: 1fr .8fr; align-items: end; gap: 50px; margin-bottom: 36px; }
 .section-head h2 { margin: 10px 0 0; font-size: clamp(39px, 5vw, 65px); line-height: 1; letter-spacing: -.055em; }
 .section-head p { margin: 0; color: var(--muted); line-height: 1.7; }
-.app-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+.app-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; margin-top: 22px; }
 .app-card { --accent: var(--mint); position: relative; min-height: 440px; padding: 30px; overflow: hidden; border: 1px solid var(--line); border-radius: 32px; background: rgba(255,255,255,.78); box-shadow: 0 12px 34px rgba(23,29,40,.06); text-decoration: none; transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
 .app-card:hover { transform: translateY(-5px); border-color: color-mix(in srgb, var(--accent) 42%, var(--line)); box-shadow: var(--shadow); }
 .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; position: relative; z-index: 2; }
