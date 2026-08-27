@@ -3,8 +3,8 @@
   "short_name": "M. Ali Bağcı",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f7f6f1",
-  "theme_color": "#f7f6f1",
+  "background_color": "#efeae0",
+  "theme_color": "#efeae0",
   "icons": [
     {"src": "/assets/mark.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any"}
   ]
