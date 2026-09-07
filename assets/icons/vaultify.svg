@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
-  <title id="title">Vaultify</title>
-  <defs><linearGradient id="bg" x1="72" y1="44" x2="438" y2="470" gradientUnits="userSpaceOnUse"><stop stop-color="#49B89A"/><stop offset="1" stop-color="#155746"/></linearGradient><filter id="shadow"><feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#0A3027" flood-opacity=".28"/></filter></defs>
-  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
-  <circle cx="256" cy="256" r="154" fill="#F5F1E8" opacity=".13"/>
-  <g filter="url(#shadow)"><path d="M151 129h156l54 55v199H151z" fill="#F7F3EA"/><path d="M307 129v58h54" fill="#DDE9E4"/><path d="M307 129l54 58h-54z" fill="#C5DCD3"/><rect x="190" y="221" width="132" height="18" rx="9" fill="#7BAF9F"/><rect x="190" y="260" width="103" height="18" rx="9" fill="#A3C6BA"/><rect x="190" y="299" width="80" height="18" rx="9" fill="#C0D6CE"/></g>
-  <circle cx="346" cy="347" r="74" fill="#123F34" stroke="#F7F3EA" stroke-width="12"/>
-  <circle cx="346" cy="347" r="26" fill="none" stroke="#F7F3EA" stroke-width="11"/><path d="M346 310v15M346 369v15M309 347h15M368 347h15" stroke="#F7F3EA" stroke-width="10" stroke-linecap="round"/>
-</svg>
