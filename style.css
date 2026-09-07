@@ -318,7 +318,8 @@ img { max-width: 100%; display: block; }
 .site-nav .language-switch { color:var(--ink)!important; }
 
 /* — Vaultify detay vitrini — */
-.vault-detail-gallery { position:relative; min-height:520px; align-self:stretch; border-radius:30px; overflow:hidden; background:linear-gradient(145deg,#d9eee6,#77b69e); border:1px solid rgba(31,93,74,.16); }
+.vault-detail-gallery { position:relative; min-height:520px; align-self:stretch; display:flex; align-items:center; border-radius:30px; overflow:hidden; background:#7d1735; border:1px solid rgba(85,10,35,.18); box-shadow:var(--shadow-med); }
+.vault-feature-graphic { display:block; width:100%; height:100%; min-height:520px; object-fit:cover; }
 .vault-detail-safe { position:absolute; left:50%; top:48%; transform:translate(-50%,-50%); display:grid; place-items:center; gap:13px; z-index:4; }
 .vault-detail-safe img { width:210px; height:210px; border-radius:48px; box-shadow:0 30px 60px rgba(16,39,31,.28); }
 .vault-detail-safe span { padding:7px 12px; border-radius:999px; background:#173f34; color:#f4f0e6; font:500 10px/1 var(--font-mono); letter-spacing:.15em; }
@@ -426,7 +427,7 @@ img { max-width: 100%; display: block; }
   .vault-orbit.orbit-two { width: 235px; height: 310px; }
   .vault-document { width: 98px; height: 130px; padding: 20px 16px; }
   .vault-reminder { right:4%; width:76px; height:76px; font-size:1.6rem; }
-  .vault-detail-gallery { min-height:430px; }
+  .vault-detail-gallery,.vault-feature-graphic { min-height:0; }
   .vault-detail-safe img { width:155px; height:155px; border-radius:36px; }
   .vault-detail-card { width:125px; min-height:95px; padding:16px; }
   .scene-transition { height: 85vh; }
