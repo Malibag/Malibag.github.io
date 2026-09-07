@@ -70,6 +70,7 @@
     { id: "kpss-tarih-notlari", rgb: [227, 188, 118] },
     { id: "ehliyet-sinavi-2026", rgb: [240, 163, 126] },
     { id: "ruya-katibi", rgb: [18, 17, 28] },
+    { id: "vaultify", rgb: [131, 188, 166] },
   ];
   const PAPER = [239, 234, 224];
   const lerp = (a, b, t) => a + (b - a) * t;
@@ -321,7 +322,7 @@
 
   /* DENEME 2) Rüya Kâtibi geçişinde kayan yıldız — bandın kendisi görünüme
      girince bir kez oynar. */
-  const ruyaTransition = transitions[transitions.length - 1];
+  const ruyaTransition = document.querySelector(".scene-transition:has(.shooting-star)");
   if (ruyaTransition && ruyaTransition.querySelector(".shooting-star") && !reduceMotion && "IntersectionObserver" in window) {
     const starIO = new IntersectionObserver(
       (entries) => {

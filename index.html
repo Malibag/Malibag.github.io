@@ -5,7 +5,7 @@
   <script>document.documentElement.classList.add('js')</script>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>M. Ali Bağcı · Bağımsız Mobil Uygulamalar</title>
-  <meta name="description" content="Öğrenme, okuma ve kişisel keşif için M. Ali Bağcı tarafından geliştirilen bağımsız mobil uygulamalar. Ayet Kartları, İngilizce Kelime Kartları, Ehliyet Sınavı 2026, KPSS Tarih Notları ve yakında Rüya Kâtibi.">
+  <meta name="description" content="Öğrenme, okuma, kişisel keşif ve belge düzeni için M. Ali Bağcı tarafından geliştirilen bağımsız mobil uygulamalar: Ayet Kartları, İngilizce Kelime Kartları, Ehliyet Sınavı 2026, KPSS Tarih Notları, Rüya Kâtibi ve Vaultify.">
   <meta name="theme-color" content="#efeae0">
   <link rel="canonical" href="https://malibag.github.io/">
   <meta property="og:type" content="website">
@@ -23,7 +23,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,340;0,9..144,400;0,9..144,440;0,9..144,500;1,9..144,380;1,9..144,400&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=6">
+  <link rel="stylesheet" href="style.css?v=7">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"M. Ali Bağcı","url":"https://malibag.github.io/","email":"mailto:bagcimuhammetali@gmail.com","jobTitle":"Bağımsız Mobil Uygulama Geliştiricisi"}</script>
 </head>
 <body>
@@ -55,6 +55,7 @@
     <a href="#kpss-tarih-notlari" style="--rail-accent:var(--clr-kpss)"><span class="tab-label">UYG-003 · KPSS Tarih Notları</span></a>
     <a href="#ehliyet-sinavi-2026" style="--rail-accent:var(--clr-ehliyet)"><span class="tab-label">UYG-004 · Ehliyet Sınavı 2026</span></a>
     <a href="#ruya-katibi" style="--rail-accent:var(--gold)"><span class="tab-label">UYG-005 · Rüya Kâtibi</span></a>
+    <a href="#vaultify" style="--rail-accent:#2f6f5c"><span class="tab-label">UYG-006 · Vaultify</span></a>
   </nav>
 
   <main id="main">
@@ -71,7 +72,7 @@
       </div>
       <div class="hero-stamp-row" data-reveal>
         <span class="stamp is-live"><b>4</b>&nbsp;uygulama yayında</span>
-        <span class="stamp is-soon"><b>1</b>&nbsp;uygulama yakında</span>
+        <span class="stamp is-soon"><b>2</b>&nbsp;uygulama yakında</span>
       </div>
     </section>
 
@@ -200,6 +201,30 @@
       </div>
     </section>
 
+    <div class="scene-transition" data-transition aria-hidden="true">
+      <div class="scene-transition-inner"><p class="scene-transition-copy">Belgelerini, notlarını ve önemli tarihlerini çevrimdışı ve düzenli bir kasada bir araya getir.</p></div>
+    </div>
+    <section class="app-scene scene-vaultify is-flip" id="vaultify" data-scene aria-labelledby="vaultify-baslik">
+      <div class="shell">
+        <div>
+          <div class="kicker"><span class="num">UYG-006</span> Belge kasası</div>
+          <h2 id="vaultify-baslik" data-reveal>Belgelerin cihazında, düzenin elinin altında.</h2>
+          <p data-reveal>Garanti belgesi, fiş, fatura, kimlik, sözleşme ve fotoğraflarını klasörler ve kendi belirlediğin özel belge formatlarıyla düzenle. Süreç notları ekle, hatırlatıcı kur ve aradığını hızla bul.</p>
+          <div class="card-foot" data-reveal>
+            <span class="stamp is-soon">Yakında · Yalnızca Android</span>
+            <a class="card-link" href="vaultify/">Uygulamayı tanı ↗</a>
+          </div>
+        </div>
+        <div class="vault-showcase" data-reveal aria-hidden="true">
+          <div class="vault-orbit orbit-one"></div><div class="vault-orbit orbit-two"></div>
+          <div class="vault-app-icon"><img src="assets/icons/vaultify.svg" alt=""></div>
+          <div class="vault-document doc-one"><i></i><i></i><i></i></div>
+          <div class="vault-document doc-two"><i></i><i></i><i></i></div>
+          <div class="vault-reminder">07<span>EYL</span></div>
+        </div>
+      </div>
+    </section>
+
     <section class="studio shell" id="hakkimda" aria-labelledby="hakkimda-baslik">
       <div>
         <h2 id="hakkimda-baslik" data-reveal>Fikirden ekrana, her kartı tek başıma hazırlıyorum.</h2>
@@ -220,6 +245,7 @@
   </main>
 
   <footer class="footer shell"><span>© 2026 <strong>M. Ali Bağcı</strong></span><span>Bağımsız mobil uygulamalar · Türkiye</span></footer>
-  <script src="script.js?v=6" defer></script>
+  <script src="i18n.js?v=1" defer></script>
+  <script src="script.js?v=7" defer></script>
 </body>
 </html>
