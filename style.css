@@ -297,9 +297,24 @@ img { max-width: 100%; display: block; }
 .scene-ruya { --scene-bg: #12111c; --scene-ink: #f3ecdd; --scene-accent: #d9b26b; }
 .scene-vaultify { --scene-bg: #7a213a; --scene-ink: #f7efec; --scene-accent: #f0c8d0; }
 
-/* — Vaultify: resmî Play grafiği kırpılmadan kullanılır — */
-.vault-showcase { position:relative; min-height:0; }
-.vault-home-feature { display:block; width:100%; height:auto; aspect-ratio:1280/625; object-fit:contain; border-radius:var(--r-l); box-shadow:0 30px 70px rgba(48,8,22,.38); }
+/* — Vaultify: bordo sahnede uçan belge destesi — */
+.vault-showcase { position:relative; min-height:470px; perspective:1100px; isolation:isolate; }
+.flying-document { position:absolute; width:240px; height:310px; padding:88px 34px 30px; border-radius:14px; background:#f7efec; border:1px solid rgba(255,255,255,.62); box-shadow:0 34px 70px rgba(48,8,22,.42); transform-style:preserve-3d; }
+.flying-document::after { content:""; position:absolute; inset:10px; border:1px solid rgba(122,33,58,.08); border-radius:9px; pointer-events:none; }
+.flying-document .doc-corner { position:absolute; right:0; top:0; width:62px; height:62px; border-radius:0 14px 0 14px; background:#dcc7c9; clip-path:polygon(0 0,100% 100%,0 100%); }
+.flying-document i { display:block; width:100%; height:9px; margin:16px 0; border-radius:999px; background:#c8b8b9; }
+.flying-document i:nth-of-type(2){width:82%}.flying-document i:nth-of-type(3){width:58%}
+.flying-document b { position:absolute; left:34px; top:31px; display:grid; place-items:center; color:#7a213a; }
+.doc-folder { width:54px; height:40px; border-radius:6px; background:#b88b95; }
+.doc-folder::before { content:""; position:absolute; left:4px; top:-8px; width:24px; height:12px; border-radius:5px 5px 0 0; background:#b88b95; }
+.doc-check { width:64px; height:64px; font-family:var(--font-body); font-size:58px; line-height:1; }
+.doc-calendar { width:54px; height:47px; border:5px solid #a56f7b; border-radius:7px; }
+.doc-calendar::before { content:""; position:absolute; left:-5px; right:-5px; top:9px; height:5px; background:#a56f7b; }
+.doc-calendar small { width:11px; height:11px; margin:13px 0 0 21px; border-radius:50%; background:#7a213a; }
+.vault-doc-back { left:4%; top:18%; transform:rotate(-11deg) translateZ(-30px); opacity:.82; animation:vault-float 6s ease-in-out infinite; }
+.vault-doc-main { left:34%; top:5%; z-index:3; transform:rotate(1.5deg) translateZ(35px); animation:vault-float 5.4s ease-in-out -1.8s infinite; }
+.vault-doc-front { right:1%; top:20%; z-index:2; transform:rotate(10deg); opacity:.9; animation:vault-float 6.4s ease-in-out -3.2s infinite; }
+@keyframes vault-float { 0%,100%{translate:0 0} 50%{translate:0 -14px} }
 
 /* — Dil seçici — */
 .language-switch { display:inline-flex; align-items:center; justify-content:center; min-width:42px; height:36px; padding:0 11px; border:1px solid currentColor; border-radius:999px; color:var(--ink)!important; font-family:var(--font-mono); font-size:11px; font-weight:600; letter-spacing:.08em; text-decoration:none; background:color-mix(in srgb,var(--paper) 84%,transparent); }
@@ -399,8 +414,12 @@ img { max-width: 100%; display: block; }
   .phone-stack .phone { width: 150px; }
   .phone-stack .p2 { left: 26%; }
   .phone-stack .p3 { left: 48%; }
-  .vault-showcase { min-height:0; }
-  .vault-home-feature,.vault-detail-gallery,.vault-feature-graphic { border-radius:var(--r-m); }
+  .vault-showcase { min-height:350px; }
+  .flying-document { width:158px; height:215px; padding:64px 23px 20px; }
+  .flying-document b { left:23px; top:22px; transform:scale(.75); transform-origin:top left; }
+  .flying-document i { height:7px; margin:11px 0; }
+  .vault-doc-back { left:0; }.vault-doc-main{left:27%}.vault-doc-front{right:0}
+  .vault-detail-gallery,.vault-feature-graphic { border-radius:var(--r-m); }
   .scene-transition { height: 85vh; }
   .footer { flex-direction: column; gap: 8px; }
   .detail-hero { padding: 50px 0 60px; }
