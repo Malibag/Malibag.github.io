@@ -70,7 +70,7 @@
     { id: "kpss-tarih-notlari", rgb: [227, 188, 118] },
     { id: "ehliyet-sinavi-2026", rgb: [240, 163, 126] },
     { id: "ruya-katibi", rgb: [18, 17, 28] },
-    { id: "vaultify", rgb: [131, 188, 166] },
+    { id: "vaultify", rgb: [122, 33, 58] },
   ];
   const PAPER = [239, 234, 224];
   const lerp = (a, b, t) => a + (b - a) * t;
