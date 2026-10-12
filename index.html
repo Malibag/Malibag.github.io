@@ -22,7 +22,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="home.css?v=2">
+  <link rel="stylesheet" href="home.css?v=3">
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"M. Ali Bağcı","url":"https://malibag.github.io/","email":"mailto:bagcimuhammetali@gmail.com","jobTitle":"Bağımsız Mobil Uygulama Geliştiricisi"}</script>
 </head>
@@ -30,7 +30,7 @@
   <a class="skip-link" href="#main">İçeriğe geç</a>
 
   <main id="main">
-    <section class="stage" id="stage" aria-labelledby="hero-title">
+    <section class="stage" id="uygulamalar" aria-labelledby="hero-title">
       <header class="stage-head">
         <a class="brand" href="./">
           <img src="assets/mark.svg" alt="" width="34" height="34">
@@ -51,7 +51,7 @@
         <h1 id="hero-title"><em>Fikirleri</em> sade ve anlamlı uygulamalara dönüştürüyorum.</h1>
         <p class="lead">Okuma, öğrenme, kişisel keşif ve belge düzeni için mobil uygulamalar tasarlıyor, geliştiriyor ve yayımlıyorum.</p>
         <div class="actions">
-          <a class="btn btn-primary" href="#uygulamalar">Kataloğu incele</a>
+          <a class="btn btn-primary" href="#uygulamalar">Uygulamaları gör</a>
           <a class="btn btn-ghost" href="mailto:bagcimuhammetali@gmail.com">İletişime geç</a>
         </div>
       </div>
@@ -111,16 +111,9 @@
       </div>
     </section>
 
-    <section class="catalog shell" id="uygulamalar" aria-labelledby="catalog-title">
-      <div class="section-head">
-        <p class="rule-label"><span class="rule" aria-hidden="true"></span>Katalog</p>
-        <h2 id="catalog-title">Uygulamalar</h2>
-        <p class="section-meta">5 yayında · 1 yakında</p>
-      </div>
-
-      <div class="app-grid">
+    <!-- Uygulama verisi: sahnedeki vitrin ve panel buradan okur (i18n.js de bu metinleri çevirir). -->
+    <div class="app-data" hidden>
         <article class="app-card" id="ayet-kartlari" data-app data-color="#4fae7f" data-screen="assets/screenshots/ayet-kartlari/ana-sayfa.webp" style="--app:#4fae7f">
-          <div class="card-shot"><img src="assets/screenshots/ayet-kartlari/ana-sayfa.webp" alt="Ayet Kartları ana ekranı" width="610" height="1210" loading="lazy"></div>
           <div class="card-body">
             <div class="card-top"><span class="card-id">UYG-001</span><span class="card-status is-live">Yayında</span></div>
             <div class="card-title"><img class="card-icon" src="assets/icons/ayet-kartlari.png" alt="" width="48" height="48" loading="lazy"><div><h3>Ayet Kartları</h3><p class="card-cat">Okuma &amp; keşif</p></div></div>
@@ -128,9 +121,7 @@
             <div class="card-links"><a href="https://play.google.com/store/apps/details?id=com.ayetkartlari.app" rel="noopener">Google Play ↗</a><a href="ayet-kartlari/">Ayrıntılar →</a></div>
           </div>
         </article>
-
         <article class="app-card" id="ingilizce-kelime-kartlari" data-app data-color="#7489ea" data-screen="assets/screenshots/ingilizce-kelime-kartlari/ana-sayfa.webp" style="--app:#7489ea">
-          <div class="card-shot"><img src="assets/screenshots/ingilizce-kelime-kartlari/ana-sayfa.webp" alt="İngilizce Kelime Kartları ana ekranı" width="610" height="1210" loading="lazy"></div>
           <div class="card-body">
             <div class="card-top"><span class="card-id">UYG-002</span><span class="card-status is-live">Yayında</span></div>
             <div class="card-title"><img class="card-icon" src="assets/icons/ingilizce-kelime-kartlari.png" alt="" width="48" height="48" loading="lazy"><div><h3>İngilizce Kelime Kartları</h3><p class="card-cat">Dil öğrenimi</p></div></div>
@@ -138,9 +129,7 @@
             <div class="card-links"><a href="https://play.google.com/store/apps/details?id=com.ingilizcekelimekartlari.app" rel="noopener">Google Play ↗</a><a href="ingilizce-kelime-kartlari/">Ayrıntılar →</a></div>
           </div>
         </article>
-
         <article class="app-card" id="kpss-tarih-notlari" data-app data-color="#e3a948" data-screen="assets/screenshots/kpss-tarih-notlari/ana-sayfa.webp" style="--app:#e3a948">
-          <div class="card-shot"><img src="assets/screenshots/kpss-tarih-notlari/ana-sayfa.webp" alt="KPSS Tarih Notları ana ekranı" width="610" height="1210" loading="lazy"></div>
           <div class="card-body">
             <div class="card-top"><span class="card-id">UYG-003</span><span class="card-status is-live">Yayında</span></div>
             <div class="card-title"><img class="card-icon" src="assets/icons/kpss-tarih-notlari.png" alt="" width="48" height="48" loading="lazy"><div><h3>KPSS Tarih Notları</h3><p class="card-cat">Not tekrarı</p></div></div>
@@ -148,9 +137,7 @@
             <div class="card-links"><a href="https://play.google.com/store/apps/details?id=com.kpsstarihnotlari.app" rel="noopener">Google Play ↗</a><a href="kpss-tarih-notlari/">Ayrıntılar →</a></div>
           </div>
         </article>
-
         <article class="app-card" id="ehliyet-sinavi-2026" data-app data-color="#ef8a5c" data-screen="assets/screenshots/ehliyet-sinavi-2026/ana-sayfa.webp" style="--app:#ef8a5c">
-          <div class="card-shot"><img src="assets/screenshots/ehliyet-sinavi-2026/ana-sayfa.webp" alt="Ehliyet Sınavı 2026 ana ekranı" width="610" height="1210" loading="lazy"></div>
           <div class="card-body">
             <div class="card-top"><span class="card-id">UYG-004</span><span class="card-status is-live">Yayında</span></div>
             <div class="card-title"><img class="card-icon" src="assets/icons/ehliyet-sinavi-2026.png" alt="" width="48" height="48" loading="lazy"><div><h3>Ehliyet Sınavı 2026</h3><p class="card-cat">Sınav hazırlığı</p></div></div>
@@ -158,9 +145,7 @@
             <div class="card-links"><a href="https://play.google.com/store/apps/details?id=com.ehliyetsinavi2026.sorukartlari" rel="noopener">Google Play ↗</a><a href="ehliyet-sinavi-2026/">Ayrıntılar →</a></div>
           </div>
         </article>
-
         <article class="app-card" id="ruya-katibi" data-app data-color="#c9a860" data-screen="assets/screenshots/ruya-katibi/kart-secimi.webp" style="--app:#c9a860">
-          <div class="card-shot"><img src="assets/screenshots/ruya-katibi/kart-secimi.webp" alt="Rüya Kâtibi kart seçimi ekranı" width="610" height="1210" loading="lazy"></div>
           <div class="card-body">
             <div class="card-top"><span class="card-id">UYG-005</span><span class="card-status is-live">Yayında</span></div>
             <div class="card-title"><img class="card-icon" src="assets/icons/ruya-katibi.jpg" alt="" width="48" height="48" loading="lazy"><div><h3>Rüya Kâtibi</h3><p class="card-cat">Kişisel keşif</p></div></div>
@@ -168,9 +153,7 @@
             <div class="card-links"><a href="https://play.google.com/store/apps/details?id=com.ruyakatibi.kadimtabirname" rel="noopener">Google Play ↗</a><span class="link-muted">App Store · yakında</span><a href="ruya-katibi/">Ayrıntılar →</a></div>
           </div>
         </article>
-
         <article class="app-card" id="vaultify" data-app data-color="#c0506c" data-screen="" style="--app:#c0506c">
-          <div class="card-shot is-cover"><img src="assets/social/vaultify.jpg" alt="Vaultify tanıtım görseli" width="1280" height="625" loading="lazy"></div>
           <div class="card-body">
             <div class="card-top"><span class="card-id">UYG-006</span><span class="card-status is-soon">Yakında</span></div>
             <div class="card-title"><img class="card-icon" src="assets/icons/vaultify.jpg" alt="" width="48" height="48" loading="lazy"><div><h3>Vaultify: Belge Asistanı</h3><p class="card-cat">Belge asistanı</p></div></div>
@@ -178,8 +161,7 @@
             <div class="card-links"><span class="link-muted">Yakında · Yalnızca Android</span><a href="vaultify/">Ayrıntılar →</a></div>
           </div>
         </article>
-      </div>
-    </section>
+    </div>
 
     <section class="about shell" id="hakkimda" aria-labelledby="hakkimda-baslik">
       <div class="about-copy">
@@ -218,6 +200,6 @@
   </footer>
 
   <script src="i18n.js?v=4" defer></script>
-  <script type="module" src="home.js?v=2"></script>
+  <script type="module" src="home.js?v=3"></script>
 </body>
 </html>

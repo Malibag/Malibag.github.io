@@ -268,64 +268,6 @@ button { font: inherit; color: inherit; }
 .stage-foot .foot-center { letter-spacing: .3em; }
 .stage-foot .foot-hint { text-align: right; text-transform: none; letter-spacing: .02em; font-family: var(--sans); font-size: 12px; }
 
-/* ───────────── Katalog ───────────── */
-.catalog { padding: clamp(80px, 11vw, 140px) 0 40px; }
-.section-head {
-  display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 18px 24px;
-  padding-bottom: 34px; margin-bottom: 1px;
-}
-.section-head .rule-label { grid-column: 1 / -1; }
-.section-head h2 { font-weight: 500; font-size: clamp(36px, 4.4vw, 60px); line-height: 1; letter-spacing: -0.04em; }
-.section-meta { font: 500 11px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--mute); }
-
-.app-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
-  background: var(--line); border: 1px solid var(--line); border-radius: 18px; overflow: hidden;
-}
-.app-card { background: var(--bg); display: flex; flex-direction: column; scroll-margin-top: 24px; transition: background-color .3s; }
-.app-card:hover { background: #0c0d10; }
-.card-shot {
-  position: relative; height: 250px; overflow: hidden;
-  background:
-    radial-gradient(ellipse 60% 80% at 50% 115%, color-mix(in srgb, var(--app) 42%, transparent), transparent 70%),
-    linear-gradient(180deg, #0d0f12, #0b0c0f);
-  border-bottom: 1px solid var(--line);
-}
-.card-shot::after {
-  content: ""; position: absolute; inset: 0; pointer-events: none;
-  background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
-  background-size: 32px 32px; opacity: .5;
-  mask-image: linear-gradient(180deg, #000, transparent 85%);
-}
-.card-shot img {
-  position: absolute; z-index: 1; left: 50%; top: 34px; width: 46%; height: auto;
-  translate: -50% 0; border-radius: 18px; border: 5px solid #1b1e24;
-  box-shadow: 0 30px 60px rgba(0,0,0,.5);
-  transition: translate .5s cubic-bezier(.2,.7,.2,1);
-}
-.app-card:hover .card-shot img { translate: -50% -14px; }
-.card-shot.is-cover img { inset: 0; width: 100%; height: 100%; object-fit: cover; translate: none; border: 0; border-radius: 0; top: 0; left: 0; box-shadow: none; }
-.app-card:hover .card-shot.is-cover img { translate: none; scale: 1.03; }
-.card-shot.is-cover img { transition: scale .6s cubic-bezier(.2,.7,.2,1); }
-
-.card-body { display: flex; flex-direction: column; gap: 16px; padding: 22px 24px 24px; flex: 1; }
-.card-top { display: flex; justify-content: space-between; align-items: center; font: 500 11px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; }
-.card-id { color: var(--faint); }
-.card-status { display: inline-flex; align-items: center; gap: 7px; color: var(--mute); }
-.card-status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #4ad08b; }
-.card-status.is-soon::before { background: var(--accent); }
-.card-title { display: flex; align-items: center; gap: 14px; }
-.card-icon { width: 48px; height: 48px; border-radius: 12px; flex: none; }
-.card-title h3 { font-weight: 500; font-size: 20px; line-height: 1.2; letter-spacing: -0.02em; }
-.card-cat { font: 500 10.5px/1.6 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--app); }
-.card-desc { color: var(--mute); font-size: 14.5px; line-height: 1.6; flex: 1; }
-.card-links { display: flex; flex-wrap: wrap; gap: 8px 18px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 13.5px; }
-.card-links a { color: var(--text); transition: color .2s; }
-.card-links a:hover { color: var(--app); }
-.card-links .link-muted { color: var(--faint); }
-.card-links a:last-child { margin-left: auto; color: var(--mute); }
-.card-links a:last-child:hover { color: var(--text); }
-
 /* ───────────── Hakkımda ───────────── */
 .about {
   display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px, 6vw, 96px);
@@ -376,7 +318,6 @@ button { font: inherit; color: inherit; }
 /* ───────────── Duyarlı ───────────── */
 @media (max-width: 1100px) {
   .stage-status { display: none; }
-  .app-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 900px) {
@@ -410,8 +351,6 @@ button { font: inherit; color: inherit; }
 @media (max-width: 640px) {
   .brand-text small { display: none; }
   .site-nav a:not(.nav-contact):not(.language-switch) { display: none; }
-  .app-grid { grid-template-columns: 1fr; }
-  .card-shot { height: 220px; }
   .process li { grid-template-columns: 40px 1fr; }
   .process li p { grid-column: 2; }
   .tag-text { display: none; }

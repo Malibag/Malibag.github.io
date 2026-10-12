@@ -6,7 +6,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 
-const stage = document.getElementById("stage");
+const stage = document.querySelector(".stage");
 const sceneEl = document.getElementById("scene");
 const canvas = document.getElementById("scene-canvas");
 const tagsEl = document.getElementById("tags");
@@ -19,8 +19,8 @@ const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const finePointer = matchMedia("(pointer: fine)").matches;
 const isEn = document.documentElement.lang === "en";
 const T = isEn
-  ? { step: "Step", next: "Next step →", showcase: "Open the showcase", catalog: "Go to catalog ↓", pause: "Pause motion", resume: "Resume motion", core: "STUDIO 01", running: "RUNNING", live: "LIVE", idea: "IDEA" }
-  : { step: "Adım", next: "Sonraki adım →", showcase: "Vitrini aç", catalog: "Kataloğa git ↓", pause: "Hareketi durdur", resume: "Hareketi başlat", core: "STÜDYO 01", running: "ÇALIŞIYOR", live: "YAYINDA", idea: "FİKİR" };
+  ? { step: "Step", next: "Next step →", showcase: "Open the showcase", pause: "Pause motion", resume: "Resume motion", core: "STUDIO 01", running: "RUNNING", live: "LIVE", idea: "IDEA" }
+  : { step: "Adım", next: "Sonraki adım →", showcase: "Vitrini aç", pause: "Hareketi durdur", resume: "Hareketi başlat", core: "STÜDYO 01", running: "ÇALIŞIYOR", live: "YAYINDA", idea: "FİKİR" };
 
 const ACCENT = 0xff7a2e;
 const FACE = THREE.MathUtils.degToRad(28); // varsayılan kamera ve ekranların baktığı yön
@@ -301,6 +301,48 @@ async function init() {
     ctx.fillText(`${liveCount}/${apps.length}`, 22, 132);
   });
 
+  // Tasarım aşamasındaki telefonların tel çerçeve ekranı ve test sonrası onay rozeti.
+  const wireTex = canvasTex(128, 256, (ctx, w, h) => {
+    ctx.fillStyle = SCREEN_BG;
+    ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = "#ff7a2e";
+    ctx.fillRect(14, 18, 70, 10);
+    ctx.strokeStyle = "rgba(236,235,231,.45)";
+    ctx.lineWidth = 3;
+    for (let k = 0; k < 4; k++) {
+      ctx.beginPath();
+      ctx.roundRect(14, 46 + k * 48, 100, 36, 8);
+      ctx.stroke();
+    }
+  });
+  const okTex = canvasTex(64, 64, (ctx) => {
+    ctx.fillStyle = "#4ad08b";
+    ctx.beginPath();
+    ctx.arc(32, 32, 30, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "#08130d";
+    ctx.lineWidth = 7;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(18, 33);
+    ctx.lineTo(28, 43);
+    ctx.lineTo(46, 22);
+    ctx.stroke();
+  });
+  const miniBodyGeo = new RoundedBoxGeometry(0.36, 0.72, 0.045, 2, 0.04);
+  const miniScreenGeo = new THREE.PlaneGeometry(0.32, 0.64);
+  const okGeo = new THREE.PlaneGeometry(0.17, 0.17);
+  const makeMiniPhone = () => {
+    const g = new THREE.Group();
+    g.add(shadowed(new THREE.Mesh(miniBodyGeo, mat.body)));
+    const scr = put(new THREE.Mesh(miniScreenGeo, new THREE.MeshBasicMaterial({ map: wireTex, toneMapped: false })), g, 0, 0, 0.024);
+    const check = put(new THREE.Mesh(okGeo, new THREE.MeshBasicMaterial({ map: okTex, transparent: true, toneMapped: false, depthWrite: false })), g, 0.11, 0.27, 0.03);
+    check.visible = false;
+    g.rotation.order = "YXZ";
+    g.userData = { scr, check };
+    return g;
+  };
+
   /* Platform */
   const deck = new THREE.Group();
   scene.add(deck);
@@ -471,8 +513,8 @@ async function init() {
     put(box(2.6, 0.26, 0.32, mat.dark, 0.04), g, 0, 2.2, 0);
     put(box(2.4, 0.05, 0.05, mat.steel), g, 0, 2.2, 0.18);
     const carriage = put(box(0.5, 0.46, 0.56, mat.paint, 0.05), g, 0, 2.2, 0.05);
-    put(cyl(0.05, 0.02, 0.9, mat.steel, 12), carriage, 0, -0.66, 0);
-    put(new THREE.Mesh(new THREE.SphereGeometry(0.05, 12, 8), mat.accent), carriage, 0, -1.12, 0);
+    put(cyl(0.05, 0.02, 0.5, mat.steel, 12), carriage, 0, -0.48, 0);
+    put(new THREE.Mesh(new THREE.SphereGeometry(0.05, 12, 8), mat.accent), carriage, 0, -0.76, 0);
     const mon = new THREE.Group();
     put(mon, g, -1.95, 0, 0.9);
     mon.rotation.y = FACE;
@@ -536,10 +578,10 @@ async function init() {
   // 04 Test — iki tarayıcı kemer ve kayan lazer düzlemi; yanında sinyal kulesi.
   addStation(3, HW, 0, (s, g) => {
     [-0.6, 0.6].forEach((z) => {
-      put(shadowed(new THREE.Mesh(new THREE.TorusGeometry(0.98, 0.09, 12, 48, Math.PI), mat.shell)), g, 0, 0.4, z);
-      [-0.98, 0.98].forEach((x) => put(box(0.3, 0.12, 0.3, mat.dark, 0.03), g, x, 0.1, z));
+      put(shadowed(new THREE.Mesh(new THREE.TorusGeometry(0.98, 0.09, 12, 48, Math.PI), mat.shell)), g, 0, 0.56, z);
+      [-0.98, 0.98].forEach((x) => put(box(0.26, 0.56, 0.26, mat.dark, 0.03), g, x, 0.3, z));
     });
-    const laser = put(new THREE.Mesh(new THREE.PlaneGeometry(1.7, 0.95), new THREE.MeshBasicMaterial({ color: ACCENT, transparent: true, opacity: 0.16, side: THREE.DoubleSide, depthWrite: false, toneMapped: false })), g, 0, 0.88, 0);
+    const laser = put(new THREE.Mesh(new THREE.PlaneGeometry(1.7, 0.95), new THREE.MeshBasicMaterial({ color: ACCENT, transparent: true, opacity: 0.16, side: THREE.DoubleSide, depthWrite: false, toneMapped: false })), g, 0, 1.0, 0);
     const beam = put(box(1.8, 0.014, 0.014, mat.accent), laser, 0, 0.47, 0);
     beam.castShadow = false;
     const tower = new THREE.Group();
@@ -563,52 +605,51 @@ async function init() {
     };
   });
 
-  // 05 Yayın — robot kol bitmiş cihazı alıp vitrine bırakıyor; vitrinde altı uygulama.
+  // 05 Yayın — robot kol bitmiş telefonu banttan alıp havadan vitrindeki yerine taşır.
   const rackPhones = [];
+  const ARM = { L1: 1.25, L2: 1.1, PIVOT: 0.56 };
+  let arm, turret, shoulder, elbow, wrist, carried;
   addStation(4, 1.6, HD, (s, g) => {
-    const arm = new THREE.Group();
-    put(arm, g, 0, 0, -1.15);
-    put(cyl(0.38, 0.46, 0.3, mat.dark), arm, 0, 0.15, 0);
-    const turret = put(new THREE.Group(), arm, 0, 0.3, 0);
-    put(cyl(0.28, 0.3, 0.22, mat.paint), turret, 0, 0.11, 0);
-    const shoulder = put(new THREE.Group(), turret, 0, 0.26, 0);
-    put(box(0.2, 1.15, 0.2, mat.paint, 0.05), shoulder, 0, 0.55, 0);
-    const elbow = put(new THREE.Group(), shoulder, 0, 1.1, 0);
-    put(new THREE.Mesh(new THREE.SphereGeometry(0.15, 16, 12), mat.dark), elbow);
-    put(box(0.16, 0.95, 0.16, mat.shell, 0.04), elbow, 0, 0.45, 0);
-    const wrist = put(new THREE.Group(), elbow, 0, 0.92, 0);
-    put(box(0.34, 0.08, 0.2, mat.dark, 0.02), wrist);
-    [-0.12, 0.12].forEach((x) => put(box(0.04, 0.2, 0.12, mat.steel), wrist, x, -0.12, 0));
-    shoulder.rotation.x = 0.55;
-    elbow.rotation.x = 1.25;
+    arm = put(new THREE.Group(), g, 0.2, 0, 0.85);
+    put(cyl(0.26, 0.32, 0.3, mat.dark), arm, 0, 0.15, 0);
+    turret = put(new THREE.Group(), arm, 0, 0.3, 0);
+    put(cyl(0.22, 0.24, 0.2, mat.paint), turret, 0, 0.1, 0);
+    shoulder = put(new THREE.Group(), turret, 0, 0.26, 0);
+    put(new THREE.Mesh(new THREE.SphereGeometry(0.14, 16, 12), mat.dark), shoulder);
+    put(box(0.18, ARM.L1, 0.18, mat.paint, 0.05), shoulder, 0, ARM.L1 / 2, 0);
+    elbow = put(new THREE.Group(), shoulder, 0, ARM.L1, 0);
+    put(new THREE.Mesh(new THREE.SphereGeometry(0.13, 16, 12), mat.dark), elbow);
+    put(box(0.14, ARM.L2, 0.14, mat.shell, 0.04), elbow, 0, ARM.L2 / 2, 0);
+    wrist = put(new THREE.Group(), elbow, 0, ARM.L2, 0);
+    put(box(0.3, 0.07, 0.18, mat.dark, 0.02), wrist);
+    [-0.13, 0.13].forEach((x) => put(box(0.035, 0.18, 0.1, mat.steel), wrist, x, -0.11, 0));
+    carried = put(makeMiniPhone(), wrist, 0, -0.48, 0);
+    carried.visible = false;
 
-    put(box(4.7, 0.22, 1.25, mat.dark, 0.04), g, 0.2, 0.15, 1.55);
-    put(box(4.7, 0.2, 0.42, mat.dark, 0.04), g, 0.2, 0.35, 1.15);
-    put(box(4.7, 0.03, 0.02, mat.accent), g, 0.2, 0.15, 2.18);
+    put(box(4.7, 0.22, 1.0, mat.dark, 0.04), g, 0.2, 0.15, 1.8);
+    put(box(4.7, 0.2, 0.36, mat.dark, 0.04), g, 0.2, 0.35, 1.47);
+    put(box(4.7, 0.03, 0.02, mat.accent), g, 0.2, 0.15, 2.31);
     const phoneGeo = new RoundedBoxGeometry(0.6, 1.22, 0.07, 3, 0.06);
     const screenGeo = new THREE.PlaneGeometry(0.54, 1.1);
     apps.forEach((app, k) => {
+      const x = -1.55 + k * 0.7;
       const ph = new THREE.Group();
-      put(ph, g, -1.55 + k * 0.7, 0.88, 1.6);
+      put(ph, g, x, 0.88, 1.85);
       ph.rotation.x = -0.2;
       const body = put(shadowed(new THREE.Mesh(phoneGeo, mat.body)), ph);
       const scr = put(new THREE.Mesh(screenGeo, new THREE.MeshBasicMaterial({ color: 0x15171c, toneMapped: false })), ph, 0, 0, 0.037);
-      put(box(0.44, 0.02, 0.012, std({ color: app.color, emissive: app.color, emissiveIntensity: 1 })), g, -1.55 + k * 0.7, 0.27, 2.18);
-      rackPhones.push({ app, group: ph, screen: scr, picks: [body, scr] });
+      const stripMat = std({ color: app.color, emissive: app.color, emissiveIntensity: 1 });
+      put(box(0.44, 0.02, 0.012, stripMat), g, x, 0.27, 2.31);
+      rackPhones.push({ app, group: ph, screen: scr, stripMat, flash: 0, picks: [body, scr] });
     });
     const sign = new THREE.Group();
-    put(sign, g, -2.55, 0, 1.55);
+    put(sign, g, -2.55, 0, 1.8);
     sign.rotation.y = FACE;
     put(cyl(0.04, 0.04, 1.1, mat.steel, 12), sign, 0, 0.55, 0);
     const signBox = put(box(0.86, 0.46, 0.06, mat.dark, 0.03), sign, 0, 1.2, 0);
     put(screen(0.8, 0.4, storeTex), signBox, 0, 0, 0.031);
-    s.anchor.set(0.2, 1.75, 1.5);
+    s.anchor.set(-1.9, 1.7, 1.85);
     s.focusY = 1.0;
-    s.update = (t) => {
-      turret.rotation.y = Math.sin(t * 0.8) * 1.1;
-      shoulder.rotation.x = 0.55 + Math.sin(t * 1.6) * 0.15;
-      elbow.rotation.x = 1.25 + Math.cos(t * 1.6) * 0.2;
-    };
   });
 
   /* Merkez konsol ve süslemeler */
@@ -634,53 +675,105 @@ async function init() {
     put(new THREE.Mesh(new THREE.SphereGeometry(0.09, 16, 12), mat.accent), deck, x, 1.38, z);
   });
 
-  /* Bant üzerindeki parçalar: istasyonlardan geçtikçe biçim değiştirir */
+  /* Bant üzerindeki parçalar: fikir küresi olarak çıkar, Tasarım'da telefona dönüşür,
+     Geliştirme'den sonra gerçek uygulama ekranını, Test'ten sonra onay rozetini taşır. */
   const U = { design: uOf(-2.2, -HD), build: uOf(2.6, -HD), test: uOf(HW, 0), release: uOf(1.6, HD) };
-  const variants = [
-    () => new THREE.Mesh(new THREE.SphereGeometry(0.15, 20, 14), mat.accent),
-    () => {
-      const g = new THREE.Group();
-      g.add(box(0.36, 0.05, 0.5, mat.shell, 0.02));
-      put(box(0.26, 0.012, 0.05, mat.accent), g, 0, 0.03, -0.15);
-      return g;
-    },
-    () => {
-      const g = new THREE.Group();
-      g.add(box(0.34, 0.07, 0.6, mat.body, 0.03));
-      put(box(0.28, 0.01, 0.5, std({ color: 0x222233, emissive: 0x7489ea, emissiveIntensity: 0.9 })), g, 0, 0.038, 0);
-      return g;
-    },
-    () => {
-      const g = new THREE.Group();
-      g.add(box(0.34, 0.07, 0.6, mat.body, 0.03));
-      put(box(0.28, 0.01, 0.5, std({ color: 0x113322, emissive: 0x4ad08b, emissiveIntensity: 0.9 })), g, 0, 0.038, 0);
-      return g;
-    },
-  ];
+  const appScreen = (k) => rackPhones[k].screen.material.map || wireTex;
   const items = Array.from({ length: 11 }, () => {
     const g = new THREE.Group();
-    const vs = variants.map((mk) => {
-      const o = mk();
-      o.visible = false;
-      g.add(o);
-      return o;
-    });
+    const idea = put(new THREE.Mesh(new THREE.SphereGeometry(0.15, 20, 14), mat.accent), g, 0, 0.16, 0);
+    const phone = put(makeMiniPhone(), g, 0, 0.38, 0);
+    phone.rotation.set(-0.15, FACE, 0);
     deck.add(g);
-    return { g, vs };
+    return { g, idea, phone, cycle: null };
   });
-  const tmpP = new THREE.Vector3(), tmpT = new THREE.Vector3();
+  const tmpP = new THREE.Vector3();
   const ITEM_SPEED = 0.022;
   const updateItems = (t) => {
     items.forEach((it, k) => {
-      const phase = (t * ITEM_SPEED + k / items.length) % 1;
+      const raw = t * ITEM_SPEED + k / items.length;
+      const cycle = Math.floor(raw), phase = raw - cycle;
+      // Hattın sonuna gelen telefonu robot kol devralır; parça yeniden fikir olarak başlar.
+      if (it.cycle !== null && cycle > it.cycle) startCarry((k + it.cycle) % apps.length);
+      it.cycle = cycle;
       const u = phase * U.release;
-      sampleAt(u, tmpP, tmpT);
+      sampleAt(u, tmpP);
       const stage = u < U.design ? 0 : u < U.build ? 1 : u < U.test ? 2 : 3;
-      it.vs.forEach((o, i) => (o.visible = i === stage));
-      it.g.position.set(tmpP.x, BELT_Y + (stage === 0 ? 0.16 : 0.05), tmpP.z);
-      it.g.rotation.y = Math.atan2(tmpT.x, tmpT.z);
-      it.g.scale.setScalar(Math.max(0.001, Math.min(1, phase * 25, (1 - phase) * 25)));
+      it.idea.visible = stage === 0;
+      it.phone.visible = stage > 0;
+      const { scr, check } = it.phone.userData;
+      const map = stage === 1 ? wireTex : appScreen((k + cycle) % apps.length);
+      if (scr.material.map !== map) scr.material.map = map;
+      check.visible = stage === 3;
+      it.g.position.set(tmpP.x, BELT_Y, tmpP.z);
+      it.g.scale.setScalar(Math.max(0.001, Math.min(1, phase * 25)));
     });
+  };
+
+  /* Robot kol: hedef noktaya iki eklemli ters kinematikle uzanır */
+  const armTarget = new THREE.Vector3();
+  const solveArm = (worldTarget) => {
+    const p = arm.worldToLocal(armTarget.copy(worldTarget));
+    const r = Math.hypot(p.x, p.z), v = p.y - ARM.PIVOT;
+    if (r > 1e-3) turret.rotation.y = Math.atan2(p.x, p.z);
+    const D = Math.min(Math.hypot(r, v), ARM.L1 + ARM.L2 - 0.01);
+    const b = Math.acos(THREE.MathUtils.clamp((D * D - ARM.L1 ** 2 - ARM.L2 ** 2) / (2 * ARM.L1 * ARM.L2), -1, 1));
+    const a = Math.atan2(r, v) - Math.atan2(ARM.L2 * Math.sin(b), ARM.L1 + ARM.L2 * Math.cos(b));
+    shoulder.rotation.x = a;
+    elbow.rotation.x = b;
+    wrist.rotation.x = -(a + b); // kıskaç hep aşağı baksın
+    carried.rotation.set(-0.15, FACE - turret.rotation.y, 0); // taşınan ekran kameraya dönük kalsın
+  };
+  const station5 = stations[4].group;
+  const atStation = (out, x, y, z) => station5.localToWorld(out.set(x, y, z));
+  const armState = { mode: "wait", t: 0, app: 0, side: 1, from: new THREE.Vector3(), ctrl: new THREE.Vector3(), to: new THREE.Vector3() };
+  const bez = (out, a, c, b, k) => {
+    const m = 1 - k;
+    return out.set(m * m * a.x + 2 * m * k * c.x + k * k * b.x, m * m * a.y + 2 * m * k * c.y + k * k * b.y, m * m * a.z + 2 * m * k * c.z + k * k * b.z);
+  };
+  const PICK_Y = BELT_Y + 0.38 + 0.48; // bant telefonunun merkezi + kıskaç payı
+  function startCarry(appIndex) {
+    const rp = rackPhones[appIndex];
+    if (armState.mode !== "wait") {
+      rp.flash = 1;
+      return;
+    }
+    const side = rp.group.position.x >= 0.2 ? 1 : -1;
+    armState.mode = "carry";
+    armState.t = 0;
+    armState.app = appIndex;
+    armState.side = side;
+    atStation(armState.from, 0, PICK_Y, 0);
+    atStation(armState.ctrl, 0.2 + side * 0.9, 3.1, 0.85);
+    atStation(armState.to, rp.group.position.x, 0.88 + 0.48, rp.group.position.z + 0.2);
+    const { scr, check } = carried.userData;
+    scr.material.map = appScreen(appIndex);
+    check.visible = true;
+    carried.visible = true;
+  }
+  const tmpA = new THREE.Vector3();
+  const updateArm = (dt, t) => {
+    const st = armState;
+    if (st.mode === "carry" || st.mode === "return") {
+      st.t = Math.min(1, st.t + dt / (st.mode === "carry" ? 1.8 : 1.2));
+      solveArm(bez(tmpA, st.from, st.ctrl, st.to, ease(st.t)));
+      if (st.t >= 1) {
+        st.t = 0;
+        st.mode = st.mode === "carry" ? "drop" : "wait";
+      }
+    } else if (st.mode === "drop") {
+      st.t += dt / 0.3;
+      solveArm(st.to);
+      if (st.t >= 1) {
+        carried.visible = false;
+        rackPhones[st.app].flash = 1;
+        st.from.copy(st.to);
+        atStation(st.ctrl, 0.2 + st.side * 0.6, 2.6, 0.85);
+        atStation(st.to, 0, PICK_Y, 0);
+        st.mode = "return";
+        st.t = 0;
+      }
+    } else solveArm(atStation(tmpA, 0, PICK_Y + 0.04 + Math.sin(t * 2) * 0.03, 0));
   };
 
   /* Kamera ve kontroller */
@@ -819,10 +912,7 @@ async function init() {
     } else {
       btn.textContent = T.showcase;
       btn.addEventListener("click", () => setView("showcase"));
-      const a = document.createElement("a");
-      a.href = "#uygulamalar";
-      a.textContent = T.catalog;
-      panelLinks.replaceChildren(btn, a);
+      panelLinks.replaceChildren(btn);
     }
   };
   const fillAppPanel = (k) => {
@@ -1003,11 +1093,18 @@ async function init() {
 
     // Bant dokusu parçalarla aynı hızda akar (doku tekrarı / yol uzunluğu = birim başına kayma).
     beltTex.offset.x = -t * ITEM_SPEED * U.release * BELT_REPEAT;
-    updateItems(t);
     stations.forEach((s) => {
       s.lift += (s.liftTarget - s.lift) * Math.min(1, dt * 3.2);
       s.group.position.y = s.lift;
       s.update(t, moving ? dt : 0);
+    });
+    deck.updateMatrixWorld(true);
+    updateItems(t);
+    updateArm(moving ? dt : 0, t);
+    rackPhones.forEach((rp) => {
+      rp.flash *= Math.exp(-dt * 2.2);
+      rp.stripMat.emissiveIntensity = 1 + rp.flash * 5;
+      rp.group.scale.setScalar(1 + rp.flash * 0.08);
     });
     beacon.visible = Math.floor(t * 1.5) % 2 === 0;
     if (moving && leds) {
@@ -1102,6 +1199,19 @@ async function init() {
     m.needsUpdate = true;
   });
   sceneEl.classList.add("is-ready");
+
+  // Eski bağlantılar (#uygulamalar, #ruya-katibi …) vitrine ve ilgili uygulamaya yönlenir.
+  const routeHash = () => {
+    const id = decodeURIComponent(location.hash.slice(1));
+    const k = apps.findIndex((a) => a.card.id === id);
+    if (k >= 0) {
+      stage.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+      selectApp(k);
+    } else if (id === "uygulamalar") setView("showcase");
+  };
+  window.addEventListener("hashchange", routeHash);
+  document.querySelectorAll('a[href="#uygulamalar"]').forEach((a) => a.addEventListener("click", () => setView("showcase")));
+  routeHash();
 }
 
 init();
