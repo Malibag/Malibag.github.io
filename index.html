@@ -2,11 +2,10 @@
 <html lang="tr">
 <head>
   <meta charset="utf-8">
-  <script>document.documentElement.classList.add('js')</script>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>M. Ali Bağcı · Bağımsız Mobil Uygulamalar</title>
   <meta name="description" content="Öğrenme, okuma, kişisel keşif ve belge düzeni için M. Ali Bağcı tarafından geliştirilen bağımsız mobil uygulamalar: Ayet Kartları, İngilizce Kelime Kartları, Ehliyet Sınavı 2026, KPSS Tarih Notları, Rüya Kâtibi ve Vaultify.">
-  <meta name="theme-color" content="#efeae0">
+  <meta name="theme-color" content="#08090b">
   <link rel="canonical" href="https://malibag.github.io/">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="tr_TR">
@@ -22,228 +21,203 @@
   <link rel="manifest" href="site.webmanifest">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,340;0,9..144,400;0,9..144,440;0,9..144,500;1,9..144,380;1,9..144,400&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=10">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="home.css?v=2">
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"M. Ali Bağcı","url":"https://malibag.github.io/","email":"mailto:bagcimuhammetali@gmail.com","jobTitle":"Bağımsız Mobil Uygulama Geliştiricisi"}</script>
 </head>
 <body>
   <a class="skip-link" href="#main">İçeriğe geç</a>
 
-  <div class="paper-plane" id="paper-plane" aria-hidden="true">
-    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M2 12 21 3 14 21 11 13 2 12Z" fill="#d97a3f" stroke="#7a3a1a" stroke-width="1" stroke-linejoin="round"/>
-      <path d="M11 13 21 3" stroke="#7a3a1a" stroke-width="1"/>
-    </svg>
-  </div>
-
-  <div class="cursor-glow" id="cursor-glow" aria-hidden="true"></div>
-
-  <header class="site-header">
-    <div class="header-left">
-      <span class="site-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z"/><circle cx="12" cy="9" r="2.4"/></svg>Ankara / Türkiye</span>
-    </div>
-    <nav class="site-nav" aria-label="Ana menü">
-      <a href="#ayet-kartlari">Uygulamalar</a>
-      <a href="#hakkimda">Hakkımda</a>
-      <a class="nav-contact" href="mailto:bagcimuhammetali@gmail.com">İletişim</a>
-    </nav>
-  </header>
-
-  <nav class="catalog-rail" aria-label="Uygulama kataloğu dizini">
-    <a href="#ayet-kartlari" style="--rail-accent:var(--clr-ayet)"><span class="tab-label">UYG-001 · Ayet Kartları</span></a>
-    <a href="#ingilizce-kelime-kartlari" style="--rail-accent:var(--clr-ingilizce)"><span class="tab-label">UYG-002 · İngilizce Kelime Kartları</span></a>
-    <a href="#kpss-tarih-notlari" style="--rail-accent:var(--clr-kpss)"><span class="tab-label">UYG-003 · KPSS Tarih Notları</span></a>
-    <a href="#ehliyet-sinavi-2026" style="--rail-accent:var(--clr-ehliyet)"><span class="tab-label">UYG-004 · Ehliyet Sınavı 2026</span></a>
-    <a href="#ruya-katibi" style="--rail-accent:var(--gold)"><span class="tab-label">UYG-005 · Rüya Kâtibi</span></a>
-    <a href="#vaultify" style="--rail-accent:#7a213a"><span class="tab-label">UYG-006 · Vaultify</span></a>
-  </nav>
-
   <main id="main">
-    <section class="hero shell" aria-labelledby="ana-baslik">
-      <span class="eyebrow kicker" data-reveal>Merhaba, ben M. Ali Bağcı.</span>
-      <h1 id="ana-baslik" data-reveal>
-        <span class="line"><span>Fikirleri, sade ve</span></span>
-        <span class="line"><span>anlamlı <em id="spotlight-word">dijital</em> ürünlere dönüştürüyorum.</span></span>
-      </h1>
-      <p class="hero-copy" data-reveal>Günlük hayat için düşünülmüş dijital ürünler.</p>
-      <div class="hero-actions" data-reveal>
-        <a class="button" href="#ayet-kartlari">Kataloğu görüntüle ↓</a>
-        <a class="button secondary" href="mailto:bagcimuhammetali@gmail.com">İletişime geç</a>
+    <section class="stage" id="stage" aria-labelledby="hero-title">
+      <header class="stage-head">
+        <a class="brand" href="./">
+          <img src="assets/mark.svg" alt="" width="34" height="34">
+          <span class="brand-text"><strong>M. Ali Bağcı</strong><small>Bağımsız mobil stüdyo</small></span>
+        </a>
+        <div class="head-right">
+          <p class="stage-status"><span class="pulse" aria-hidden="true"></span><span>5 uygulama yayında</span><span class="faint">Makine çalışıyor</span></p>
+          <nav class="site-nav" aria-label="Ana menü">
+            <a href="#uygulamalar">Uygulamalar</a>
+            <a href="#hakkimda">Hakkımda</a>
+            <a class="nav-contact" href="mailto:bagcimuhammetali@gmail.com">İletişim</a>
+          </nav>
+        </div>
+      </header>
+
+      <div class="hero-copy" id="hero-copy">
+        <p class="rule-label"><span class="rule" aria-hidden="true"></span>Fikirden ekrana, tek kişilik stüdyo</p>
+        <h1 id="hero-title"><em>Fikirleri</em> sade ve anlamlı uygulamalara dönüştürüyorum.</h1>
+        <p class="lead">Okuma, öğrenme, kişisel keşif ve belge düzeni için mobil uygulamalar tasarlıyor, geliştiriyor ve yayımlıyorum.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#uygulamalar">Kataloğu incele</a>
+          <a class="btn btn-ghost" href="mailto:bagcimuhammetali@gmail.com">İletişime geç</a>
+        </div>
       </div>
-      <div class="hero-stamp-row" data-reveal>
-        <span class="stamp is-live"><b>4</b>&nbsp;uygulama yayında</span>
-        <span class="stamp is-soon"><b>2</b>&nbsp;uygulama yakında</span>
+
+      <div class="scene" id="scene">
+        <canvas id="scene-canvas" aria-hidden="true"></canvas>
+        <div class="tags" id="tags"></div>
+        <p class="scene-loader" aria-hidden="true">Stüdyo hazırlanıyor</p>
+
+        <aside class="app-panel" id="app-panel" aria-live="polite" hidden>
+          <button class="panel-close" type="button" aria-label="Kapat">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+          </button>
+          <div class="panel-meta"><span class="panel-id"></span><span class="panel-status"></span></div>
+          <div class="panel-title">
+            <img class="panel-icon" src="assets/mark.svg" alt="" width="56" height="56">
+            <div><h2 class="panel-name"></h2><p class="panel-cat"></p></div>
+          </div>
+          <p class="panel-desc"></p>
+          <div class="panel-links"></div>
+        </aside>
+
+        <div class="controls">
+          <div class="segmented" role="group" aria-label="Makine modu">
+            <button type="button" data-mode="assembled" class="is-active">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 7.5v9L12 21l8-4.5v-9L12 3Z"/><path d="M4 7.5 12 12l8-4.5M12 12v9"/></svg>Bütün
+            </button>
+            <button type="button" data-mode="cutaway">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M12 4v16"/><path d="M15 8h2M15 12h2M15 16h2" /></svg>Kesit
+            </button>
+            <button type="button" data-mode="exploded">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 6 5l6 3 6-3-6-3Z"/><path d="m6 11 6 3 6-3"/><path d="m6 17 6 3 6-3"/></svg>Açılmış
+            </button>
+            <button type="button" data-mode="journey">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5v14l11-7L7 5Z"/></svg>Yolculuk
+            </button>
+          </div>
+          <div class="view-row" role="group" aria-label="Kamera görünümü">
+            <span class="view-label">Görünüm</span>
+            <button type="button" data-view="overview" class="is-active">Genel</button>
+            <button type="button" data-view="side">Yan</button>
+            <button type="button" data-view="top">Üst</button>
+            <button type="button" data-view="showcase">Vitrin</button>
+            <button type="button" class="ctrl-pause" aria-label="Hareketi durdur" aria-pressed="false">
+              <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg>
+              <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5v14l11-7L7 5Z"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <p class="side-text" aria-hidden="true">Stüdyo 01 — fikirden yayına</p>
+      <div class="stage-foot">
+        <span>Ankara / Türkiye</span>
+        <span class="foot-center">6 uygulama · 1 stüdyo</span>
+        <span class="foot-hint">Sürükleyerek döndür, bir istasyon seç.</span>
       </div>
     </section>
 
-    <div class="scene-transition" data-transition aria-hidden="true">
-      <div class="scene-transition-inner"><p class="scene-transition-copy">Kur’an-ı Kerim meali okumayı sade, sakin ve sürdürülebilir bir okuma deneyimine dönüştür.</p></div>
-    </div>
-    <section class="app-scene scene-ayet" id="ayet-kartlari" data-scene aria-labelledby="ayet-baslik">
-      <div class="shell">
+    <section class="catalog shell" id="uygulamalar" aria-labelledby="catalog-title">
+      <div class="section-head">
+        <p class="rule-label"><span class="rule" aria-hidden="true"></span>Katalog</p>
+        <h2 id="catalog-title">Uygulamalar</h2>
+        <p class="section-meta">5 yayında · 1 yakında</p>
+      </div>
+
+      <div class="app-grid">
+        <article class="app-card" id="ayet-kartlari" data-app data-color="#4fae7f" data-screen="assets/screenshots/ayet-kartlari/ana-sayfa.webp" style="--app:#4fae7f">
+          <div class="card-shot"><img src="assets/screenshots/ayet-kartlari/ana-sayfa.webp" alt="Ayet Kartları ana ekranı" width="610" height="1210" loading="lazy"></div>
+          <div class="card-body">
+            <div class="card-top"><span class="card-id">UYG-001</span><span class="card-status is-live">Yayında</span></div>
+            <div class="card-title"><img class="card-icon" src="assets/icons/ayet-kartlari.png" alt="" width="48" height="48" loading="lazy"><div><h3>Ayet Kartları</h3><p class="card-cat">Okuma &amp; keşif</p></div></div>
+            <p class="card-desc">Kur’an-ı Kerim mealini aceleye getirmeden, kart kart okumak için. Her kart tek bir ayete ait: istediğinde sakla, istediğinde tekrar et.</p>
+            <div class="card-links"><a href="https://play.google.com/store/apps/details?id=com.ayetkartlari.app" rel="noopener">Google Play ↗</a><a href="ayet-kartlari/">Ayrıntılar →</a></div>
+          </div>
+        </article>
+
+        <article class="app-card" id="ingilizce-kelime-kartlari" data-app data-color="#7489ea" data-screen="assets/screenshots/ingilizce-kelime-kartlari/ana-sayfa.webp" style="--app:#7489ea">
+          <div class="card-shot"><img src="assets/screenshots/ingilizce-kelime-kartlari/ana-sayfa.webp" alt="İngilizce Kelime Kartları ana ekranı" width="610" height="1210" loading="lazy"></div>
+          <div class="card-body">
+            <div class="card-top"><span class="card-id">UYG-002</span><span class="card-status is-live">Yayında</span></div>
+            <div class="card-title"><img class="card-icon" src="assets/icons/ingilizce-kelime-kartlari.png" alt="" width="48" height="48" loading="lazy"><div><h3>İngilizce Kelime Kartları</h3><p class="card-cat">Dil öğrenimi</p></div></div>
+            <p class="card-desc">A1’den B2’ye kelime dağarcığını, örnek cümleler ve aralıklı tekrarla büyüten sade bir kart destesi.</p>
+            <div class="card-links"><a href="https://play.google.com/store/apps/details?id=com.ingilizcekelimekartlari.app" rel="noopener">Google Play ↗</a><a href="ingilizce-kelime-kartlari/">Ayrıntılar →</a></div>
+          </div>
+        </article>
+
+        <article class="app-card" id="kpss-tarih-notlari" data-app data-color="#e3a948" data-screen="assets/screenshots/kpss-tarih-notlari/ana-sayfa.webp" style="--app:#e3a948">
+          <div class="card-shot"><img src="assets/screenshots/kpss-tarih-notlari/ana-sayfa.webp" alt="KPSS Tarih Notları ana ekranı" width="610" height="1210" loading="lazy"></div>
+          <div class="card-body">
+            <div class="card-top"><span class="card-id">UYG-003</span><span class="card-status is-live">Yayında</span></div>
+            <div class="card-title"><img class="card-icon" src="assets/icons/kpss-tarih-notlari.png" alt="" width="48" height="48" loading="lazy"><div><h3>KPSS Tarih Notları</h3><p class="card-cat">Not tekrarı</p></div></div>
+            <p class="card-desc">17 konudaki 3.000 kısa bilgiyi, tek tek kartlara sığdırdım. Ezber değil, tekrarla kalıcı öğrenme için.</p>
+            <div class="card-links"><a href="https://play.google.com/store/apps/details?id=com.kpsstarihnotlari.app" rel="noopener">Google Play ↗</a><a href="kpss-tarih-notlari/">Ayrıntılar →</a></div>
+          </div>
+        </article>
+
+        <article class="app-card" id="ehliyet-sinavi-2026" data-app data-color="#ef8a5c" data-screen="assets/screenshots/ehliyet-sinavi-2026/ana-sayfa.webp" style="--app:#ef8a5c">
+          <div class="card-shot"><img src="assets/screenshots/ehliyet-sinavi-2026/ana-sayfa.webp" alt="Ehliyet Sınavı 2026 ana ekranı" width="610" height="1210" loading="lazy"></div>
+          <div class="card-body">
+            <div class="card-top"><span class="card-id">UYG-004</span><span class="card-status is-live">Yayında</span></div>
+            <div class="card-title"><img class="card-icon" src="assets/icons/ehliyet-sinavi-2026.png" alt="" width="48" height="48" loading="lazy"><div><h3>Ehliyet Sınavı 2026</h3><p class="card-cat">Sınav hazırlığı</p></div></div>
+            <p class="card-desc">Sınav konularını kategori kategori ayıran soru kartlarıyla, gerçek sınav temposunda pratik yapın.</p>
+            <div class="card-links"><a href="https://play.google.com/store/apps/details?id=com.ehliyetsinavi2026.sorukartlari" rel="noopener">Google Play ↗</a><a href="ehliyet-sinavi-2026/">Ayrıntılar →</a></div>
+          </div>
+        </article>
+
+        <article class="app-card" id="ruya-katibi" data-app data-color="#c9a860" data-screen="assets/screenshots/ruya-katibi/kart-secimi.webp" style="--app:#c9a860">
+          <div class="card-shot"><img src="assets/screenshots/ruya-katibi/kart-secimi.webp" alt="Rüya Kâtibi kart seçimi ekranı" width="610" height="1210" loading="lazy"></div>
+          <div class="card-body">
+            <div class="card-top"><span class="card-id">UYG-005</span><span class="card-status is-live">Yayında</span></div>
+            <div class="card-title"><img class="card-icon" src="assets/icons/ruya-katibi.jpg" alt="" width="48" height="48" loading="lazy"><div><h3>Rüya Kâtibi</h3><p class="card-cat">Kişisel keşif</p></div></div>
+            <p class="card-desc">Rüyanı anlat, sana açılan kartları seç ve başka bir yerde karşılaşmayacağın kadar kişisel, gizemli bir tabir deneyimi yaşa.</p>
+            <div class="card-links"><a href="https://play.google.com/store/apps/details?id=com.ruyakatibi.kadimtabirname" rel="noopener">Google Play ↗</a><span class="link-muted">App Store · yakında</span><a href="ruya-katibi/">Ayrıntılar →</a></div>
+          </div>
+        </article>
+
+        <article class="app-card" id="vaultify" data-app data-color="#c0506c" data-screen="" style="--app:#c0506c">
+          <div class="card-shot is-cover"><img src="assets/social/vaultify.jpg" alt="Vaultify tanıtım görseli" width="1280" height="625" loading="lazy"></div>
+          <div class="card-body">
+            <div class="card-top"><span class="card-id">UYG-006</span><span class="card-status is-soon">Yakında</span></div>
+            <div class="card-title"><img class="card-icon" src="assets/icons/vaultify.jpg" alt="" width="48" height="48" loading="lazy"><div><h3>Vaultify: Belge Asistanı</h3><p class="card-cat">Belge asistanı</p></div></div>
+            <p class="card-desc">Belgelerinizi düzenleyin, önemli tarihleri zamanında hatırlayın. Sözleşmelerinizi, poliçelerinizi, garanti belgelerinizi, araç evraklarınızı ve takip etmek istediğiniz diğer belgeleri tek yerde yönetin.</p>
+            <div class="card-links"><span class="link-muted">Yakında · Yalnızca Android</span><a href="vaultify/">Ayrıntılar →</a></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="about shell" id="hakkimda" aria-labelledby="hakkimda-baslik">
+      <div class="about-copy">
+        <p class="rule-label"><span class="rule" aria-hidden="true"></span>Hakkımda</p>
+        <h2 id="hakkimda-baslik">Fikirden ekrana, her kartı tek başıma hazırlıyorum.</h2>
+        <p>Eğitim, okuma ve günlük yaşam için bağımsız mobil uygulamalar tasarlıyor, geliştiriyor ve yayımlıyorum. Tek kişilik bir stüdyo olarak yürütüyorum.</p>
+        <a class="mail-link" href="mailto:bagcimuhammetali@gmail.com"><span>E-posta</span>bagcimuhammetali@gmail.com ↗</a>
+      </div>
+      <div class="process">
+        <p class="rule-label"><span class="rule" aria-hidden="true"></span>Süreç</p>
+        <ol>
+          <li><span class="step-num">01</span><strong>Fikir</strong><p>Günlük bir ihtiyacı tek ve net bir soruya indiriyorum.</p><span class="step-key" hidden>ihtiyaç</span></li>
+          <li><span class="step-num">02</span><strong>Tasarım</strong><p>Ekranları sade, okunur ve sakin tutuyorum.</p><span class="step-key" hidden>ekranlar</span></li>
+          <li><span class="step-num">03</span><strong>Geliştirme</strong><p>Android ve iOS için tek kod tabanıyla geliştiriyorum.</p><span class="step-key" hidden>kod</span></li>
+          <li><span class="step-num">04</span><strong>Test</strong><p>Kapalı test grubuyla deniyor, hataları ayıklıyorum.</p><span class="step-key" hidden>kapalı test</span></li>
+          <li><span class="step-num">05</span><strong>Yayın</strong><p>Mağazaya çıkarıyor, geri bildirimlerle güncel tutuyorum.</p><span class="step-key" hidden>mağaza</span></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="beta shell" aria-labelledby="beta-baslik">
+      <div class="beta-inner">
         <div>
-          <div class="kicker"><span class="num">UYG-001</span> Okuma &amp; keşif</div>
-          <h2 id="ayet-baslik" data-reveal>Ayet Kartları</h2>
-          <p data-reveal>Kur’an-ı Kerim mealini aceleye getirmeden, kart kart okumak için. Her kart tek bir ayete ait: istediğinde sakla, istediğinde tekrar et.</p>
-          <div class="card-foot" data-reveal>
-            <span class="stamp is-live">Google Play’de yayında</span>
-            <a class="card-link" href="ayet-kartlari/">Uygulamayı incele ↗</a>
-          </div>
+          <p class="rule-label"><span class="rule" aria-hidden="true"></span>Kapalı test</p>
+          <h2 id="beta-baslik">Yeni uygulamaları ilk sen dene.</h2>
+          <p>Bundan sonra yayımlayacağım her uygulama için küçük bir kapalı test grubu oluşturuyorum. Katılmak istersen yaz, sırası gelince davet göndereyim.</p>
         </div>
-        <div class="phone-stack" data-reveal aria-hidden="true">
-          <div class="frame">
-            <figure class="phone p1"><img src="assets/screenshots/ayet-kartlari/sakladiklarim.webp" alt="" loading="lazy"></figure>
-            <figure class="phone p2"><img src="assets/screenshots/ayet-kartlari/ana-sayfa.webp" alt="" loading="lazy"></figure>
-            <figure class="phone p3"><img src="assets/screenshots/ayet-kartlari/istatistiklerim.webp" alt="" loading="lazy"></figure>
-          </div>
-        </div>
+        <a class="btn btn-primary" href="mailto:bagcimuhammetali@gmail.com?subject=Test Ekibi Başvurusu&body=Merhaba,%0A%0ABundan sonraki uygulamaların test sürecine katılmak istiyorum.%0A%0AAd Soyad: %0AE-posta: %0AAndroid / iOS: ">Test grubuna katıl ↗</a>
       </div>
-    </section>
-
-    <div class="scene-transition" data-transition aria-hidden="true">
-      <div class="scene-transition-inner"><p class="scene-transition-copy">İngilizce öğrenme yolculuğunu seviyelere ayrılmış kartlar ve kısa tekrarlarla daha düzenli getir.</p></div>
-    </div>
-    <section class="app-scene scene-ingilizce is-flip" id="ingilizce-kelime-kartlari" data-scene aria-labelledby="ing-baslik">
-      <div class="shell">
-        <div>
-          <div class="kicker"><span class="num">UYG-002</span> Dil öğrenimi</div>
-          <h2 id="ing-baslik" data-reveal>İngilizce Kelime Kartları</h2>
-          <p data-reveal>A1’den B2’ye kelime dağarcığını, örnek cümleler ve aralıklı tekrarla büyüten sade bir kart destesi.</p>
-          <div class="card-foot" data-reveal>
-            <span class="stamp is-live">Google Play’de yayında</span>
-            <a class="card-link" href="ingilizce-kelime-kartlari/">Uygulamayı incele ↗</a>
-          </div>
-        </div>
-        <div class="phone-stack" data-reveal aria-hidden="true">
-          <div class="frame">
-            <figure class="phone p1"><img src="assets/screenshots/ingilizce-kelime-kartlari/tekrar-et.webp" alt="" loading="lazy"></figure>
-            <figure class="phone p2"><img src="assets/screenshots/ingilizce-kelime-kartlari/ana-sayfa.webp" alt="" loading="lazy"></figure>
-            <figure class="phone p3"><img src="assets/screenshots/ingilizce-kelime-kartlari/istatistikler.webp" alt="" loading="lazy"></figure>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <div class="scene-transition" data-transition aria-hidden="true">
-      <div class="scene-transition-inner"><p class="scene-transition-copy">KPSS tarih konularına çalışmayı binlerce kısa ve odaklanmış bilgiyle hızlı tekrar edilebilir bir deneyime dönüştür.</p></div>
-    </div>
-    <section class="app-scene scene-kpss" id="kpss-tarih-notlari" data-scene aria-labelledby="kpss-baslik">
-      <div class="shell">
-        <div>
-          <div class="kicker"><span class="num">UYG-003</span> Not tekrarı</div>
-          <h2 id="kpss-baslik" data-reveal>KPSS Tarih Notları</h2>
-          <p data-reveal>17 konudaki 3.000 kısa bilgiyi, tek tek kartlara sığdırdım. Ezber değil, tekrarla kalıcı öğrenme için.</p>
-          <div class="card-foot" data-reveal>
-            <span class="stamp is-live">Google Play’de yayında</span>
-            <a class="card-link" href="kpss-tarih-notlari/">Uygulamayı incele ↗</a>
-          </div>
-        </div>
-        <div class="phone-stack" data-reveal aria-hidden="true">
-          <div class="frame">
-            <figure class="phone p1"><img src="assets/screenshots/kpss-tarih-notlari/istatistikler.webp" alt="" loading="lazy"></figure>
-            <figure class="phone p2"><img src="assets/screenshots/kpss-tarih-notlari/bilgi-karti.webp" alt="" loading="lazy"></figure>
-            <figure class="phone p3"><img src="assets/screenshots/kpss-tarih-notlari/ana-sayfa.webp" alt="" loading="lazy"></figure>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <div class="scene-transition" data-transition aria-hidden="true">
-      <div class="scene-transition-inner"><p class="scene-transition-copy">Ehliyet sınavına hazırlığı kısa, pratik ve konu odaklı soru kartlarıyla kolaylaştır.</p></div>
-    </div>
-    <section class="app-scene scene-ehliyet is-flip" id="ehliyet-sinavi-2026" data-scene aria-labelledby="ehliyet-baslik">
-      <div class="shell">
-        <div>
-          <div class="kicker"><span class="num">UYG-004</span> Sınav hazırlığı</div>
-          <h2 id="ehliyet-baslik" data-reveal>Ehliyet Sınavı 2026</h2>
-          <p data-reveal>Sınav konularını kategori kategori ayıran soru kartlarıyla, gerçek sınav temposunda pratik yapın.</p>
-          <div class="card-foot" data-reveal>
-            <span class="stamp is-live">Google Play’de yayında</span>
-            <a class="card-link" href="ehliyet-sinavi-2026/">Uygulamayı incele ↗</a>
-          </div>
-        </div>
-        <div class="phone-stack" data-reveal aria-hidden="true">
-          <div class="frame">
-            <figure class="phone p1"><img src="assets/screenshots/ehliyet-sinavi-2026/yeni-ogrendiklerim.webp" alt="" loading="lazy"></figure>
-            <figure class="phone p2"><img src="assets/screenshots/ehliyet-sinavi-2026/ana-sayfa.webp" alt="" loading="lazy"></figure>
-            <figure class="phone p3"><img src="assets/screenshots/ehliyet-sinavi-2026/istatistikler.webp" alt="" loading="lazy"></figure>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <div class="scene-transition" data-transition aria-hidden="true">
-      <div class="starfield-wrap"><div class="starfield"></div></div>
-      <div class="shooting-star"></div>
-      <div class="scene-transition-inner"><p class="scene-transition-copy">Gün biterken, gerçekler yerini rüyalara bırakır.</p></div>
-    </div>
-    <section class="app-scene scene-ruya" id="ruya-katibi" data-scene aria-labelledby="ruya-baslik">
-      <div class="starfield"></div>
-      <div class="shell">
-        <div>
-          <div class="kicker"><span class="num">UYG-005</span> Yaklaşan deneyim</div>
-          <h2 id="ruya-baslik" data-reveal>Rüyanın içinde saklı olanı keşfet.</h2>
-          <p data-reveal>Rüyanı anlat, sana açılan kartları seç ve başka bir yerde karşılaşmayacağın kadar kişisel, gizemli bir tabir deneyimi yaşa.</p>
-          <p class="promo-line" data-reveal>Şimdi ön kayıt olanlara, uygulama yayınlandığında <strong>1 ay ücretsiz premium</strong> hediye ediyorum.</p>
-          <div class="card-foot" data-reveal>
-            <span class="stamp is-soon">Çok yakında · Google Play ve App Store</span>
-            <a class="button light" href="mailto:bagcimuhammetali@gmail.com?subject=Rüya Kâtibi Ön Kayıt&body=Merhaba,%0A%0ARüya Kâtibi ön kayıt listesine eklenmek istiyorum.%0A%0AAd Soyad: %0AE-posta: %0AAndroid / iOS: ">Ön kayıt ol ↗</a>
-            <a class="card-link" href="ruya-katibi/">Uygulamayı tanı</a>
-          </div>
-        </div>
-        <div class="phone-stack" data-reveal aria-hidden="true">
-          <div class="frame">
-            <figure class="phone p1"><img src="assets/screenshots/ruya-katibi/kartlarin-acik.webp" alt="" loading="lazy"></figure>
-            <figure class="phone p2"><img src="assets/screenshots/ruya-katibi/ruyani-anlat.webp" alt="" loading="lazy"></figure>
-            <figure class="phone p3"><img src="assets/screenshots/ruya-katibi/kart-secimi.webp" alt="" loading="lazy"></figure>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <div class="scene-transition" data-transition aria-hidden="true">
-      <div class="scene-transition-inner"><p class="scene-transition-copy">Belgelerini, notlarını ve önemli tarihlerini çevrimdışı ve düzenli bir kasada bir araya getir.</p></div>
-    </div>
-    <section class="app-scene scene-vaultify is-flip" id="vaultify" data-scene aria-labelledby="vaultify-baslik">
-      <div class="shell">
-        <div>
-          <div class="kicker"><span class="num">UYG-006</span> Belge asistanı</div>
-          <h2 id="vaultify-baslik" data-reveal>Vaultify: Belge Asistanı</h2>
-          <p data-reveal>Belgelerinizi düzenleyin, önemli tarihleri zamanında hatırlayın. Sözleşmelerinizi, poliçelerinizi, garanti belgelerinizi, araç evraklarınızı ve takip etmek istediğiniz diğer belgeleri tek yerde yönetin.</p>
-          <div class="card-foot" data-reveal>
-            <span class="stamp is-soon">Yakında · Yalnızca Android</span>
-            <a class="card-link" href="vaultify/">Uygulamayı tanı ↗</a>
-          </div>
-        </div>
-        <div class="vault-showcase" data-reveal aria-hidden="true">
-          <div class="flying-document vault-doc-back"><span class="doc-corner"></span><b class="doc-folder"></b><i></i><i></i><i></i></div>
-          <div class="flying-document vault-doc-main"><span class="doc-corner"></span><b class="doc-check">✓</b><i></i><i></i><i></i></div>
-          <div class="flying-document vault-doc-front"><span class="doc-corner"></span><b class="doc-calendar"><small></small></b><i></i><i></i><i></i></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="studio shell" id="hakkimda" aria-labelledby="hakkimda-baslik">
-      <div>
-        <h2 id="hakkimda-baslik" data-reveal>Fikirden ekrana, her kartı tek başıma hazırlıyorum.</h2>
-        <p data-reveal>Eğitim, okuma ve günlük yaşam için bağımsız mobil uygulamalar tasarlıyor, geliştiriyor ve yayımlıyorum. Tek kişilik bir stüdyo olarak yürütüyorum.</p>
-      </div>
-      <div class="contact-list" data-reveal>
-        <a href="mailto:bagcimuhammetali@gmail.com">E-posta <span>bagcimuhammetali@gmail.com ↗</span></a>
-      </div>
-    </section>
-
-    <section class="program shell" aria-labelledby="program-baslik">
-      <div>
-        <h2 id="program-baslik" data-reveal>Yeni uygulamaları ilk sen dene.</h2>
-        <p data-reveal>Bundan sonra yayımlayacağım her uygulama için küçük bir kapalı test grubu oluşturuyorum. Katılmak istersen yaz, sırası gelince davet göndereyim.</p>
-      </div>
-      <a class="button secondary" data-reveal href="mailto:bagcimuhammetali@gmail.com?subject=Test Ekibi Başvurusu&body=Merhaba,%0A%0ABundan sonraki uygulamaların test sürecine katılmak istiyorum.%0A%0AAd Soyad: %0AE-posta: %0AAndroid / iOS: ">Test grubuna katıl ↗</a>
     </section>
   </main>
 
-  <footer class="footer shell"><span>© 2026 <strong>M. Ali Bağcı</strong></span><span>Bağımsız mobil uygulamalar · Türkiye</span></footer>
-  <script src="i18n.js?v=3" defer></script>
-  <script src="script.js?v=8" defer></script>
+  <footer class="footer shell">
+    <span>© 2026 <strong>M. Ali Bağcı</strong></span>
+    <span>Bağımsız mobil uygulamalar · Türkiye</span>
+  </footer>
+
+  <script src="i18n.js?v=4" defer></script>
+  <script type="module" src="home.js?v=2"></script>
 </body>
 </html>
