@@ -678,7 +678,9 @@ async function init() {
   /* Bant üzerindeki parçalar: fikir küresi olarak çıkar, Tasarım'da telefona dönüşür,
      Geliştirme'den sonra gerçek uygulama ekranını, Test'ten sonra onay rozetini taşır. */
   const U = { design: uOf(-2.2, -HD), build: uOf(2.6, -HD), test: uOf(HW, 0), release: uOf(1.6, HD) };
-  const appScreen = (k) => rackPhones[k].screen.material.map || wireTex;
+  // Bantta ve kolda küçük kaldıkları için ekran görüntüsü yerine uygulama renginde zemin + ikon.
+  let iconTexs = [];
+  const appIcon = (k) => iconTexs[k] || wireTex;
   const items = Array.from({ length: 11 }, () => {
     const g = new THREE.Group();
     const idea = put(new THREE.Mesh(new THREE.SphereGeometry(0.15, 20, 14), mat.accent), g, 0, 0.16, 0);
@@ -702,7 +704,7 @@ async function init() {
       it.idea.visible = stage === 0;
       it.phone.visible = stage > 0;
       const { scr, check } = it.phone.userData;
-      const map = stage === 1 ? wireTex : appScreen((k + cycle) % apps.length);
+      const map = stage === 1 ? wireTex : appIcon((k + cycle) % apps.length);
       if (scr.material.map !== map) scr.material.map = map;
       check.visible = stage === 3;
       it.g.position.set(tmpP.x, BELT_Y, tmpP.z);
@@ -747,7 +749,7 @@ async function init() {
     atStation(armState.ctrl, 0.2 + side * 0.9, 3.1, 0.85);
     atStation(armState.to, rp.group.position.x, 0.88 + 0.48, rp.group.position.z + 0.2);
     const { scr, check } = carried.userData;
-    scr.material.map = appScreen(appIndex);
+    scr.material.map = appIcon(appIndex);
     check.visible = true;
     carried.visible = true;
   }
@@ -794,7 +796,6 @@ async function init() {
   const anim = { active: false, t: 0, start: 0, dur: 1.3, fromPos: new THREE.Vector3(), toPos: new THREE.Vector3(), fromTgt: new THREE.Vector3(), toTgt: new THREE.Vector3() };
   const journey = { active: false, idx: 0, next: 0 };
   const ease = (k) => (k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2);
-  const tmp = new THREE.Vector3();
 
   const fitRadius = () => {
     const tanV = Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2);
@@ -817,7 +818,11 @@ async function init() {
     anim.active = true;
     controls.enabled = false;
   };
-  const showcaseTarget = () => rackPhones[2].group.getWorldPosition(tmp).clone().add(new THREE.Vector3(0.35, 0.1, 0));
+  // Kamera hedefleri istasyonun anlık değil, yerleşeceği konumuna göre hesaplanır
+  // (açılışta inerken ya da "Açılmış" modunda kalkarken kayma olmasın).
+  const restPos = (s) => new THREE.Vector3(s.group.position.x, s.liftTarget, s.group.position.z);
+  const phoneRestPos = (k) => restPos(stations[4]).add(rackPhones[k].group.position);
+  const showcaseTarget = () => phoneRestPos(2).add(new THREE.Vector3(0.35, 0.1, 0));
   const cameraForView = (view, instant = false) => {
     const r = fitRadius();
     if (view === "top") flyTo(new THREE.Vector3(0, 0, 0.4), r * 1.02, 0.12, 0, instant);
@@ -950,8 +955,7 @@ async function init() {
     refreshTags();
     applyViewOffset();
     const s = stations[i];
-    s.group.getWorldPosition(tmp);
-    flyTo(tmp.clone().add(new THREE.Vector3(0, s.focusY + s.liftTarget, 0)), layout.focusR, 1.12, FACE);
+    flyTo(restPos(s).add(new THREE.Vector3(0, s.focusY, 0)), layout.focusR, 1.12, FACE);
   }
   function selectApp(k) {
     stopJourney();
@@ -962,8 +966,7 @@ async function init() {
     openPanel();
     refreshTags();
     applyViewOffset();
-    rackPhones[k].group.getWorldPosition(tmp);
-    flyTo(tmp.clone(), layout.phoneR, 1.3, 0.12);
+    flyTo(phoneRestPos(k), layout.phoneR, 1.3, 0.12);
   }
   function setView(view, keepJourney = false) {
     if (!keepJourney) stopJourney();
@@ -1061,11 +1064,9 @@ async function init() {
     if (!f) cameraForView(state.view, true);
     else if (f.type === "station") {
       const s = stations[f.index];
-      s.group.getWorldPosition(tmp);
-      flyTo(tmp.clone().add(new THREE.Vector3(0, s.focusY + s.liftTarget - s.lift, 0)), layout.focusR, 1.12, FACE, true);
+      flyTo(restPos(s).add(new THREE.Vector3(0, s.focusY, 0)), layout.focusR, 1.12, FACE, true);
     } else {
-      rackPhones[f.index].group.getWorldPosition(tmp);
-      flyTo(tmp.clone(), layout.phoneR, 1.3, 0.12, true);
+      flyTo(phoneRestPos(f.index), layout.phoneR, 1.3, 0.12, true);
     }
   };
   new ResizeObserver(resize).observe(sceneEl);
@@ -1198,6 +1199,28 @@ async function init() {
     m.color.set(0xffffff);
     m.needsUpdate = true;
   });
+  iconTexs = await Promise.all(
+    apps.map(async (app) => {
+      const icon = await loadImage(app.icon);
+      return canvasTex(256, 512, (ctx, w, h) => {
+        ctx.fillStyle = app.color;
+        ctx.fillRect(0, 0, w, h);
+        const shade = ctx.createLinearGradient(0, 0, 0, h);
+        shade.addColorStop(0, "rgba(0,0,0,0)");
+        shade.addColorStop(1, "rgba(0,0,0,.5)");
+        ctx.fillStyle = shade;
+        ctx.fillRect(0, 0, w, h);
+        if (icon) {
+          ctx.save();
+          ctx.beginPath();
+          ctx.roundRect(48, 176, 160, 160, 36);
+          ctx.clip();
+          ctx.drawImage(icon, 48, 176, 160, 160);
+          ctx.restore();
+        }
+      });
+    })
+  );
   sceneEl.classList.add("is-ready");
 
   // Eski bağlantılar (#uygulamalar, #ruya-katibi …) vitrine ve ilgili uygulamaya yönlenir.
