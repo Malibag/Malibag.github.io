@@ -1,0 +1,184 @@
+/* Rüya Kâtibi sayfası — uygulamanın kendi kimliği: koyu petrol yeşili, altın vurgu, Didone serif. */
+:root {
+  --bg: #0c1712;
+  --panel: #0f1e18;
+  --gold: #c9a860;
+  --gold-soft: rgba(201, 168, 96, 0.16);
+  --line: rgba(201, 168, 96, 0.24);
+  --cream: #f2ead9;
+  --text: rgba(242, 234, 217, 0.74);
+  --mute: #8a978c;
+  --serif: "Bodoni Moda", "Didot", Georgia, serif;
+  --sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "Geist Mono", ui-monospace, Menlo, monospace;
+  --gutter: clamp(18px, 4vw, 56px);
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 400 16px/1.65 var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+img { display: block; max-width: 100%; height: auto; }
+a { color: inherit; text-decoration: none; }
+h1, h2, p, figure { margin: 0; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 6px; }
+
+/* İnce yıldız tozu */
+.sky {
+  position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background-image:
+    radial-gradient(1px 1px at 12% 18%, rgba(242,234,217,.35), transparent 60%),
+    radial-gradient(1px 1px at 28% 62%, rgba(242,234,217,.25), transparent 60%),
+    radial-gradient(1px 1px at 46% 28%, rgba(201,168,96,.4), transparent 60%),
+    radial-gradient(1px 1px at 63% 74%, rgba(242,234,217,.25), transparent 60%),
+    radial-gradient(1px 1px at 78% 22%, rgba(242,234,217,.3), transparent 60%),
+    radial-gradient(1px 1px at 88% 56%, rgba(201,168,96,.35), transparent 60%),
+    radial-gradient(1px 1px at 6% 84%, rgba(242,234,217,.2), transparent 60%);
+  background-size: 520px 520px;
+}
+
+/* ───────── Giriş: solda panel, sağda tam boy illüstrasyon ───────── */
+.hero { position: relative; min-height: 100svh; display: flex; overflow: hidden; }
+.hero-art { position: absolute; top: 0; right: 0; bottom: 0; width: 74%; }
+.hero-art img {
+  width: 100%; height: 100%; object-fit: cover; object-position: 38% 42%;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 18%), linear-gradient(0deg, transparent 0, #000 16%);
+  -webkit-mask-composite: source-in; mask-image: linear-gradient(90deg, transparent 0, #000 18%), linear-gradient(0deg, transparent 0, #000 16%);
+  mask-composite: intersect;
+}
+.hero-panel {
+  position: relative; z-index: 2;
+  width: min(500px, 36%); min-height: 100svh;
+  padding: 84px var(--gutter) 96px;
+  display: flex; flex-direction: column; justify-content: center; gap: 18px;
+  background: linear-gradient(90deg, var(--panel) 82%, rgba(15,30,24,0));
+}
+.site-nav { position: absolute; top: 24px; left: var(--gutter); display: flex; align-items: center; gap: 4px; font-size: 13.5px; }
+.site-nav a { padding: 7px 11px; border-radius: 999px; color: var(--mute); transition: color .2s; }
+.site-nav a:hover { color: var(--cream); }
+.site-nav .nav-contact { color: var(--cream); border: 1px solid var(--line); }
+.site-nav .language-switch { font: 500 11px/1 var(--mono); letter-spacing: .1em; }
+.back-link { font-size: 13.5px; color: var(--mute); transition: color .2s; }
+.back-link:hover { color: var(--gold); }
+.app-badge { display: flex; align-items: center; gap: 14px; }
+.app-badge img { width: 48px; height: 48px; border-radius: 12px; box-shadow: 0 0 0 1px var(--line); }
+.app-badge span { font: italic 500 19px/1 var(--serif); color: var(--gold); }
+.hero h1 {
+  font: 400 clamp(44px, min(5.4vw, 8.2svh), 88px)/0.96 var(--serif); letter-spacing: -0.035em; color: var(--cream);
+  text-wrap: balance;
+}
+.hero h1 em { font-style: italic; color: var(--gold); }
+.lead { font-size: 16px; max-width: 42ch; }
+.store-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.store {
+  display: inline-flex; align-items: center; gap: 12px; height: 52px; padding: 0 18px 0 16px; border-radius: 10px;
+  background: var(--cream); color: #121412; transition: transform .2s ease, box-shadow .2s ease;
+}
+a.store:hover { transform: translateY(-1px); box-shadow: 0 10px 28px rgba(242,234,217,.18); }
+.store svg { width: 22px; height: 22px; fill: currentColor; flex: none; }
+.store span { display: grid; line-height: 1.1; }
+.store small { font-size: 10px; opacity: .65; }
+.store b { font-size: 15px; font-weight: 600; }
+.store.is-soon { background: transparent; color: var(--cream); border: 1px dashed var(--line); }
+.text-links { display: flex; flex-wrap: wrap; gap: 18px; font-size: 13px; }
+.text-links a { color: var(--text); text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 4px; transition: color .2s; }
+.text-links a:hover { color: var(--gold); }
+.scroll-cue {
+  position: absolute; z-index: 3; left: 36%; bottom: 22px; transform: translateX(-50%);
+  display: grid; justify-items: center; gap: 10px;
+  font: 500 10px/1 var(--mono); letter-spacing: .32em; text-transform: uppercase; color: var(--gold);
+}
+.scroll-cue i { width: 1px; height: 44px; background: linear-gradient(var(--gold), transparent); animation: cue 2.2s ease-in-out infinite; transform-origin: top; }
+@keyframes cue { 0% { transform: scaleY(0); } 50% { transform: scaleY(1); } 100% { transform: scaleY(1); opacity: 0; } }
+
+/* Sağ kenarda adım göstergesi */
+.step-dots { position: fixed; z-index: 20; right: 18px; top: 50%; transform: translateY(-50%); display: grid; gap: 10px; transition: opacity .4s; }
+.step-dots a {
+  display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%;
+  border: 1px solid var(--line); background: rgba(12,23,18,.7);
+  font: 500 9px/1 var(--mono); color: var(--mute); transition: background .3s, color .3s, border-color .3s;
+}
+.step-dots a:hover { color: var(--cream); border-color: var(--gold); }
+.step-dots a.is-active { background: var(--gold); color: #14100a; border-color: var(--gold); }
+
+/* ───────── Yolculuk: adımlar sırayla bir solda bir sağda; altın çizgi kaydırdıkça çizilir ───────── */
+.journey { position: relative; width: min(1180px, 100% - 2 * var(--gutter)); margin: 0 auto; padding: 40px 0 60px; }
+.journey-path { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
+.journey-path path { fill: none; stroke-linecap: round; }
+.journey-path .track { stroke: var(--line); stroke-width: 1.5; stroke-dasharray: 2 9; }
+.journey-path .ink { stroke: var(--gold); stroke-width: 2; filter: drop-shadow(0 0 6px rgba(201,168,96,.7)); }
+.step {
+  position: relative; min-height: 82vh;
+  display: grid; grid-template-columns: 1fr 120px 1fr; align-items: center;
+}
+.step-copy { grid-column: 1; grid-row: 1; max-width: 460px; }
+.node { grid-column: 2; grid-row: 1; justify-self: center; }
+.step-art { grid-column: 3; grid-row: 1; justify-self: center; width: min(460px, 100%); }
+.step.is-flip .step-copy { grid-column: 3; }
+.step.is-flip .step-art { grid-column: 1; }
+.step-num {
+  display: grid; place-items: center; width: 46px; height: 46px; margin-bottom: 30px;
+  border: 1px solid var(--gold); border-radius: 50%;
+  font: 400 16px/1 var(--serif); color: var(--gold);
+}
+.step h2 { font: 400 clamp(44px, 5.2vw, 78px)/1.0 var(--serif); letter-spacing: -0.035em; color: var(--cream); text-wrap: balance; }
+.step-copy p { margin-top: 22px; max-width: 42ch; font-size: 15.5px; }
+.cta {
+  display: inline-flex; align-items: center; height: 50px; padding: 0 24px; margin-top: 30px; border-radius: 999px;
+  background: var(--gold); color: #14100a; font-weight: 600; font-size: 15px;
+  box-shadow: 0 10px 30px rgba(201,168,96,.25); transition: transform .2s;
+}
+.cta:hover { transform: translateY(-1px); }
+.step-art img {
+  width: 100%;
+  -webkit-mask-image: radial-gradient(closest-side, #000 64%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 64%, transparent 100%);
+}
+.node {
+  position: relative; width: 18px; height: 18px; border-radius: 50%;
+  border: 1px solid var(--line); background: var(--bg); transition: border-color .4s, box-shadow .4s;
+}
+.node::after { content: ""; position: absolute; inset: 4px; border-radius: 50%; background: var(--line); transition: background .4s; }
+.step.is-active .node { border-color: var(--gold); box-shadow: 0 0 0 7px var(--gold-soft), 0 0 22px rgba(201,168,96,.55); }
+.step.is-active .node::after { background: var(--gold); }
+
+.journey.is-ready .step .step-copy, .journey.is-ready .step .step-art { transition: opacity .9s ease, transform .9s cubic-bezier(.2,.7,.2,1); }
+.journey.is-ready .step:not(.is-in) .step-copy { opacity: 0; transform: translateY(30px); }
+.journey.is-ready .step:not(.is-in) .step-art { opacity: 0; transform: scale(.94); }
+
+/* Bilgi kartları */
+.facts { width: min(1180px, 100% - 2 * var(--gutter)); margin: 0 auto 80px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.facts article { display: grid; gap: 10px; padding: 24px; border-radius: 16px; border: 1px solid var(--line); background: rgba(15,30,24,.6); }
+.facts span { font: 500 10.5px/1.4 var(--mono); letter-spacing: .18em; text-transform: uppercase; color: var(--gold); }
+.facts strong { font: 400 15.5px/1.5 var(--sans); color: var(--cream); }
+
+.footer {
+  width: min(1180px, 100% - 2 * var(--gutter)); margin: 0 auto;
+  display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  padding: 24px 0 34px; border-top: 1px solid var(--line);
+  font: 500 11px/1.5 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--mute);
+}
+.footer strong { color: var(--cream); font-weight: 500; }
+.footer a:hover { color: var(--gold); }
+
+/* ───────── Dar ekran ───────── */
+@media (max-width: 900px) {
+  .hero { flex-direction: column; min-height: 0; }
+  /* Görsel üstte, metin altta; menü .hero'ya göre konumlansın diye panel ve görsel statik. */
+  .hero-art { position: static; width: 100%; height: min(96vw, 600px); }
+  .hero-art img { -webkit-mask-image: linear-gradient(0deg, transparent 0, #000 30%); mask-image: linear-gradient(0deg, transparent 0, #000 30%); -webkit-mask-composite: source-over; mask-composite: add; }
+  .hero-panel { position: static; width: 100%; min-height: 0; margin-top: -8vw; padding: 0 var(--gutter) 70px; background: none; }
+  .site-nav { top: 16px; z-index: 3; }
+  .scroll-cue, .step-dots, .journey-path, .node { display: none; }
+  .step { min-height: 0; grid-template-columns: 1fr; gap: 6px; padding: 30px 0 56px; }
+  .step-copy, .step.is-flip .step-copy { grid-column: 1; grid-row: 2; }
+  .step-art, .step.is-flip .step-art { grid-column: 1; grid-row: 1; width: min(380px, 100%); }
+  .facts { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .site-nav a:not(.nav-contact):not(.language-switch) { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .scroll-cue i { animation: none; }
+}
