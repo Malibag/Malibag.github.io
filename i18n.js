@@ -64,7 +64,6 @@
       "Yayında": "Live",
       "Yakında": "Coming soon",
       "Ayrıntılar →": "Details →",
-      "App Store · yakında": "App Store · soon",
       "Okuma & keşif": "Reading & discovery",
       "Kur’an-ı Kerim mealini aceleye getirmeden, kart kart okumak için. Her kart tek bir ayete ait: istediğinde sakla, istediğinde tekrar et.": "Read Quran translations one card at a time, without rushing. Each card belongs to a single verse—save it or revisit it whenever you wish.",
       "Dil öğrenimi": "Language learning",
@@ -185,10 +184,11 @@
       "bir şeyler anlatır.": "has something to say.",
       "Seninkini keşfet": "Discover yours",
       "Rüyanı birkaç adımda sana özel bir tabire dönüştür. Ayrıntıları anlat, kartlarını aç ve rüyanın bıraktığı izleri keşfet.": "Turn your dream into a personal interpretation in a few steps. Describe the details, open your cards, and discover the traces your dream leaves behind.",
-      "App Store: yakında": "App Store: coming soon",
+      "App Store’dan": "App Store",
+      "App Store’dan indir ↗": "Download on the App Store ↗",
       "Yakında": "Coming soon",
-      "Google Play’den": "Get it on",
-      "İndirin": "Google Play",
+      "Google Play’den": "Google Play",
+      "İndirin": "Download",
       "Yolculuğu keşfet": "Explore the journey",
       "Yolculuk adımları": "Journey steps",
       "Rüyanı Anlat": "Tell Your Dream",
@@ -205,7 +205,7 @@
       "Bilgilendirme": "Notice",
       "Sağlık veya psikoloji alanında teşhis ya da yönlendirme sunmaz.": "It does not provide health or psychological diagnosis or guidance.",
       "Platformlar": "Platforms",
-      "Android’de yayında; iOS sürümü hazırlanıyor.": "Available on Android; the iOS version is in progress."
+      "Android ve iOS’ta yayında.": "Available on Android and iOS."
     },
     "/vaultify/": {
       "Vaultify: Belge Asistanı — M. Ali Bağcı": "Vaultify: Document Assistant — M. Ali Bağcı",
