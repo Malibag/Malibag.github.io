@@ -109,7 +109,7 @@ a.store:hover { transform: translateY(-1px); box-shadow: 0 10px 28px rgba(242,23
 .journey-path { position: absolute; left: 0; top: 0; z-index: 0; overflow: visible; pointer-events: none; }
 .journey-path.is-front { z-index: 2; } /* ön katman: çizgi adımların üstünden geçer */
 .journey-path path { fill: none; stroke-linecap: round; }
-.journey-path .track { stroke: var(--line); stroke-width: 1.5; stroke-dasharray: 2 9; }
+.journey-path .track { stroke: rgba(201, 168, 96, 0.1); stroke-width: 1.5; } /* önden giden soluk düz iz */
 .journey-path .ink { stroke: var(--gold); stroke-width: 2; filter: drop-shadow(0 0 6px rgba(201,168,96,.7)); }
 .step {
   z-index: 1;
