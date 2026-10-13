@@ -4,139 +4,70 @@
   "use strict";
   const journey = document.getElementById("journey");
   if (!journey) return;
-  // Çizgi iki katmanda çizilir: arka katman adımların altında, ön katman üstünde kalır.
-  // Bağlantılar sırayla katman değiştirir; çizgi yazı ve görsellerin bir altından bir üstünden geçer.
-  const NS = "http://www.w3.org/2000/svg";
-  const back = journey.querySelector(".journey-path");
-  back.replaceChildren();
-  const front = back.cloneNode(false);
-  front.classList.add("is-front");
-  journey.appendChild(front);
+  const svg = journey.querySelector(".journey-path");
+  const track = svg.querySelector(".track");
+  const ink = svg.querySelector(".ink");
   const steps = [...journey.querySelectorAll(".step")];
   const dots = [...document.querySelectorAll(".step-dots a")];
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // Her bağlantı, okuma çizgisi y0'dan y1'e inerken kendi uzunluğu boyunca SABİT hızla çizilir
-  // (kavisin yatay kısımlarında fırlamaz); ekrandaki uç bu hedefe her karede yumuşakça yaklaşır.
-  let segs = []; // { ink, len, y0, y1 }
-  let drawn = 0;
-  let target = 0;
-  let animating = false;
-
-  const addSeg = (layer, d, y0, y1) => {
-    const track = document.createElementNS(NS, "path");
-    track.setAttribute("class", "track");
-    track.setAttribute("d", d);
-    const ink = document.createElementNS(NS, "path");
-    ink.setAttribute("class", "ink");
-    ink.setAttribute("d", d);
-    layer.append(track, ink);
-    const len = ink.getTotalLength();
-    ink.style.strokeDasharray = `${len}`;
-    ink.style.strokeDashoffset = `${len}`;
-    segs.push({ ink, len, y0, y1 });
-  };
-
-  // Noktalar arasından geçen yumuşak eğri (Catmull-Rom → kübik Bezier).
-  const smooth = (pts) => {
-    let d = `M ${pts[1][0]} ${pts[1][1]}`;
-    for (let i = 1; i < pts.length - 2; i++) {
-      const [p0, p1, p2, p3] = [pts[i - 1], pts[i], pts[i + 1], pts[i + 2]];
-      const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6];
-      const c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
-      d += ` C ${c1[0]} ${c1[1]}, ${c2[0]} ${c2[1]}, ${p2[0]} ${p2[1]}`;
-    }
-    return d;
-  };
+  let length = 0;
+  let samples = []; // [yol uzunluğu, y]: okuma çizgisinin y'sini çizilecek uzunluğa çevirir
+  let nodeYs = [];
 
   const build = () => {
-    if (getComputedStyle(back).display === "none") return; // dar ekranda çizgi yok
+    if (getComputedStyle(svg).display === "none") return; // dar ekranda çizgi yok
     const box = journey.getBoundingClientRect();
-    [back, front].forEach((layer) => {
-      layer.replaceChildren();
-      layer.setAttribute("width", box.width);
-      layer.setAttribute("height", box.height);
-      layer.setAttribute("viewBox", `0 0 ${box.width} ${box.height}`);
-    });
-    segs = [];
+    svg.setAttribute("width", box.width);
+    svg.setAttribute("height", box.height);
+    svg.setAttribute("viewBox", `0 0 ${box.width} ${box.height}`);
     const pts = steps.map((step) => {
       const r = step.querySelector(".node").getBoundingClientRect();
       return [r.left + r.width / 2 - box.left, r.top + r.height / 2 - box.top];
     });
-    const reach = box.width * 0.36; // salınımın genişliği: yazı ve görsel sütunlarının içine kadar
-    // Giriş: en üstten de düz inmez, dalgalanarak ilk düğüme oturur.
-    addSeg(back, wave(pts[0][0], 0, pts[0][0], pts[0][1], -1, reach * 0.8), 0, pts[0][1]);
+    const swing = Math.min(130, box.width * 0.11);
+    let d = `M ${pts[0][0]} 0 L ${pts[0][0]} ${pts[0][1]}`;
     for (let i = 1; i < pts.length; i++) {
       const [x1, y1] = pts[i - 1];
       const [x2, y2] = pts[i];
-      // Bağlantılar sırayla ön/arka katmana geçer; yön her bağlantıda değişir.
-      addSeg(i % 2 ? front : back, wave(x1, y1, x2, y2, i % 2 ? 1 : -1, reach), y1, y2);
+      const dir = steps[i].classList.contains("is-flip") ? -1 : 1; // kıvrım, gelinen adımın görsel tarafına salınır (yazının üstünden geçmez)
+      const dy = y2 - y1;
+      d += ` C ${x1 + dir * swing} ${y1 + dy * 0.35}, ${x2 + dir * swing} ${y2 - dy * 0.35}, ${x2} ${y2}`;
     }
+    track.setAttribute("d", d);
+    ink.setAttribute("d", d);
+    length = ink.getTotalLength();
+    ink.style.strokeDasharray = `${length}`;
+    samples = [];
+    for (let i = 0; i <= 300; i++) {
+      const l = (length * i) / 300;
+      samples.push([l, ink.getPointAtLength(l).y]);
+    }
+    nodeYs = pts.map((p) => p[1]);
     update();
-    drawn = target; // yeniden boyutlanınca baştan çizmeye başlamasın
-    paint();
   };
 
-  // Dalga: düğümden bir yana yuvarlak bir dönüşle açılır, ortadan karşı yana geçer, yine
-  // yuvarlak dönüp sonraki düğüme oturur (uçlar oval, çapraz düz çizgi yok).
-  function wave(x1, y1, x2, y2, dir, reach) {
-    const dy = y2 - y1;
-    const cx = (x1 + x2) / 2;
-    return smooth([
-      [x1, y1 - dy * 0.2],
-      [x1, y1],
-      [cx + dir * reach * 0.72, y1 + dy * 0.15],
-      [cx + dir * reach, y1 + dy * 0.3],
-      [cx + dir * reach * 0.55, y1 + dy * 0.42],
-      [cx - dir * reach * 0.55, y1 + dy * 0.58],
-      [cx - dir * reach, y1 + dy * 0.7],
-      [cx - dir * reach * 0.72, y1 + dy * 0.85],
-      [x2, y2],
-      [x2, y2 + dy * 0.2],
-    ]);
-  }
-
-  // Çizili uzunluğu bağlantılara dağıtır; çizgi bir düğüme vardığında o adım parlar.
-  function paint() {
-    let rest = drawn;
-    let reachedUntil = 0;
-    segs.forEach((sg, k) => {
-      const f = Math.max(0, Math.min(sg.len, rest));
-      sg.ink.style.strokeDashoffset = `${sg.len - f}`;
-      reachedUntil += sg.len;
-      if (steps[k]) steps[k].classList.toggle("is-active", drawn >= reachedUntil - 1);
-      rest -= sg.len;
-    });
-  }
-
-  function tickLine() {
-    const diff = target - drawn;
-    drawn = Math.abs(diff) < 0.5 ? target : drawn + diff * 0.12;
-    paint();
-    if (drawn !== target) requestAnimationFrame(tickLine);
-    else animating = false;
-  }
-
-  function update() {
+  const update = () => {
     const box = journey.getBoundingClientRect();
-    const head = window.innerHeight * 0.55 - box.top; // okuma çizgisi, yolculuğa göre
-    target = segs.reduce((sum, sg) => sum + sg.len * (reduceMotion ? 1 : Math.max(0, Math.min(1, (head - sg.y0) / (sg.y1 - sg.y0)))), 0);
-    if (reduceMotion) {
-      drawn = target;
-      paint();
-    } else if (!animating && drawn !== target) {
-      animating = true;
-      requestAnimationFrame(tickLine);
+    const head = reduceMotion ? Infinity : window.innerHeight * 0.55 - box.top;
+    if (length) {
+      let drawn = length;
+      if (head !== Infinity) {
+        const hit = samples.find((s) => s[1] >= head);
+        drawn = hit ? hit[0] : length;
+      }
+      ink.style.strokeDashoffset = `${length - drawn}`;
     }
     let current = -1;
     steps.forEach((step, i) => {
       const r = step.getBoundingClientRect();
-      if (!segs.length) step.classList.toggle("is-active", r.top < window.innerHeight * 0.55); // dar ekran: çizgi yok
+      const reached = nodeYs.length ? head >= nodeYs[i] - 1 : r.top < window.innerHeight * 0.55;
+      step.classList.toggle("is-active", reached);
       if (r.top < window.innerHeight * 0.9) step.classList.add("is-in"); // hızlı kaydırmada da boş kalmasın
       if (r.top < window.innerHeight * 0.6) current = i;
     });
     dots.forEach((dot, i) => dot.classList.toggle("is-active", i === current));
-  }
+  };
 
   let ticking = false;
   const onScroll = () => {
