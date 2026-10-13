@@ -147,18 +147,9 @@ a.store:hover { transform: translateY(-1px); box-shadow: 0 10px 28px rgba(242,23
 .step.is-active .node { border-color: var(--gold); box-shadow: 0 0 0 7px var(--gold-soft), 0 0 22px rgba(201,168,96,.55); }
 .step.is-active .node::after { background: var(--gold); }
 
-/* Merdiven: bölüm sabitlenir, adımlar 3×3'lük bir "dünya"ya bir aşağı bir sağa dizilir;
-   ruya.js kaydırmaya göre dünyayı kaydırır. Ekrandaki adım parlak, diğerleri soluk. */
-.journey.is-stair { width: 100%; margin: 0; padding: 0; }
-.journey.is-stair .journey-stage { position: sticky; top: 0; height: 100vh; overflow: hidden; }
-.journey.is-stair .journey-world { position: absolute; left: 0; top: 0; will-change: transform; }
-.journey.is-stair .step {
-  position: absolute; min-height: 0;
-  padding-inline: max(var(--gutter), calc((var(--W, 100vw) - 1180px) / 2));
-}
-.journey.is-stair .step-copy, .journey.is-stair .step-art { transition: opacity .6s ease, transform .8s cubic-bezier(.2,.7,.2,1); }
-.journey.is-stair .step:not(.is-current) .step-copy, .journey.is-stair .step:not(.is-current) .step-art { opacity: .2; }
-.journey.is-stair .step:not(.is-current) .step-art { transform: scale(.94); }
+.journey.is-ready .step .step-copy, .journey.is-ready .step .step-art { transition: opacity .9s ease, transform .9s cubic-bezier(.2,.7,.2,1); }
+.journey.is-ready .step:not(.is-in) .step-copy { opacity: 0; transform: translateY(30px); }
+.journey.is-ready .step:not(.is-in) .step-art { opacity: 0; transform: scale(.94); }
 
 /* Bilgi kartları */
 .facts { width: min(1180px, 100% - 2 * var(--gutter)); margin: 0 auto 80px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }

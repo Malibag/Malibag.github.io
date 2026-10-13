@@ -1,156 +1,104 @@
-/* Rüya Kâtibi yolculuğu — "merdiven" kaydırma: geniş ekranda bölüm sabitlenir, ziyaretçi aşağı
-   kaydırdıkça görünüm sırayla bir aşağı, bir sağa ilerler (01 → 02 aşağı, 02 → 03 sağa …).
-   Altın çizgi bu yolu izleyerek dolar. Dar ekranda ve "hareketi azalt" tercihinde adımlar
-   normal sayfa akışında alt alta kalır. */
+/* Rüya Kâtibi yolculuğu: adım noktalarını kıvrılan altın bir çizgiyle bağlar (bir sağa bir sola
+   salınarak aşağı iner); çizgi sayfa kaydırıldıkça dolar, ulaştığı adım ve sağdaki gösterge parlar. */
 (() => {
   "use strict";
   const journey = document.getElementById("journey");
   if (!journey) return;
-  const stage = journey.querySelector(".journey-stage");
-  const world = journey.querySelector(".journey-world");
   const svg = journey.querySelector(".journey-path");
+  const track = svg.querySelector(".track");
+  const ink = svg.querySelector(".ink");
   const steps = [...journey.querySelectorAll(".step")];
   const dots = [...document.querySelectorAll(".step-dots a")];
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const wide = matchMedia("(min-width: 901px)");
-  const NS = "http://www.w3.org/2000/svg";
 
-  const GRID = [[0, 0], [0, 1], [1, 1], [1, 2], [2, 2]]; // [sütun, satır]: aşağı, sağa, aşağı, sağa
-  const HOLD = 0.35; // her geçişten önce adımı okumak için bekleme payı (geçiş süresinin oranı)
-  const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  let length = 0;
+  let samples = []; // [yol uzunluğu, y]: okuma çizgisinin y'sini çizilecek uzunluğa çevirir
+  let nodeYs = [];
 
-  let stair = false;
-  let W = 0, H = 0, SEG = 0;
-  let segs = [];
-
-  const svgPath = (cls, d) => {
-    const p = document.createElementNS(NS, "path");
-    p.setAttribute("class", cls);
-    p.setAttribute("d", d);
-    svg.appendChild(p);
-    return p;
-  };
-
-  // İki düğüm arasındaki yol: aşağı geçişte ortadaki boş sütundan iner; sağa geçişte içeriklerin
-  // altından (ekranın alt bandından) dolanır, böylece hiçbir yazının ya da görselin üstünden geçmez.
-  const segmentPath = ([x1, y1], [x2, y2], down, rowTop) => {
-    if (down) return `M ${x1} ${y1} L ${x2} ${y2}`;
-    const yb = rowTop + H * 0.9;
-    const r = 46;
-    return `M ${x1} ${y1} L ${x1} ${yb - r} Q ${x1} ${yb} ${x1 + r} ${yb} L ${x2 - r} ${yb} Q ${x2} ${yb} ${x2} ${yb - r} L ${x2} ${y2}`;
-  };
-
-  const layout = () => {
-    stair = wide.matches && !reduceMotion;
-    journey.classList.toggle("is-stair", stair);
-    svg.replaceChildren();
-    segs = [];
-    if (!stair) {
-      journey.style.height = "";
-      world.style.transform = "";
-      world.style.width = world.style.height = "";
-      steps.forEach((s) => (s.style.left = s.style.top = s.style.width = s.style.height = ""));
-      update();
-      return;
-    }
-    W = stage.clientWidth;
-    H = window.innerHeight;
-    SEG = H * 1.1; // bir geçiş için kaydırma mesafesi
-    journey.style.setProperty("--W", `${W}px`);
-    journey.style.height = `${(GRID.length - 1) * SEG + H * 1.35}px`;
-    world.style.width = `${3 * W}px`;
-    world.style.height = `${3 * H}px`;
-    steps.forEach((s, i) => {
-      const [c, r] = GRID[i];
-      Object.assign(s.style, { left: `${c * W}px`, top: `${r * H}px`, width: `${W}px`, height: `${H}px` });
+  const build = () => {
+    if (getComputedStyle(svg).display === "none") return; // dar ekranda çizgi yok
+    const box = journey.getBoundingClientRect();
+    svg.setAttribute("width", box.width);
+    svg.setAttribute("height", box.height);
+    svg.setAttribute("viewBox", `0 0 ${box.width} ${box.height}`);
+    const pts = steps.map((step) => {
+      const r = step.querySelector(".node").getBoundingClientRect();
+      return [r.left + r.width / 2 - box.left, r.top + r.height / 2 - box.top];
     });
-    svg.setAttribute("width", 3 * W);
-    svg.setAttribute("height", 3 * H);
-    svg.setAttribute("viewBox", `0 0 ${3 * W} ${3 * H}`);
-    const wb = world.getBoundingClientRect();
-    const pts = steps.map((s) => {
-      const r = s.querySelector(".node").getBoundingClientRect();
-      return [r.left + r.width / 2 - wb.left, r.top + r.height / 2 - wb.top];
-    });
-    for (let i = 0; i < GRID.length - 1; i++) {
-      const down = GRID[i][0] === GRID[i + 1][0];
-      const d = segmentPath(pts[i], pts[i + 1], down, GRID[i][1] * H);
-      svgPath("track", d);
-      const ink = svgPath("ink", d);
-      const len = ink.getTotalLength();
-      ink.style.strokeDasharray = `${len}`;
-      ink.style.strokeDashoffset = `${len}`;
-      segs.push({ ink, len });
+    const swing = Math.min(130, box.width * 0.11);
+    let d = `M ${pts[0][0]} 0 L ${pts[0][0]} ${pts[0][1]}`;
+    for (let i = 1; i < pts.length; i++) {
+      const [x1, y1] = pts[i - 1];
+      const [x2, y2] = pts[i];
+      const dir = steps[i].classList.contains("is-flip") ? -1 : 1; // kıvrım, gelinen adımın görsel tarafına salınır (yazının üstünden geçmez)
+      const dy = y2 - y1;
+      d += ` C ${x1 + dir * swing} ${y1 + dy * 0.35}, ${x2 + dir * swing} ${y2 - dy * 0.35}, ${x2} ${y2}`;
     }
+    track.setAttribute("d", d);
+    ink.setAttribute("d", d);
+    length = ink.getTotalLength();
+    ink.style.strokeDasharray = `${length}`;
+    samples = [];
+    for (let i = 0; i <= 300; i++) {
+      const l = (length * i) / 300;
+      samples.push([l, ink.getPointAtLength(l).y]);
+    }
+    nodeYs = pts.map((p) => p[1]);
     update();
   };
 
-  const setCurrent = (current) => {
-    steps.forEach((s, k) => {
-      s.classList.toggle("is-current", k === current);
-      s.classList.toggle("is-active", k <= current);
-    });
-    dots.forEach((d, k) => d.classList.toggle("is-active", k === current));
-  };
-
   const update = () => {
-    if (!stair) {
-      // Normal akış: ekranın ortasını geçen son adım etkin sayılır.
-      let current = -1;
-      steps.forEach((s, k) => {
-        if (s.getBoundingClientRect().top < window.innerHeight * 0.6) current = k;
-      });
-      setCurrent(current);
-      return;
+    const box = journey.getBoundingClientRect();
+    const head = reduceMotion ? Infinity : window.innerHeight * 0.55 - box.top;
+    if (length) {
+      let drawn = length;
+      if (head !== Infinity) {
+        const hit = samples.find((s) => s[1] >= head);
+        drawn = hit ? hit[0] : length;
+      }
+      ink.style.strokeDashoffset = `${length - drawn}`;
     }
-    const y = -journey.getBoundingClientRect().top;
-    const raw = Math.max(0, Math.min(GRID.length - 1, y / SEG));
-    const i = Math.min(GRID.length - 2, Math.floor(raw));
-    const t = raw - i;
-    const m = raw >= GRID.length - 1 ? 1 : ease(Math.max(0, (t - HOLD) / (1 - HOLD)));
-    const [c1, r1] = GRID[i];
-    const [c2, r2] = GRID[i + 1];
-    world.style.transform = `translate3d(${-(c1 + (c2 - c1) * m) * W}px, ${-(r1 + (r2 - r1) * m) * H}px, 0)`;
-    segs.forEach((sg, k) => {
-      const f = k < i ? 1 : k === i ? m : 0;
-      sg.ink.style.strokeDashoffset = `${sg.len * (1 - f)}`;
+    let current = -1;
+    steps.forEach((step, i) => {
+      const r = step.getBoundingClientRect();
+      const reached = nodeYs.length ? head >= nodeYs[i] - 1 : r.top < window.innerHeight * 0.55;
+      step.classList.toggle("is-active", reached);
+      if (r.top < window.innerHeight * 0.9) step.classList.add("is-in"); // hızlı kaydırmada da boş kalmasın
+      if (r.top < window.innerHeight * 0.6) current = i;
     });
-    setCurrent(m > 0.5 ? i + 1 : i);
+    dots.forEach((dot, i) => dot.classList.toggle("is-active", i === current));
   };
-
-  // Adım bağlantıları (sağdaki göstergeler, "Yolculuğu keşfet") merdivende doğru durağa götürür.
-  const scrollToStep = (k) => {
-    const behavior = reduceMotion ? "auto" : "smooth";
-    if (!stair) return steps[k].scrollIntoView({ behavior, block: "center" });
-    const top = journey.getBoundingClientRect().top + window.scrollY + k * SEG;
-    window.scrollTo({ top, behavior });
-  };
-  document.querySelectorAll('a[href^="#adim-"]').forEach((a) =>
-    a.addEventListener("click", (e) => {
-      const k = steps.findIndex((s) => `#${s.id}` === a.getAttribute("href"));
-      if (k < 0) return;
-      e.preventDefault();
-      scrollToStep(k);
-    })
-  );
 
   let ticking = false;
-  window.addEventListener(
-    "scroll",
-    () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        update();
-        ticking = false;
-      });
-    },
-    { passive: true }
-  );
-  window.addEventListener("resize", layout);
-  window.addEventListener("load", layout);
-  if (document.fonts) document.fonts.ready.then(layout);
-  layout();
+  const onScroll = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      update();
+      ticking = false;
+    });
+  };
+
+  if ("IntersectionObserver" in window && !reduceMotion) {
+    journey.classList.add("is-ready");
+    const io = new IntersectionObserver(
+      (entries) =>
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("is-in");
+            io.unobserve(e.target);
+          }
+        }),
+      { threshold: 0.2 }
+    );
+    steps.forEach((s) => io.observe(s));
+  }
+
+  build();
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", build);
+  window.addEventListener("load", build);
+  if (document.fonts) document.fonts.ready.then(build);
 
   /* İmleç yıldızı: imlecin ucunda parlayan bir yıldız, fare ilerledikçe arkasında
      yavaşça düşüp sönen küçük yıldızlar bırakır. Yalnızca fareli cihazlarda çalışır. */
