@@ -4,44 +4,91 @@
   "use strict";
   const journey = document.getElementById("journey");
   if (!journey) return;
-  const svg = journey.querySelector(".journey-path");
-  const track = svg.querySelector(".track");
-  const ink = svg.querySelector(".ink");
+  // Çizgi iki katmanda çizilir: arka katman adımların altında, ön katman üstünde kalır.
+  // Bağlantılar sırayla katman değiştirir; çizgi yazı ve görsellerin bir altından bir üstünden geçer.
+  const NS = "http://www.w3.org/2000/svg";
+  const back = journey.querySelector(".journey-path");
+  back.replaceChildren();
+  const front = back.cloneNode(false);
+  front.classList.add("is-front");
+  journey.appendChild(front);
   const steps = [...journey.querySelectorAll(".step")];
   const dots = [...document.querySelectorAll(".step-dots a")];
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  let length = 0;
-  let samples = []; // [yol uzunluğu, y]: okuma çizgisinin y'sini çizilecek uzunluğa çevirir
+  let segs = []; // { ink, len, samples: [yol uzunluğu, y] } — okuma çizgisini çizilecek uzunluğa çevirir
   let nodeYs = [];
 
+  const addSeg = (layer, d) => {
+    const track = document.createElementNS(NS, "path");
+    track.setAttribute("class", "track");
+    track.setAttribute("d", d);
+    const ink = document.createElementNS(NS, "path");
+    ink.setAttribute("class", "ink");
+    ink.setAttribute("d", d);
+    layer.append(track, ink);
+    const len = ink.getTotalLength();
+    ink.style.strokeDasharray = `${len}`;
+    ink.style.strokeDashoffset = `${len}`;
+    const samples = [];
+    for (let i = 0; i <= 160; i++) {
+      const l = (len * i) / 160;
+      samples.push([l, ink.getPointAtLength(l).y]);
+    }
+    segs.push({ ink, len, samples });
+  };
+
+  // Noktalar arasından geçen yumuşak eğri (Catmull-Rom → kübik Bezier).
+  const smooth = (pts) => {
+    let d = `M ${pts[1][0]} ${pts[1][1]}`;
+    for (let i = 1; i < pts.length - 2; i++) {
+      const [p0, p1, p2, p3] = [pts[i - 1], pts[i], pts[i + 1], pts[i + 2]];
+      const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6];
+      const c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
+      d += ` C ${c1[0]} ${c1[1]}, ${c2[0]} ${c2[1]}, ${p2[0]} ${p2[1]}`;
+    }
+    return d;
+  };
+
   const build = () => {
-    if (getComputedStyle(svg).display === "none") return; // dar ekranda çizgi yok
+    if (getComputedStyle(back).display === "none") return; // dar ekranda çizgi yok
     const box = journey.getBoundingClientRect();
-    svg.setAttribute("width", box.width);
-    svg.setAttribute("height", box.height);
-    svg.setAttribute("viewBox", `0 0 ${box.width} ${box.height}`);
+    [back, front].forEach((layer) => {
+      layer.replaceChildren();
+      layer.setAttribute("width", box.width);
+      layer.setAttribute("height", box.height);
+      layer.setAttribute("viewBox", `0 0 ${box.width} ${box.height}`);
+    });
+    segs = [];
     const pts = steps.map((step) => {
       const r = step.querySelector(".node").getBoundingClientRect();
       return [r.left + r.width / 2 - box.left, r.top + r.height / 2 - box.top];
     });
-    const swing = Math.min(130, box.width * 0.11);
-    let d = `M ${pts[0][0]} 0 L ${pts[0][0]} ${pts[0][1]}`;
+    addSeg(back, `M ${pts[0][0]} 0 L ${pts[0][0]} ${pts[0][1]}`);
+    const reach = box.width * 0.36; // salınımın genişliği: yazı ve görsel sütunlarının içine kadar
     for (let i = 1; i < pts.length; i++) {
       const [x1, y1] = pts[i - 1];
       const [x2, y2] = pts[i];
-      const dir = steps[i].classList.contains("is-flip") ? -1 : 1; // kıvrım, gelinen adımın görsel tarafına salınır (yazının üstünden geçmez)
       const dy = y2 - y1;
-      d += ` C ${x1 + dir * swing} ${y1 + dy * 0.35}, ${x2 + dir * swing} ${y2 - dy * 0.35}, ${x2} ${y2}`;
-    }
-    track.setAttribute("d", d);
-    ink.setAttribute("d", d);
-    length = ink.getTotalLength();
-    ink.style.strokeDasharray = `${length}`;
-    samples = [];
-    for (let i = 0; i <= 300; i++) {
-      const l = (length * i) / 300;
-      samples.push([l, ink.getPointAtLength(l).y]);
+      const cx = (x1 + x2) / 2;
+      const dir = i % 2 ? 1 : -1; // bir sağa bir sola oval salınım
+      addSeg(
+        i % 2 ? back : front,
+        // Dalga: düğümden bir yana yuvarlak bir dönüşle açılır, ortadan karşı yana geçer, yine
+        // yuvarlak dönüp sonraki düğüme oturur (uçlar oval, çapraz düz çizgi yok).
+        smooth([
+          [x1, y1 - dy * 0.2],
+          [x1, y1],
+          [cx + dir * reach * 0.72, y1 + dy * 0.15],
+          [cx + dir * reach, y1 + dy * 0.3],
+          [cx + dir * reach * 0.55, y1 + dy * 0.42],
+          [cx - dir * reach * 0.55, y1 + dy * 0.58],
+          [cx - dir * reach, y1 + dy * 0.7],
+          [cx - dir * reach * 0.72, y1 + dy * 0.85],
+          [x2, y2],
+          [x2, y2 + dy * 0.2],
+        ])
+      );
     }
     nodeYs = pts.map((p) => p[1]);
     update();
@@ -50,14 +97,14 @@
   const update = () => {
     const box = journey.getBoundingClientRect();
     const head = reduceMotion ? Infinity : window.innerHeight * 0.55 - box.top;
-    if (length) {
-      let drawn = length;
+    segs.forEach((sg) => {
+      let drawn = sg.len;
       if (head !== Infinity) {
-        const hit = samples.find((s) => s[1] >= head);
-        drawn = hit ? hit[0] : length;
+        const hit = sg.samples.find((s) => s[1] >= head);
+        drawn = hit ? hit[0] : sg.len;
       }
-      ink.style.strokeDashoffset = `${length - drawn}`;
-    }
+      sg.ink.style.strokeDashoffset = `${sg.len - drawn}`;
+    });
     let current = -1;
     steps.forEach((step, i) => {
       const r = step.getBoundingClientRect();
