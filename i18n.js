@@ -180,7 +180,7 @@
     "/ruya-katibi/": {
       "Rüya Kâtibi: Rüya Tabirleri — M. Ali Bağcı": "Rüya Kâtibi: Dream Interpretations — M. Ali Bağcı",
       "Rüya Kâtibi: Rüya Tabirleri uygulama simgesi": "Rüya Kâtibi app icon",
-      "Her rüya mutlaka": "Every dream",
+      "Her rüya": "Every dream",
       "bir şeyler anlatır.": "has something to say.",
       "Seninkini keşfet": "Discover yours",
       "Rüyanı birkaç adımda sana özel bir tabire dönüştür. Ayrıntıları anlat, kartlarını aç ve rüyanın bıraktığı izleri keşfet.": "Turn your dream into a personal interpretation in a few steps. Describe the details, open your cards, and discover the traces your dream leaves behind.",
