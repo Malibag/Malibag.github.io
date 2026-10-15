@@ -1,0 +1,65 @@
+/* Deneme 1 — Rüya Kâtibi sayfası, lamba girişi. ruya.css'in üstüne yalnız karanlık katman, yüzdeki
+   ışık ve ip eklenir. Yüzün ekrandaki yeri (--fx, --fy, --r) ile ipin yeri (--cx, --len) lamba.js'ten gelir. */
+
+/* Karanlıkta sayfa kaydırılmaz; ip çekilince açılır. */
+html.is-dark, html.is-dark body { overflow: hidden; }
+
+/* Her yer karanlık; yalnız yüzün çevresi yumuşakça açık kalır. */
+.darkness {
+  position: fixed; inset: 0; z-index: 80;
+  background: rgba(2, 4, 3, 0.97);
+  -webkit-mask-image: radial-gradient(circle var(--r, 140px) at var(--fx, 45%) var(--fy, 40%), rgba(0,0,0,.12) 0, rgba(0,0,0,.5) 48%, #000 100%);
+  mask-image: radial-gradient(circle var(--r, 140px) at var(--fx, 45%) var(--fy, 40%), rgba(0,0,0,.12) 0, rgba(0,0,0,.5) 48%, #000 100%);
+  transition: opacity 1.2s ease .2s, visibility 0s linear 1.4s;
+}
+
+/* Yüze düşen sıcak, hafif ışık. */
+.face-glow {
+  position: fixed; inset: 0; z-index: 81; pointer-events: none;
+  background: radial-gradient(circle calc(var(--r, 140px) * .8) at var(--fx, 45%) var(--fy, 40%), rgba(255, 210, 140, .16), transparent 70%);
+  mix-blend-mode: screen;
+  transition: opacity 1.2s ease .2s;
+}
+
+/* Yukarıdan sarkan ip: gerçek bir düğme (fare, dokunma, Enter, Space). */
+.pull {
+  position: fixed; z-index: 90; top: 0; left: var(--cx, 70%);
+  width: 44px; height: var(--len, 34vh); margin: 0; padding: 0;
+  border: 0; background: none; cursor: pointer;
+  transform: translateX(-50%);
+  -webkit-tap-highlight-color: transparent;
+}
+.pull-line {
+  position: absolute; top: 0; left: 50%; bottom: 16px; width: 2px;
+  transform: translateX(-50%);
+  background: linear-gradient(#2a2419, #7d6743);
+}
+.pull-bead {
+  position: absolute; bottom: 0; left: 50%; width: 14px; height: 19px;
+  transform: translateX(-50%);
+  border-radius: 7px 7px 9px 9px;
+  background: radial-gradient(circle at 40% 32%, #f0d898, #a8843f 58%, #4b3a1c);
+  box-shadow: 0 0 12px rgba(201, 168, 96, .35);
+}
+.pull:focus-visible { outline: none; }
+.pull:focus-visible .pull-bead { outline: 2px solid var(--gold, #c9a860); outline-offset: 4px; }
+.pull-hint {
+  position: fixed; z-index: 90; top: calc(var(--len, 34vh) + 16px); left: var(--hx, var(--cx, 70%));
+  transform: translateX(-50%);
+  font: 500 10px/1 var(--mono, monospace); letter-spacing: .28em; text-transform: uppercase;
+  color: rgba(201, 168, 96, .78); white-space: nowrap; pointer-events: none;
+  transition: opacity .4s ease;
+}
+
+/* Işık açıldı: karanlık kalkar, ip yukarı çekilip kaybolur. */
+html.is-lit .darkness { opacity: 0; visibility: hidden; }
+html.is-lit .face-glow { opacity: 0; }
+html.is-lit .pull-hint { opacity: 0; }
+html.is-lit .pull {
+  transform: translate(-50%, -100%); pointer-events: none;
+  transition: transform .8s cubic-bezier(.5, 0, .3, 1) 1s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .darkness, .face-glow, .pull-hint, html.is-lit .pull { transition: none; }
+}

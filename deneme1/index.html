@@ -1,96 +1,135 @@
 <!doctype html>
-<html lang="tr">
+<html lang="tr" class="is-dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Lamba Girişi — Deneme 1</title>
-  <meta name="description" content="Tasarım denemesi: ipi çekince yanan lamba ve ışıkla beliren giriş kartı.">
+  <title>Rüya Kâtibi — Deneme 1 (lamba)</title>
+  <meta name="description" content="Tasarım denemesi: karanlık sayfa, ipi çekince yanan lamba.">
   <meta name="robots" content="noindex, nofollow">
-  <meta name="theme-color" content="#080706">
+  <meta name="theme-color" content="#0c1712">
   <link rel="icon" href="../assets/mark.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="lamp.css?v=3">
-  <!-- JavaScript kapalıysa form ışığı beklemeden görünsün. -->
-  <noscript><style>.card,.card [data-reveal]{opacity:1!important;visibility:visible!important;transform:none!important;filter:none!important;pointer-events:auto!important}.cord-hint{display:none}</style></noscript>
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400;1,6..96,500&family=Geist:wght@400;500;600&family=Geist+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="../ruya-katibi/img/giris.webp">
+  <link rel="stylesheet" href="../ruya-katibi/ruya.css?v=5">
+  <link rel="stylesheet" href="lamba.css?v=1">
+  <!-- JavaScript kapalıysa sayfa karanlık kalmasın. -->
+  <noscript><style>.darkness,.face-glow,.pull,.pull-hint{display:none!important}html.is-dark,html.is-dark body{overflow:auto!important}</style></noscript>
 </head>
 <body>
-  <main class="scene" data-lamp-state="off">
-    <a class="back" href="../">← malibag.github.io</a>
-    <p class="tag">Deneme 1 · Lamba girişi</p>
+  <!-- Deneme 1 — lamba girişi: sayfa karanlık, yalnız yüz hafif aydınlık; ip çekilince her yer açılır. -->
+  <div class="darkness" aria-hidden="true"></div>
+  <div class="face-glow" aria-hidden="true"></div>
+  <button id="lamba-ipi" class="pull" type="button" aria-label="Işığı aç" aria-pressed="false">
+    <span class="pull-line" aria-hidden="true"></span>
+    <span class="pull-bead" aria-hidden="true"></span>
+  </button>
+  <p class="pull-hint" aria-hidden="true">Işığı açmak için ipi çek</p>
+  <div class="sky" aria-hidden="true"></div>
 
-    <!-- Işık katmanları dekoratiftir; tıklamaları engellemez. -->
-    <div class="ambient" aria-hidden="true"></div>
-    <div class="floor-glow" aria-hidden="true"></div>
-
-    <div class="lamp-area">
-      <div class="lamp">
-        <div class="halo" aria-hidden="true"></div>
-        <div class="cone cone-wide" aria-hidden="true"></div>
-        <div class="cone cone-main" aria-hidden="true"></div>
-
-        <svg class="lamp-svg" viewBox="0 0 240 560" aria-hidden="true" focusable="false">
-          <defs>
-            <linearGradient id="shade-fill" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stop-color="#1f1b17"/>
-              <stop offset=".55" stop-color="#3b332b"/>
-              <stop offset="1" stop-color="#1a1714"/>
-            </linearGradient>
-            <linearGradient id="metal" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stop-color="#2b2621"/>
-              <stop offset=".5" stop-color="#4a4036"/>
-              <stop offset="1" stop-color="#241f1b"/>
-            </linearGradient>
-          </defs>
-          <!-- Gövde ve taban -->
-          <rect class="lamp-pole" x="117" y="36" width="6" height="482" rx="3" fill="url(#metal)"/>
-          <g class="lamp-base">
-            <ellipse cx="120" cy="532" rx="74" ry="14" fill="#14110e"/>
-            <path d="M52 520 Q120 500 188 520 L188 528 Q120 546 52 528 Z" fill="url(#metal)"/>
-          </g>
-          <!-- Başlık (sallanan katman): ampul başlığın altında durur -->
-          <g id="lamp-shade" class="lamp-shade">
-            <rect x="112" y="26" width="16" height="16" rx="4" fill="url(#metal)"/>
-            <circle class="bulb" cx="120" cy="124" r="15" fill="#3a332c"/>
-            <circle class="bulb-lit" cx="120" cy="124" r="15" fill="#ffe3a3"/>
-            <path d="M86 40 H154 L198 128 H42 Z" fill="url(#shade-fill)"/>
-            <path d="M42 128 H198" stroke="#5a4c3d" stroke-width="2"/>
-            <ellipse class="shade-rim" cx="120" cy="128" rx="78" ry="7" fill="#0d0b09"/>
-            <ellipse class="shade-rim-lit" cx="120" cy="128" rx="78" ry="7" fill="#ffb347"/>
-          </g>
-        </svg>
-
-        <!-- İp: gerçek bir düğme; fare, dokunma, Enter ve Space ile çalışır. -->
-        <button id="lamp-cord" class="cord" type="button" aria-label="Lambayı aç" aria-pressed="false" aria-controls="login-card">
-          <span class="cord-line" aria-hidden="true"></span>
-          <span class="cord-bead" aria-hidden="true"></span>
-        </button>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-art" aria-hidden="true"><img src="../ruya-katibi/img/giris.webp" alt="" width="1254" height="1254"></div>
+    <div class="hero-panel">
+      <nav class="site-nav" aria-label="Ana menü">
+        <a href="../#uygulamalar">Uygulamalar</a>
+        <a href="../#hakkimda">Hakkımda</a>
+        <a class="nav-contact" href="mailto:bagcimuhammetali@gmail.com">İletişim</a>
+      </nav>
+      <a class="back-link" href="../">← Tüm uygulamalar</a>
+      <div class="app-badge">
+        <img src="../assets/icons/ruya-katibi.jpg" alt="Rüya Kâtibi: Rüya Tabirleri uygulama simgesi" width="48" height="48">
+        <span>Rüya Kâtibi</span>
       </div>
-      <p class="cord-hint" aria-hidden="true"><span class="hint-off">Işığı açmak için ipi çek</span><span class="hint-on">Kapatmak için ipi tekrar çek</span></p>
+      <h1 id="hero-title">Rüyaların <em>sana bir şey söylüyor.</em> Dinlemeye hazır mısın?</h1>
+      <p class="lead">Rüyanı birkaç adımda sana özel bir tabire dönüştür. Ayrıntıları anlat, kartlarını aç ve rüyanın bıraktığı izleri keşfet.</p>
+      <div class="store-row">
+        <a class="store" href="https://apps.apple.com/tr/app/r%C3%BCya-k%C3%A2tibi-r%C3%BCya-tabirleri/id6806270785" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 12.6c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9s-1.8-.9-3-.8C7 7.4 5.6 8.3 4.8 9.7c-1.6 2.8-.4 6.9 1.2 9.1.8 1.1 1.7 2.3 2.8 2.3 1.1 0 1.6-.7 3-.7s1.8.7 3 .7 2-1.1 2.8-2.2c.9-1.3 1.2-2.5 1.2-2.6 0 0-2.4-.9-2.4-3.7ZM14.2 5.7c.6-.8 1-1.8.9-2.8-.9 0-2 .6-2.6 1.4-.6.7-1.1 1.7-.9 2.7 1 .1 2-.5 2.6-1.3Z"/></svg>
+          <span><small>App Store’dan</small><b>İndirin</b></span>
+        </a>
+        <a class="store" href="https://play.google.com/store/apps/details?id=com.ruyakatibi.kadimtabirname" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 2.8 13.6 12 4 21.2c-.4-.2-.6-.6-.6-1.1V3.9c0-.5.2-.9.6-1.1Zm10.8 10.4 2.4 2.3-10.8 6.1 8.4-8.4Zm3.7-3.3 2.6 1.5c.8.5.8 1.6 0 2.1l-2.6 1.5-2.6-2.5 2.6-2.6ZM6.4 2.4l10.8 6.1-2.4 2.3-8.4-8.4Z"/></svg>
+          <span><small>Google Play’den</small><b>İndirin</b></span>
+        </a>
+      </div>
+      <div class="text-links">
+        <a href="https://malibag.github.io/ruya-katibi-gizlilik/">Gizlilik Politikası ↗</a>
+        <a href="mailto:bagcimuhammetali@gmail.com?subject=Rüya Kâtibi: Rüya Tabirleri">Destek ve iletişim ↗</a>
+      </div>
     </div>
+    <a class="scroll-cue" href="#adim-1"><span>Yolculuğu keşfet</span><i aria-hidden="true"></i></a>
+  </section>
 
-    <section id="login-card" class="card" aria-labelledby="login-title">
-      <h1 id="login-title" data-reveal style="--i:0">Tekrar hoş geldin</h1>
-      <p class="card-lead" data-reveal style="--i:1">Hesabına giriş yap. Bu sayfa bir tasarım denemesidir; bilgiler hiçbir yere gönderilmez.</p>
+  <nav class="step-dots" aria-label="Yolculuk adımları">
+    <a href="#adim-1">01</a><a href="#adim-2">02</a><a href="#adim-3">03</a><a href="#adim-4">04</a><a href="#adim-5">05</a>
+  </nav>
 
-      <form id="login-form" class="form" action="#" method="post">
-        <div class="field" data-reveal style="--i:2">
-          <label for="email">E-posta</label>
-          <input id="email" name="email" type="email" autocomplete="username" inputmode="email" required>
+  <main class="journey" id="journey">
+    <svg class="journey-path" aria-hidden="true"><path class="track"/><path class="ink"/></svg>
+
+    <section class="step" id="adim-1">
+      <div class="step-copy">
+        <span class="step-num">01</span>
+        <h2>Rüyanı Anlat</h2>
+        <p>Hatırladığın kişileri, yerleri, nesneleri ve ayrıntıları yaz. İstersen başkasının rüyasını da anlat.</p>
+      </div>
+      <span class="node" aria-hidden="true"></span>
+      <figure class="step-art"><img src="../ruya-katibi/img/adim-01.webp" alt="" width="900" height="900" loading="lazy"></figure>
+    </section>
+
+    <section class="step is-flip" id="adim-2">
+      <div class="step-copy">
+        <span class="step-num">02</span>
+        <h2>Rüyandaki Önemli Semboller Belirlensin</h2>
+        <p>Rüyandaki her detay derinlemesine incelensin.</p>
+      </div>
+      <span class="node" aria-hidden="true"></span>
+      <figure class="step-art"><img src="../ruya-katibi/img/adim-02.webp" alt="" width="900" height="900" loading="lazy"></figure>
+    </section>
+
+    <section class="step" id="adim-3">
+      <div class="step-copy">
+        <span class="step-num">03</span>
+        <h2>Sana Özel Tabirlerini Oku</h2>
+        <p>Rüyandaki önemli semboller için sana özel kartlar hazırlansın.</p>
+      </div>
+      <span class="node" aria-hidden="true"></span>
+      <figure class="step-art"><img src="../ruya-katibi/img/adim-03.webp" alt="" width="900" height="900" loading="lazy"></figure>
+    </section>
+
+    <section class="step is-flip" id="adim-4">
+      <div class="step-copy">
+        <span class="step-num">04</span>
+        <h2>Rüyanı Bir Bütün Olarak Yorumla</h2>
+        <p>Derin Rüya Tabirini ve Duygu Durum Analizini oku. Hem geleneksel hem de modern bir dille rüyan yorumlansın.</p>
+      </div>
+      <span class="node" aria-hidden="true"></span>
+      <figure class="step-art"><img src="../ruya-katibi/img/adim-04.webp" alt="" width="900" height="900" loading="lazy"></figure>
+    </section>
+
+    <section class="step" id="adim-5">
+      <div class="step-copy">
+        <span class="step-num">05</span>
+        <h2>Peki senin rüyan sana ne anlatıyor?</h2>
+        <div class="cta-row">
+          <a class="cta" href="https://apps.apple.com/tr/app/r%C3%BCya-k%C3%A2tibi-r%C3%BCya-tabirleri/id6806270785" rel="noopener">App Store’dan indir ↗</a>
+          <a class="cta" href="https://play.google.com/store/apps/details?id=com.ruyakatibi.kadimtabirname" rel="noopener">Google Play’den indir ↗</a>
         </div>
-        <div class="field" data-reveal style="--i:3">
-          <label for="password">Parola</label>
-          <input id="password" name="password" type="password" autocomplete="current-password" minlength="6" required>
-        </div>
-        <div class="form-row" data-reveal style="--i:4">
-          <label class="remember"><input type="checkbox" name="remember"> Beni hatırla</label>
-          <a id="forgot-link" class="help-link" href="#">Parolamı unuttum</a>
-        </div>
-        <button class="submit" type="submit" data-reveal style="--i:5">Giriş yap</button>
-        <p id="login-status" class="status" role="status" aria-live="polite"></p>
-      </form>
+      </div>
+      <span class="node" aria-hidden="true"></span>
+      <figure class="step-art"><img src="../ruya-katibi/img/adim-05.webp" alt="" width="900" height="900" loading="lazy"></figure>
     </section>
   </main>
-  <script src="lamp.js?v=1" defer></script>
+
+  <section class="facts" aria-label="Uygulama hakkında">
+    <article><span>Kişisel deneyim</span><strong>Her yorum, anlatılan rüya ve seçilen kartlar etrafında şekillenir.</strong></article>
+    <article><span>Bilgilendirme</span><strong>Sağlık veya psikoloji alanında teşhis ya da yönlendirme sunmaz.</strong></article>
+    <article><span>Platformlar</span><strong>Android ve iOS’ta yayında.</strong></article>
+  </section>
+
+  <footer class="footer"><span>© 2026 <strong>M. Ali Bağcı</strong></span><a href="../">Tüm uygulamalar</a></footer>
+  <script src="../i18n.js?v=8" defer></script>
+  <script src="../ruya-katibi/ruya.js?v=6" defer></script>
+  <script src="lamba.js?v=1" defer></script>
 </body>
 </html>
