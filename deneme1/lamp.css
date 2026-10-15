@@ -1,0 +1,230 @@
+/* Deneme 1 — lamba girişi. Durum, .scene üzerindeki data-lamp-state ("off" / "on") ile yönetilir.
+   Açılış/kapanış sırası yalnızca geçiş gecikmeleriyle kurulur: zamanlayıcı yok, hızlı tıklamada
+   geçişler bulundukları yerden geri döner. Süreler ve renkler aşağıdaki değişkenlerdedir. */
+:root {
+  --bg: #080706;
+  --ink: #f3e9da;
+  --muted: rgba(243, 233, 218, 0.7);
+  --faint: rgba(243, 233, 218, 0.45);
+  --light: #ffb347;        /* ana ışık */
+  --light-core: #ffe3a3;   /* parlak merkez */
+  --card-bg: rgba(20, 16, 12, 0.76);
+  --card-line: rgba(255, 190, 100, 0.18);
+  --field-bg: rgba(255, 255, 255, 0.04);
+  --field-line: rgba(255, 190, 100, 0.22);
+  --sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "Geist Mono", ui-monospace, Menlo, monospace;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --cone-tilt: -24deg;     /* ışık konisi karta doğru eğik */
+
+  /* Açılış: ampul → hale/koni/çevre ışığı → kart (ampulden ~140 ms sonra) → kart öğeleri kademeli */
+  --t-bulb: 300ms;
+  --t-light: 520ms;
+  --d-halo: 80ms;
+  --d-cone: 160ms;
+  --d-ambient: 220ms;
+  --d-card: 440ms;
+  --t-card-in: 700ms;
+  --d-items: 160ms;
+  --t-item: 420ms;
+  --stagger: 70ms;
+
+  /* Kapanış: öğeler solar → kart sağa kayar → ışık söner → ampul söner */
+  --t-item-out: 160ms;
+  --d-card-out: 120ms;
+  --t-card-out: 420ms;
+  --d-light-out: 540ms;
+  --t-light-out: 420ms;
+  --d-bulb-out: 660ms;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); }
+body { color: var(--ink); font: 400 16px/1.55 var(--sans); -webkit-font-smoothing: antialiased; }
+h1, p { margin: 0; }
+a { color: inherit; }
+
+/* ───────── Sahne ───────── */
+.scene {
+  position: relative; isolation: isolate; overflow: hidden; /* ışık katmanları kaydırma çubuğu üretmesin */
+  min-height: 100svh;
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center;
+  gap: clamp(24px, 6vw, 120px);
+  padding: 72px clamp(16px, 5vw, 80px) 40px;
+}
+.back, .tag {
+  position: absolute; z-index: 4; top: 22px;
+  font: 500 11px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint);
+}
+.back { left: clamp(16px, 5vw, 80px); text-decoration: none; transition: color 0.2s; }
+.back:hover { color: var(--ink); }
+.back:focus-visible { outline: 2px solid var(--light-core); outline-offset: 4px; border-radius: 4px; }
+.tag { right: clamp(16px, 5vw, 80px); }
+
+/* ───────── Işık katmanları (hepsi dekoratif, tıklamayı engellemez) ───────── */
+.ambient, .floor-glow, .halo, .cone { position: absolute; pointer-events: none; opacity: 0; }
+.ambient {
+  z-index: 0; left: 0; top: 0; width: 120vmax; height: 120vmax;
+  transform: translate(-28%, -30%);
+  background: radial-gradient(circle, rgba(255, 179, 71, 0.13), rgba(255, 179, 71, 0.04) 38%, transparent 62%);
+}
+.floor-glow {
+  z-index: 0; left: 0; right: 0; bottom: -18vh; height: 52vh;
+  background: radial-gradient(ellipse 46% 50% at 34% 50%, rgba(255, 179, 71, 0.2), transparent 70%);
+}
+
+/* ───────── Lamba ───────── */
+.lamp-area { position: relative; z-index: 1; justify-self: end; align-self: end; display: grid; justify-items: center; gap: 12px; }
+.lamp { position: relative; height: clamp(340px, 72svh, 560px); aspect-ratio: 240 / 560; }
+.lamp-svg { position: relative; z-index: 2; display: block; width: 100%; height: 100%; overflow: visible; }
+.lamp-shade { transform-box: view-box; transform-origin: 120px 34px; } /* sallanma gövdenin tepesinden */
+.bulb-lit, .shade-rim-lit { opacity: 0; }
+
+.halo {
+  z-index: 1; left: 50%; top: 22.2%; width: 52%; aspect-ratio: 1; border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0.6);
+  background: radial-gradient(circle, rgba(255, 227, 163, 0.9), rgba(255, 179, 71, 0.32) 36%, transparent 70%);
+  filter: blur(6px);
+}
+.cone { z-index: 0; left: 50%; top: 22.9%; transform-origin: 50% 0; transform: rotate(var(--cone-tilt)) scaleY(0.85); }
+/* Kırpma iç katmanda (::before), bulanıklık dış katmanda: kenarlar keskin blok değil, yumuşak ışık. */
+.cone::before { content: ""; position: absolute; inset: 0; }
+.cone-main { width: 900px; height: 1000px; margin-left: -450px; filter: blur(18px); }
+.cone-main::before {
+  clip-path: polygon(46% 0, 54% 0, 86% 100%, 14% 100%);
+  background: linear-gradient(to bottom, rgba(255, 227, 163, 0.5), rgba(255, 179, 71, 0.2) 40%, rgba(255, 179, 71, 0.05) 75%, transparent);
+}
+.cone-wide { width: 1500px; height: 1100px; margin-left: -750px; filter: blur(48px); }
+.cone-wide::before {
+  clip-path: polygon(45% 0, 55% 0, 100% 100%, 0 100%);
+  background: linear-gradient(to bottom, rgba(255, 179, 71, 0.2), rgba(255, 179, 71, 0.05) 55%, transparent 85%);
+}
+
+/* Kapanış geçişleri (varsayılan durum "off"): ışık, kart kapandıktan sonra söner */
+.halo { transition: opacity var(--t-light-out) ease-in var(--d-light-out), transform var(--t-light-out) ease-in var(--d-light-out); }
+.cone { transition: opacity var(--t-light-out) ease-in var(--d-light-out), transform var(--t-light-out) ease-in var(--d-light-out); }
+.ambient, .floor-glow { transition: opacity var(--t-light-out) ease-in var(--d-light-out); }
+.bulb-lit, .shade-rim-lit { transition: opacity var(--t-light-out) ease-in var(--d-bulb-out); }
+
+/* Açılış geçişleri */
+.scene[data-lamp-state="on"] .bulb-lit { opacity: 1; transition: opacity var(--t-bulb) ease-out; }
+.scene[data-lamp-state="on"] .shade-rim-lit { opacity: 0.85; transition: opacity var(--t-bulb) ease-out 60ms; }
+.scene[data-lamp-state="on"] .halo {
+  opacity: 1; transform: translate(-50%, -50%) scale(1);
+  transition: opacity var(--t-light) ease-out var(--d-halo), transform var(--t-light) var(--ease-out) var(--d-halo);
+}
+.scene[data-lamp-state="on"] .cone {
+  opacity: 1; transform: rotate(var(--cone-tilt)) scaleY(1);
+  transition: opacity var(--t-light) ease-out var(--d-cone), transform var(--t-light) var(--ease-out) var(--d-cone);
+}
+.scene[data-lamp-state="on"] .ambient,
+.scene[data-lamp-state="on"] .floor-glow { opacity: 1; transition: opacity var(--t-light) ease-out var(--d-ambient); }
+
+/* ───────── İp (erişilebilir düğme) ───────── */
+.cord {
+  position: absolute; z-index: 3; left: 74%; top: 22.9%; width: 36px; height: 21%; margin-left: -18px;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 0; border: 0; border-radius: 12px; background: transparent; cursor: pointer; touch-action: manipulation;
+}
+.cord-line { width: 2px; flex: 1; background: linear-gradient(#5a4c3d, #8a7660); }
+.cord-bead {
+  width: 12px; height: 18px; border-radius: 6px;
+  background: radial-gradient(circle at 35% 30%, #d9b27a, #8a6a3e);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  transition: box-shadow 0.4s ease;
+}
+.scene[data-lamp-state="on"] .cord-bead { box-shadow: 0 0 10px rgba(255, 179, 71, 0.55), 0 2px 6px rgba(0, 0, 0, 0.5); }
+.cord:focus-visible { outline: 2px solid var(--light-core); outline-offset: 4px; }
+
+.cord-hint { font: 500 11px/1.4 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); text-align: center; }
+.hint-on { display: none; }
+.scene[data-lamp-state="on"] .hint-off { display: none; }
+.scene[data-lamp-state="on"] .hint-on { display: inline; }
+
+/* ───────── Giriş kartı ───────── */
+.card {
+  position: relative; z-index: 2; justify-self: start;
+  width: min(400px, 100%); padding: clamp(24px, 3vw, 36px);
+  border: 1px solid var(--card-line); border-radius: 18px; background: var(--card-bg);
+  -webkit-backdrop-filter: blur(14px) saturate(120%); backdrop-filter: blur(14px) saturate(120%);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+  /* Başlangıç: görünmez */
+  opacity: 0; transform: translateX(50px) scale(0.97); filter: blur(8px); visibility: hidden; pointer-events: none;
+  transition:
+    opacity var(--t-card-out) ease-in var(--d-card-out),
+    transform var(--t-card-out) ease-in var(--d-card-out),
+    filter var(--t-card-out) ease-in var(--d-card-out),
+    visibility 0s linear calc(var(--d-card-out) + var(--t-card-out));
+}
+.scene[data-lamp-state="on"] .card {
+  opacity: 1; transform: translateX(0) scale(1); filter: blur(0); visibility: visible; pointer-events: auto;
+  transition:
+    opacity var(--t-card-in) var(--ease-out) var(--d-card),
+    transform var(--t-card-in) var(--ease-out) var(--d-card),
+    filter var(--t-card-in) var(--ease-out) var(--d-card),
+    visibility 0s linear var(--d-card);
+}
+.card [data-reveal] {
+  opacity: 0; transform: translateY(10px);
+  transition: opacity var(--t-item-out) ease-in, transform var(--t-item-out) ease-in;
+}
+.scene[data-lamp-state="on"] .card [data-reveal] {
+  opacity: 1; transform: none;
+  transition:
+    opacity var(--t-item) ease-out calc(var(--d-card) + var(--d-items) + var(--i) * var(--stagger)),
+    transform var(--t-item) var(--ease-out) calc(var(--d-card) + var(--d-items) + var(--i) * var(--stagger));
+}
+
+.card h1 { font: 500 30px/1.15 var(--sans); letter-spacing: -0.02em; }
+.card-lead { margin-top: 10px; color: var(--muted); font-size: 14.5px; }
+.form { display: grid; gap: 16px; margin-top: 26px; }
+.field { display: grid; gap: 7px; }
+.field label { font-size: 13.5px; color: var(--muted); }
+.field input {
+  height: 46px; padding: 0 14px; border-radius: 10px;
+  border: 1px solid var(--field-line); background: var(--field-bg); color: var(--ink);
+  font: 400 15.5px var(--sans); transition: border-color 0.2s, box-shadow 0.2s;
+}
+.field input:focus { outline: none; border-color: var(--light); box-shadow: 0 0 0 3px rgba(255, 179, 71, 0.25); }
+.form-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; font-size: 13.5px; }
+.remember { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); cursor: pointer; }
+.remember input { width: 16px; height: 16px; accent-color: var(--light); }
+.help-link { color: var(--light-core); text-underline-offset: 3px; }
+.help-link:focus-visible, .remember input:focus-visible { outline: 2px solid var(--light-core); outline-offset: 3px; border-radius: 3px; }
+.submit {
+  height: 48px; border: 0; border-radius: 10px; cursor: pointer;
+  background: linear-gradient(180deg, #ffd38a, var(--light)); color: #241505;
+  font: 600 15px var(--sans); transition: filter 0.2s;
+}
+.submit:hover { filter: brightness(1.06); }
+.submit:focus-visible { outline: 2px solid var(--light-core); outline-offset: 3px; }
+.status { min-height: 1.4em; font-size: 13.5px; color: var(--light-core); }
+
+/* ───────── Ekran boyutları ───────── */
+@media (max-width: 1024px) {
+  .scene { gap: clamp(16px, 4vw, 48px); }
+  .lamp { height: clamp(320px, 62svh, 480px); }
+}
+@media (max-width: 720px) {
+  :root { --cone-tilt: 0deg; } /* mobilde ışık aşağıya, karta doğru */
+  .scene {
+    grid-template-columns: minmax(0, 1fr); align-content: start; justify-items: center;
+    gap: 8px; padding: 60px 16px 40px;
+  }
+  .lamp-area { justify-self: center; align-self: start; }
+  .lamp { height: min(46svh, 360px); }
+  .card { justify-self: center; transform: translateY(24px) scale(0.97); } /* yataydan değil aşağıdan gelir */
+  .ambient { transform: translate(-50%, -38%); left: 50%; }
+  .floor-glow { background: radial-gradient(ellipse 70% 45% at 50% 50%, rgba(255, 179, 71, 0.18), transparent 70%); }
+}
+
+@media (max-width: 480px) {
+  .tag { display: none; } /* dar ekranda geri bağlantısıyla çakışmasın */
+}
+
+/* ───────── Hareketi azalt ───────── */
+@media (prefers-reduced-motion: reduce) {
+  .scene *, .scene *::before, .scene *::after { transition-duration: 120ms !important; transition-delay: 0s !important; }
+  .card, .card [data-reveal] { transform: none !important; filter: none !important; }
+}
