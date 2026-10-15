@@ -1,4 +1,4 @@
-/* Deneme 1 — lamba girişi. Sayfa karanlık açılır; ışık yalnız girişteki görselde kadının yüzüne düşer.
+/* Deneme 1 — lamba girişi. Sayfa karanlık açılır; gece havası; görselde kadının yüzüne hafif ay ışığı düşer, ay seçilir.
    Yüzün ekrandaki yeri görselin object-fit: cover hesabından bulunur. İpe basınca ip aşağı inip geri
    döner ve sayfa aydınlanır (tek yönlü). Geçişleri lamba.css yönetir. */
 (() => {
@@ -11,6 +11,7 @@
 
   // Görselde yüzün yeri ve ışık çapı (1254×1254 görselin oranı olarak).
   const FACE = { x: 0.435, y: 0.37, r: 0.12 };
+  const MOON = { x: 0.285, y: 0.17, r: 0.09 };
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
   // Karanlıkta arkadaki bağlantılar klavyeyle de seçilemesin.
   const behind = [...document.querySelectorAll(".hero, .step-dots, main, .facts, .footer")];
@@ -29,6 +30,11 @@
     root.style.setProperty("--fx", `${fx}px`);
     root.style.setProperty("--fy", `${fy}px`);
     root.style.setProperty("--r", `${r}px`);
+    const left = box.left + (box.width - w) * px;
+    const top = box.top + (box.height - h) * py;
+    root.style.setProperty("--mx", `${left + w * MOON.x}px`);
+    root.style.setProperty("--my", `${top + h * MOON.y}px`);
+    root.style.setProperty("--mr", `${w * MOON.r}px`);
     // İp yüzün sağında, yüz hizasına kadar sarkar.
     const cx = Math.min(innerWidth - 36, fx + Math.max(120, r * 1.4));
     root.style.setProperty("--cx", `${cx}px`);
