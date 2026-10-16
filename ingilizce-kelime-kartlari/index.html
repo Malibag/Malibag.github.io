@@ -15,6 +15,7 @@
   <link rel="icon" href="../assets/mark.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,340;0,9..144,400;0,9..144,440;0,9..144,500;1,9..144,380;1,9..144,400&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"><link rel="stylesheet" href="../style.css?v=8">
+  <link rel="stylesheet" href="kelime.css?v=1">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"İngilizce Kelime Kartları","description":"A1’den B2’ye İngilizce kelimeleri 20 kartlık setler, örnek kullanımlar ve isteğe bağlı 5 soruluk quizlerle öğrenin.","applicationCategory":"MobileApplication","operatingSystem":"Android","url":"https://malibag.github.io/ingilizce-kelime-kartlari/","image":"https://malibag.github.io/assets/social/ingilizce-kelime-kartlari.jpg","author":{"@type":"Person","name":"M. Ali Bağcı","email":"bagcimuhammetali@gmail.com"}}</script>
 </head>
 <body>
@@ -26,11 +27,23 @@
         <div class="detail-copy-block">
           <img class="detail-icon" src="../assets/icons/ingilizce-kelime-kartlari.png" alt="İngilizce Kelime Kartları uygulama simgesi" width="92" height="92">
           <span class="eyebrow" style="margin-top:25px">Eğitim &amp; dil · Google Play’de yayında</span>
-          <h1>İngilizce Kelime Kartları</h1><p class="detail-lead">A1’den B2’ye İngilizce kelimeleri küçük ve tamamlanabilir çalışma setleriyle öğrenin; ilerlemenizi görün ve ihtiyaç duyduklarınızı yeniden çalışın.</p>
+          <h1><span class="flip-word"><span class="fw-front">İngilizce</span><span class="fw-back" aria-hidden="true">English</span></span> <span class="flip-word"><span class="fw-front">Kelime</span><span class="fw-back" aria-hidden="true">Word</span></span> <span class="flip-word"><span class="fw-front">Kartları</span><span class="fw-back" aria-hidden="true">Cards</span></span></h1><span class="flip-hint">Başlıktaki kelimelere dokunun</span><p class="detail-lead">A1’den B2’ye İngilizce kelimeleri küçük ve tamamlanabilir çalışma setleriyle öğrenin; ilerlemenizi görün ve ihtiyaç duyduklarınızı yeniden çalışın.</p>
           <div class="store-row"><a class="store-badge" href="https://play.google.com/store/apps/details?id=com.ingilizcekelimekartlari.app&pcampaignid=web_share" target="_blank" rel="noopener" aria-label="İngilizce Kelime Kartları uygulamasını Google Play’den indirin"><svg viewBox="0 0 32 32" aria-hidden="true"><path fill="#00bfa5" d="M3 2.7 18.7 16 3 29.3c-.6-.5-1-1.3-1-2.2V4.9c0-.9.4-1.7 1-2.2Z"/><path fill="#ffd44b" d="m18.7 16 4.5-3.8 5.1 2.9c1 .6 1 1.3 0 1.8l-5.1 2.9-4.5-3.8Z"/><path fill="#ff4867" d="M3 29.3 18.7 16l4.5 3.8L5.4 29.9c-.8.5-1.7.2-2.4-.6Z"/><path fill="#4e8cff" d="M3 2.7c.7-.8 1.6-1.1 2.4-.6l17.8 10.1-4.5 3.8L3 2.7Z"/></svg><span><small>HEMEN</small><strong>Google Play</strong></span></a><span class="store-badge disabled"><span><small>APP STORE</small><strong>Çok yakında</strong></span></span></div>
           <div class="detail-links"><a href="https://malibag.github.io/ingilizce-kelime-kartlari-gizlilik/">Gizlilik Politikası ↗</a><a href="mailto:bagcimuhammetali@gmail.com?subject=İngilizce Kelime Kartları">Destek ve iletişim ↗</a></div>
         </div>
         <div class="detail-gallery" aria-label="İngilizce Kelime Kartları uygulama ekranları"><figure class="phone"><img src="../assets/screenshots/ingilizce-kelime-kartlari/ana-sayfa.webp" alt="Seviyenizi ve çalışma setinizi seçin" width="610" height="1210" loading="eager"></figure><figure class="phone"><img src="../assets/screenshots/ingilizce-kelime-kartlari/tekrar-et.webp" alt="Kelimeleri tekrar edin" width="610" height="1210" loading="lazy"></figure><figure class="phone"><img src="../assets/screenshots/ingilizce-kelime-kartlari/istatistikler.webp" alt="Öğrenme ilerlemenizi takip edin" width="610" height="1210" loading="lazy"></figure></div>
+      </section>
+      <section class="word-game" style="--accent:#324c86" aria-labelledby="oyun-baslik">
+        <div class="game-head"><span class="eyebrow">5 kartta deneyin</span><h2 id="oyun-baslik">Bu kelimeleri biliyor musunuz?</h2><p>Uygulamadaki kartlardan beşi. Karta dokunun, anlamını görün. Biliyorsanız sağa, bilmiyorsanız sola kaydırın.</p></div>
+        <div class="game">
+          <div class="deck"></div>
+          <div class="game-actions"><button class="g-btn no" type="button">← Bilmiyorum</button><span class="g-count"><b class="g-i">1</b>/5</span><button class="g-btn yes" type="button">Biliyorum →</button></div>
+          <div class="game-result" hidden aria-live="polite">
+            <p class="g-score"><b class="g-known">0</b>/5</p>
+            <p>Uygulamada A1’den B2’ye 3.000 kelime sizi bekliyor.</p>
+            <div class="g-links"><button class="g-again" type="button">Yeniden deneyin</button><a href="https://play.google.com/store/apps/details?id=com.ingilizcekelimekartlari.app&pcampaignid=web_share" target="_blank" rel="noopener">Google Play’den indir ↗</a></div>
+          </div>
+        </div>
       </section>
       <section class="detail-section" style="--accent:#324c86">
         <div class="detail-intro"><div><span class="eyebrow">Uygulama hakkında</span><h2>Her gün tamamlanabilir bir kelime çalışması.</h2><p>Yoğun ve dağınık kelime listeleri yerine, kısa kart setleriyle düzenli ilerlemenizi sağlayan sade bir öğrenme alanı.</p></div><div class="feature-list"><article class="feature-item"><b>01</b><strong>Seviyelere göre içerik</strong><p>A1, A2, B1 ve B2 seviyelerinde düzenli biçimde ilerleyin.</p></article><article class="feature-item"><b>02</b><strong>20 kartlık setler</strong><p>Her oturumu küçük ve tamamlanabilir bir çalışma setine dönüştürün.</p></article><article class="feature-item"><b>03</b><strong>Örnek kullanımlar</strong><p>Kelimeleri yalnızca anlamıyla değil, kullanım bağlamıyla öğrenin.</p></article><article class="feature-item"><b>04</b><strong>İlerleme görünümü</strong><p>Öğrendiğiniz ve tekrar etmek istediğiniz kelimeleri takip edin.</p></article></div></div>
@@ -40,6 +53,7 @@
     </main>
     <footer class="footer"><span>© 2026 <strong>M. Ali Bağcı</strong></span><a href="../">Tüm uygulamalar</a></footer>
   </div>
-  <script src="../i18n.js?v=2" defer></script>
+  <script src="../i18n.js?v=11" defer></script>
+  <script src="kelime.js?v=1" defer></script>
 </body>
 </html>

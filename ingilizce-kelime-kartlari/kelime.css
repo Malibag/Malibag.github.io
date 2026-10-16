@@ -1,0 +1,92 @@
+/* İngilizce Kelime Kartları sayfası: başlıkta dönen kelime kartları ve 5 kartlık "biliyor musunuz?" destesi.
+   style.css'in üstüne yalnız bu sayfanın parçaları eklenir; kartları ve desteyi kelime.js yönetir. */
+
+/* — 1. Başlıktaki kelimeler: üstüne gelince / dokununca İngilizcesi görünür — */
+.detail-hero h1 { line-height: 1.12; }
+.flip-word {
+  display: inline-grid; perspective: 900px; cursor: pointer;
+  vertical-align: baseline; outline: none;
+}
+.fw-front, .fw-back {
+  grid-area: 1 / 1; padding: .02em .16em .08em; border-radius: .14em;
+  backface-visibility: hidden;
+  transition: transform .7s cubic-bezier(.3, .7, .2, 1);
+}
+.fw-front { background: var(--paper-card); box-shadow: inset 0 0 0 1px var(--line); }
+.fw-back { background: var(--accent); color: #fff; transform: rotateX(180deg); text-align: center; }
+.flip-word.is-flipped .fw-front { transform: rotateX(-180deg); }
+.flip-word.is-flipped .fw-back { transform: rotateX(0); }
+@media (hover: hover) {
+  .flip-word:hover .fw-front { transform: rotateX(-180deg); }
+  .flip-word:hover .fw-back { transform: rotateX(0); }
+}
+.flip-word:focus-visible .fw-front, .flip-word:focus-visible .fw-back { outline: 3px solid var(--accent); outline-offset: 3px; }
+.flip-hint { display: block; margin: -4px 0 18px; color: var(--muted); font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; }
+
+/* — 2. 5 kartlık deste — */
+.word-game {
+  display: grid; grid-template-columns: .9fr 1.1fr; gap: 60px; align-items: center;
+  padding: 86px 0; border-top: 1px solid var(--line);
+}
+.game-head h2 { margin: 16px 0 10px; font-family: var(--font-display); font-size: clamp(2rem, 1.6rem + 2vw, 3.2rem); font-weight: 400; line-height: 1.05; }
+.game-head p { margin: 0; max-width: 440px; color: var(--muted); line-height: 1.6; }
+.game { display: grid; justify-items: center; gap: 22px; }
+.deck { position: relative; width: min(340px, 100%); height: 400px; }
+.wcard {
+  position: absolute; inset: 0; perspective: 1200px;
+  touch-action: pan-y; user-select: none; -webkit-user-select: none; cursor: grab;
+  transition: transform .35s ease, opacity .35s ease;
+}
+.wcard.is-dragging { transition: none; cursor: grabbing; }
+.wcard:not(.is-top) { pointer-events: none; }
+.wcard.is-next { transform: translateY(14px) scale(.95); }
+.wcard.is-after { transform: translateY(28px) scale(.9); opacity: .7; }
+.wcard.is-hidden { transform: translateY(28px) scale(.9); opacity: 0; }
+.wcard.is-out-right { transform: translateX(130%) rotate(18deg); opacity: 0; }
+.wcard.is-out-left { transform: translateX(-130%) rotate(-18deg); opacity: 0; }
+.wc-face, .wc-back {
+  position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; gap: 12px;
+  padding: 28px; border-radius: 24px; backface-visibility: hidden;
+  box-shadow: 0 22px 44px rgba(27, 31, 43, .16), inset 0 0 0 1px var(--line);
+  transition: transform .6s cubic-bezier(.3, .7, .2, 1), box-shadow .2s ease;
+}
+.wc-face { align-items: center; text-align: center; background: var(--paper-elevated); }
+.wc-back { background: var(--accent); color: #fff; transform: rotateY(180deg); }
+.wcard.is-flipped .wc-face { transform: rotateY(-180deg); }
+.wcard.is-flipped .wc-back { transform: rotateY(0); }
+/* Sürüklerken hangi yöne gittiği kenar renginden anlaşılır. */
+.wcard.lean-yes .wc-face, .wcard.lean-yes .wc-back { box-shadow: 0 22px 44px rgba(27, 31, 43, .16), inset 0 0 0 3px #1f8a4c; }
+.wcard.lean-no .wc-face, .wcard.lean-no .wc-back { box-shadow: 0 22px 44px rgba(27, 31, 43, .16), inset 0 0 0 3px #b3261e; }
+.wc-level { padding: 4px 10px; border-radius: 99px; background: var(--paper-card); color: var(--accent); font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em; }
+.wc-word { font-family: var(--font-display); font-size: clamp(2.2rem, 1.8rem + 1.5vw, 3rem); line-height: 1.05; overflow-wrap: anywhere; }
+.wc-pos { color: var(--muted); font-style: italic; }
+.wc-tap { margin-top: 18px; color: var(--muted); font-family: var(--font-mono); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; }
+.wc-meaning { font-family: var(--font-display); font-size: 2rem; line-height: 1.1; }
+.wc-ex { margin: 0; font-style: italic; line-height: 1.5; }
+.wc-ex-tr { margin: 0; font-size: 14px; line-height: 1.5; opacity: .8; }
+.game-actions { display: flex; align-items: center; gap: 18px; }
+.game [hidden] { display: none; }
+.g-btn {
+  padding: 12px 18px; border: 1px solid var(--line); border-radius: 99px;
+  background: var(--paper-elevated); color: var(--ink); font: inherit; font-weight: 600; cursor: pointer;
+  transition: border-color .2s ease, transform .2s ease;
+}
+.g-btn.no:hover { border-color: #b3261e; }
+.g-btn.yes:hover { border-color: #1f8a4c; }
+.g-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.g-count { min-width: 3.2em; text-align: center; color: var(--muted); font-family: var(--font-mono); font-size: 13px; }
+.g-count b { color: var(--ink); }
+.game-result { width: min(340px, 100%); text-align: center; }
+.game-result .g-score { margin: 0; font-family: var(--font-display); font-size: 4rem; line-height: 1; color: var(--accent); }
+.game-result p { margin: 10px 0 0; line-height: 1.55; }
+.game-result .g-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 20px; margin-top: 20px; }
+.game-result a { color: var(--accent); font-weight: 600; }
+.g-again { padding: 0; border: 0; background: none; color: var(--ink); font: inherit; font-weight: 600; text-decoration: underline; cursor: pointer; }
+
+@media (max-width: 980px) {
+  .word-game { grid-template-columns: 1fr; gap: 36px; }
+  .deck { height: 380px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fw-front, .fw-back, .wcard, .wc-face, .wc-back { transition: none; }
+}

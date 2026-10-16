@@ -138,7 +138,15 @@
       "3.000 kelimelik kart havuzu seviyelere ayrılmıştır.": "A pool of 3,000 vocabulary cards is organized by level.",
       "Çalışma biçimi": "Study format",
       "Kartların ardından isteğe bağlı kısa quiz sunulur.": "An optional short quiz follows each card set.",
-      "Yeni kelimeleri düzenli biçimde öğrenmeye başlayın.": "Start learning new words consistently."
+      "Yeni kelimeleri düzenli biçimde öğrenmeye başlayın.": "Start learning new words consistently.",
+      "Başlıktaki kelimelere dokunun": "Tap the words in the title",
+      "5 kartta deneyin": "Try it with 5 cards",
+      "Bu kelimeleri biliyor musunuz?": "Do you know these words?",
+      "Uygulamadaki kartlardan beşi. Karta dokunun, anlamını görün. Biliyorsanız sağa, bilmiyorsanız sola kaydırın.": "Five cards from the app. Tap a card to see its Turkish meaning. Swipe right if you know it, left if you don’t.",
+      "← Bilmiyorum": "← Don’t know",
+      "Biliyorum →": "Know it →",
+      "Uygulamada A1’den B2’ye 3.000 kelime sizi bekliyor.": "3,000 words from A1 to B2 are waiting in the app.",
+      "Yeniden deneyin": "Try again"
     },
     "/kpss-tarih-notlari/": {
       "Eğitim & tarih · Google Play’de yayında": "Education & history · Available on Google Play",
