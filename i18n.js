@@ -149,6 +149,18 @@
       "Yeniden deneyin": "Try again"
     },
     "/kpss-tarih-notlari/": {
+      "Tarihte yolculuk": "A journey through history",
+      "Bir yıl seçin, defter açılsın.": "Pick a year and the notebook opens.",
+      "Kök Türklerden Cumhuriyet’e on iki dönüm noktası. Her yılda uygulamadaki kartlardan iki bilgi deftere yazılır.": "Twelve turning points from the Göktürks to the Republic. For each year, two facts from the app’s cards are written into the notebook (in Turkish).",
+      "Hap bilgi": "Quick fact",
+      "Önceki yıl": "Previous year",
+      "Sonraki yıl": "Next year",
+      "Yıllar": "Years",
+      "Günün sorusu": "Question of the day",
+      "Bugün bunu biliyor musunuz?": "Do you know this one today?",
+      "Uygulamadaki kartlardan derlenmiş tek bir soru; her gün başka biri.": "One question built from the app’s cards, a different one each day (in Turkish).",
+      "Doğru!": "Correct!",
+      "Doğru cevap:": "Correct answer:",
       "Eğitim & tarih · Google Play’de yayında": "Education & history · Available on Google Play",
       "KPSS tarih kapsamındaki kısa bilgileri konu konu okuyun, kartlarla ilerleyin ve hangi başlıklarda ne kadar çalıştığınızı görün.": "Read concise KPSS history facts by topic, progress through cards, and see how much you have studied in each area.",
       "Tarih bilgisini küçük parçalara ayırın.": "Break history knowledge into manageable pieces.",

@@ -15,6 +15,8 @@
   <link rel="icon" href="../assets/mark.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,340;0,9..144,400;0,9..144,440;0,9..144,500;1,9..144,380;1,9..144,400&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"><link rel="stylesheet" href="../style.css?v=8">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="kpss.css?v=1">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"KPSS Tarih Notları","description":"KPSS tarih için 17 konudaki 3.000 kısa bilgiyi kartlarla çalışın; kronolojiyi kurun ve tekrarınızı hızlandırın.","applicationCategory":"MobileApplication","operatingSystem":"Android","url":"https://malibag.github.io/kpss-tarih-notlari/","image":"https://malibag.github.io/assets/social/kpss-tarih-notlari.jpg","author":{"@type":"Person","name":"M. Ali Bağcı","email":"bagcimuhammetali@gmail.com"}}</script>
 </head>
 <body>
@@ -32,14 +34,28 @@
         </div>
         <div class="detail-gallery" aria-label="KPSS Tarih Notları uygulama ekranları"><figure class="phone"><img src="../assets/screenshots/kpss-tarih-notlari/ana-sayfa.webp" alt="17 tarih konusuna erişin" width="610" height="1210" loading="eager"></figure><figure class="phone"><img src="../assets/screenshots/kpss-tarih-notlari/bilgi-karti.webp" alt="Kısa bilgi kartlarını okuyun" width="610" height="1210" loading="lazy"></figure><figure class="phone"><img src="../assets/screenshots/kpss-tarih-notlari/istatistikler.webp" alt="Konu ilerlemenizi görün" width="610" height="1210" loading="lazy"></figure></div>
       </section>
+      <section class="year-wheel" style="--accent:#866026" aria-labelledby="yil-baslik">
+        <div class="yw-head"><span class="eyebrow">Tarihte yolculuk</span><h2 id="yil-baslik">Bir yıl seçin, defter açılsın.</h2><p>Kök Türklerden Cumhuriyet’e on iki dönüm noktası. Her yılda uygulamadaki kartlardan iki bilgi deftere yazılır.</p></div>
+        <div class="yw-body">
+          <div class="yw-year" aria-hidden="true">1453</div>
+          <div class="notebook" aria-hidden="true"><span class="nb-topic"></span><p class="nb-main"></p><span class="nb-label">Hap bilgi</span><p class="nb-hap"></p></div>
+          <p class="yw-sr" aria-live="polite"></p>
+        </div>
+        <div class="tuner"><button class="tn-step prev" type="button" aria-label="Önceki yıl">←</button><div class="tn-strip" role="group" aria-label="Yıllar"></div><button class="tn-step next" type="button" aria-label="Sonraki yıl">→</button></div>
+      </section>
       <section class="detail-section" style="--accent:#866026">
         <div class="detail-intro"><div><span class="eyebrow">Uygulama hakkında</span><h2>Tarih bilgisini küçük parçalara ayırın.</h2><p>Uzun not sayfaları arasında kaybolmadan, tek bilgi taşıyan kısa kartlarla kronolojiyi ve temel bağlantıları kurmanıza yardımcı olur.</p></div><div class="feature-list"><article class="feature-item"><b>01</b><strong>3.000 kısa bilgi</strong><p>Her kart tek bir tarih bilgisini açık ve kısa biçimde sunar.</p></article><article class="feature-item"><b>02</b><strong>17 konu başlığı</strong><p>KPSS tarih kapsamını konu konu çalışın.</p></article><article class="feature-item"><b>03</b><strong>Kart tabanlı okuma</strong><p>Bilgileri küçük parçalar hâlinde okuyarak tekrarınızı kolaylaştırın.</p></article><article class="feature-item"><b>04</b><strong>İlerleme görünümü</strong><p>Konu bazındaki çalışma durumunuzu takip edin.</p></article></div></div>
         <div class="trust-grid"><article class="trust-card"><span>Kapsam</span><strong>İçerik 17 tarih konusu etrafında düzenlenmiştir.</strong></article><article class="trust-card"><span>Okuma biçimi</span><strong>Kartlar tek bilgiye odaklanan kısa notlar sunar.</strong></article><article class="trust-card"><span>Gizlilik</span><strong>Gizlilik politikası açık biçimde yayımlanır.</strong></article></div>
+      </section>
+      <section class="daily-q" style="--accent:#866026" aria-labelledby="soru-baslik">
+        <div class="dq-head"><span class="eyebrow">Günün sorusu</span><h2 id="soru-baslik">Bugün bunu biliyor musunuz?</h2><p>Uygulamadaki kartlardan derlenmiş tek bir soru; her gün başka biri.</p></div>
+        <div class="dq-card"><p class="dq-text"></p><div class="dq-options"></div><p class="dq-note" hidden><strong class="ok">Doğru!</strong><strong class="no">Doğru cevap: <span class="dq-right"></span>.</strong> <span class="dq-exp"></span></p></div>
       </section>
       <section class="final-cta"><div><h2>KPSS tarih tekrarınızı kartlarla hızlandırın.</h2><p>Android uygulamasını Google Play üzerinden indirebilirsiniz.</p></div><a class="button light" href="https://play.google.com/store/apps/details?id=com.kpsstarihnotlari.app" target="_blank" rel="noopener">Google Play’den indir ↗</a></section>
     </main>
     <footer class="footer"><span>© 2026 <strong>M. Ali Bağcı</strong></span><a href="../">Tüm uygulamalar</a></footer>
   </div>
-  <script src="../i18n.js?v=2" defer></script>
+  <script src="../i18n.js?v=12" defer></script>
+  <script src="kpss.js?v=1" defer></script>
 </body>
 </html>

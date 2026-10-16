@@ -1,0 +1,93 @@
+/* KPSS Tarih Notları sayfası: yıl çarkı (seçilen yılın bilgileri deftere mürekkeple yazılır) ve günün sorusu.
+   style.css'in üstüne yalnız bu sayfanın parçaları eklenir; içerik ve geçişler kpss.js'ten gelir. */
+
+/* — 1. Yıl çarkı — */
+.year-wheel { padding: 86px 0; border-top: 1px solid var(--line); }
+.yw-head h2, .dq-head h2 { margin: 16px 0 10px; font-family: var(--font-display); font-size: clamp(2rem, 1.6rem + 2vw, 3.2rem); font-weight: 400; line-height: 1.05; }
+.yw-head p, .dq-head p { margin: 0; max-width: 560px; color: var(--muted); line-height: 1.6; }
+.yw-body { display: grid; grid-template-columns: .8fr 1.2fr; gap: 48px; align-items: center; margin-top: 44px; }
+.yw-year {
+  font-family: var(--font-display); font-size: clamp(5rem, 3rem + 8vw, 10rem); font-weight: 400; line-height: .9;
+  letter-spacing: -.04em; color: var(--accent); font-variant-numeric: tabular-nums;
+}
+/* Defter sayfası: çizgiler 34 px aralıklı, yazı satırlara oturur; solda kırmızı kenar boşluğu çizgisi. */
+.notebook {
+  position: relative; min-height: 272px; margin: 0; padding: 17px 28px 17px 66px;
+  border-radius: 6px 18px 18px 6px;
+  background: repeating-linear-gradient(#fbf6ea 0 33px, #e2d7bf 33px 34px);
+  box-shadow: 0 18px 40px rgba(27, 31, 43, .12), inset 0 0 0 1px rgba(27, 31, 43, .08);
+}
+.notebook::before { content: ""; position: absolute; top: 0; bottom: 0; left: 46px; width: 2px; background: rgba(179, 38, 30, .4); }
+.nb-topic, .nb-label {
+  display: block; height: 34px; line-height: 34px; color: var(--accent);
+  font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.nb-main, .nb-hap {
+  min-height: 68px; margin: 0; color: #24324f;
+  font-family: "Caveat", "Segoe Print", cursive; font-size: 27px; font-weight: 500; line-height: 34px;
+}
+/* Ekran okuyucu için tam metin (harf harf yazılan defter onlara gizli). */
+.yw-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.nb-caret { display: inline-block; width: 2px; height: 22px; margin-left: 2px; vertical-align: -3px; background: #24324f; animation: nb-blink .8s steps(1) infinite; }
+@keyframes nb-blink { 50% { opacity: 0; } }
+
+/* Çark: yıllar bir cetvel üzerinde; seçili yılın üstünde ibre. */
+.tuner { display: flex; align-items: stretch; gap: 10px; margin-top: 44px; }
+.tn-step {
+  flex: 0 0 auto; width: 48px; border: 1px solid var(--line); border-radius: 14px;
+  background: var(--paper-elevated); color: var(--ink); font: inherit; font-size: 18px; cursor: pointer;
+}
+.tn-step:hover { border-color: var(--accent); }
+.tn-step:disabled { opacity: .35; cursor: default; }
+.tn-strip {
+  flex: 1; display: flex; min-width: 0; overflow-x: auto; scroll-snap-type: x proximity;
+  border-radius: 14px; background:
+    repeating-linear-gradient(90deg, rgba(27, 31, 43, .22) 0 1px, transparent 1px 12px) 0 0 / 100% 10px no-repeat,
+    var(--paper-card);
+  box-shadow: inset 0 0 0 1px var(--line);
+  scrollbar-width: none;
+}
+.tn-strip::-webkit-scrollbar { display: none; }
+.tn-year {
+  position: relative; flex: 1 0 76px; scroll-snap-align: center;
+  padding: 24px 0 14px; border: 0; background: none; color: var(--muted);
+  font-family: var(--font-mono); font-size: 14px; cursor: pointer;
+}
+.tn-year::before { content: ""; position: absolute; top: 0; left: 50%; width: 2px; height: 16px; background: rgba(27, 31, 43, .35); transform: translateX(-50%); }
+.tn-year:hover { color: var(--ink); }
+.tn-year[aria-pressed="true"] { color: var(--accent); font-weight: 600; }
+.tn-year[aria-pressed="true"]::before { height: 22px; width: 3px; background: var(--accent); }
+.tn-year:focus-visible, .tn-step:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; border-radius: 12px; }
+
+/* — 2. Günün sorusu — */
+.daily-q { display: grid; grid-template-columns: .9fr 1.1fr; gap: 56px; align-items: center; padding: 86px 0; border-top: 1px solid var(--line); }
+.dq-card { padding: 28px; border: 1px solid var(--line); border-radius: var(--r-m); background: var(--paper-card); }
+.dq-text { margin: 0 0 18px; font-size: 19px; font-weight: 600; line-height: 1.4; }
+.dq-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.dq-options button {
+  padding: 13px 14px; border: 1px solid var(--line); border-radius: 12px;
+  background: var(--paper-elevated); color: var(--ink); font: inherit; font-size: 15px; text-align: left; cursor: pointer;
+  transition: border-color .2s ease, background .2s ease;
+}
+.dq-options button:hover:not(:disabled) { border-color: var(--accent); }
+.dq-options button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.dq-options button:disabled { cursor: default; }
+.dq-options button.is-correct { border-color: #1f8a4c; background: #e3f4e9; }
+.dq-options button.is-wrong { border-color: #b3261e; background: #fbe4e2; }
+.dq-note { margin: 16px 0 0; color: var(--muted); font-size: 14px; line-height: 1.55; }
+.dq-note strong { margin-right: 4px; }
+.dq-note .ok { color: #1f8a4c; }
+.dq-note .no { color: #b3261e; }
+.dq-card.is-right .dq-note .no, .dq-card.is-missed .dq-note .ok { display: none; }
+
+@media (max-width: 980px) {
+  .yw-body, .daily-q { grid-template-columns: 1fr; gap: 28px; }
+  .notebook { padding-left: 54px; }
+  .notebook::before { left: 36px; }
+  .nb-main, .nb-hap { font-size: 24px; }
+  .dq-options { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nb-caret { animation: none; }
+}
