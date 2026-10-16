@@ -102,6 +102,10 @@
       "Test grubuna katıl ↗": "Join the group ↗"
     },
     "/ayet-kartlari/": {
+      "Günün ayeti": "Verse of the day",
+      "Bugün için bir ayet.": "A verse for today.",
+      "Uygulamadaki Diyanet mealinden; her gün başka bir ayet.": "From the Diyanet translation in the app, a different verse each day (in Turkish).",
+      "Bir ayet daha": "Another verse",
       "Kur’an-ı Kerim mealini sade kartlarla okuyun; kaldığınız yerden devam edin, kartları kaydedin ve okuma istatistiklerinizi takip edin.": "Read Quran translations in clean cards, continue where you left off, save cards, and follow your reading statistics.",
       "Okuma & keşif · Google Play’de yayında": "Reading & discovery · Available on Google Play",
       "Kur’an-ı Kerim mealini kartlar hâlinde, sade ve dikkatinizi dağıtmayan bir arayüzle okuyun. Günlük okumanızı sakin ve düzenli biçimde sürdürün.": "Read Quran translations as cards in a clean, distraction-free interface. Keep your daily reading calm and organized.",

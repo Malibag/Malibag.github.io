@@ -1,0 +1,81 @@
+/* Ayet Kartları sayfası: "Günün ayeti". Gece mavisi bant içinde altın tezhip çerçevesi köşelerden kenar
+   ortalarına doğru yavaşça çizilir; içindeki kart "Bir ayet daha" ile yavaşça döner. Hareketler bilinçli olarak ağır.
+   Çizim .is-drawn sınıfıyla başlar (ayet.js, bölüm görününce ekler). */
+
+@property --p { syntax: "<number>"; inherits: false; initial-value: 0; }
+
+.tezhip {
+  margin: 0 0 86px; padding: 72px clamp(20px, 5vw, 64px);
+  border-radius: var(--r-l); text-align: center;
+  background: radial-gradient(circle at 50% 30%, #1d3054 0, #12203a 55%, #0d182c 100%);
+  color: #f5efe0;
+}
+.tezhip .eyebrow { justify-content: center; color: #c9a860; }
+.tezhip h2 { margin: 16px 0 10px; font-family: var(--font-display); font-size: clamp(2rem, 1.6rem + 2vw, 3.2rem); font-weight: 400; line-height: 1.05; }
+.tz-sub { margin: 0 auto; max-width: 520px; color: rgba(245, 239, 224, .7); line-height: 1.6; }
+
+/* Çerçeve: iki altın halka; her kenar iki yarımdan oluşur ve köşeden ortaya doğru uzar (--p: 0 → 1). */
+.tz-frame { position: relative; width: min(700px, 100%); margin: 44px auto 0; padding: 64px clamp(30px, 7vw, 76px); }
+.tz-ring {
+  --c: #c9a860; --w: 1.5px;
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(var(--c), var(--c)) left top / calc(var(--p) * 50%) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) right top / calc(var(--p) * 50%) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) left bottom / calc(var(--p) * 50%) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) right bottom / calc(var(--p) * 50%) var(--w) no-repeat,
+    linear-gradient(var(--c), var(--c)) left top / var(--w) calc(var(--p) * 50%) no-repeat,
+    linear-gradient(var(--c), var(--c)) left bottom / var(--w) calc(var(--p) * 50%) no-repeat,
+    linear-gradient(var(--c), var(--c)) right top / var(--w) calc(var(--p) * 50%) no-repeat,
+    linear-gradient(var(--c), var(--c)) right bottom / var(--w) calc(var(--p) * 50%) no-repeat;
+  transition: --p 2.6s cubic-bezier(.45, 0, .2, 1);
+}
+.tz-ring.inner { inset: 12px; --c: rgba(201, 168, 96, .55); --w: 1px; transition-delay: .5s; }
+.tezhip.is-drawn .tz-ring { --p: 1; }
+
+/* Köşe gülleri ve kenar ortalarındaki baklava: önce güller belirir, çizgiler ortada buluşunca baklavalar. */
+.tz-rose { position: absolute; width: 34px; height: 34px; color: #c9a860; opacity: 0; transform: scale(.6); transition: opacity 1.2s ease, transform 1.6s cubic-bezier(.3, .7, .2, 1); }
+.tz-rose.tl { top: -17px; left: -17px; }
+.tz-rose.tr { top: -17px; right: -17px; }
+.tz-rose.bl { bottom: -17px; left: -17px; }
+.tz-rose.br { bottom: -17px; right: -17px; }
+.tz-gem { position: absolute; width: 10px; height: 10px; border: 1.5px solid #c9a860; background: #12203a; transform: rotate(45deg) scale(0); transition: transform .8s ease 2.6s; }
+.tz-gem.t { top: -5px; left: calc(50% - 5px); }
+.tz-gem.b { bottom: -5px; left: calc(50% - 5px); }
+.tz-gem.l { left: -5px; top: calc(50% - 5px); }
+.tz-gem.r { right: -5px; top: calc(50% - 5px); }
+.tezhip.is-drawn .tz-rose { opacity: 1; transform: none; }
+.tezhip.is-drawn .tz-gem { transform: rotate(45deg) scale(1); }
+
+/* Ayet kartı: iki yüz üst üste; dönünce öbür yüzdeki ayet görünür. */
+.tz-card { display: grid; perspective: 1400px; opacity: 0; transition: opacity 1.4s ease 1.6s; }
+.tezhip.is-drawn .tz-card { opacity: 1; }
+.tz-face {
+  grid-area: 1 / 1; display: flex; flex-direction: column; justify-content: center; gap: 22px; min-height: 180px; margin: 0;
+  backface-visibility: hidden; transition: transform 1.6s cubic-bezier(.45, 0, .2, 1);
+}
+.tz-face.back { transform: rotateY(180deg); }
+.tz-card.is-turned .tz-face.front { transform: rotateY(-180deg); }
+.tz-card.is-turned .tz-face.back { transform: rotateY(0); }
+.tz-meal { margin: 0; font-family: var(--font-display); font-size: clamp(1.3rem, 1.05rem + 1vw, 1.75rem); font-style: italic; font-weight: 400; line-height: 1.5; }
+.tz-ref { color: #c9a860; font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; }
+.tz-more {
+  margin-top: 34px; padding: 12px 22px; border: 1px solid rgba(201, 168, 96, .6); border-radius: 99px;
+  background: transparent; color: #f5efe0; font: inherit; font-weight: 500; cursor: pointer;
+  transition: border-color .3s ease, background .3s ease;
+}
+.tz-more:hover:not(:disabled) { border-color: #c9a860; background: rgba(201, 168, 96, .1); }
+.tz-more:focus-visible { outline: 2px solid #c9a860; outline-offset: 3px; }
+.tz-more:disabled { opacity: .5; cursor: default; }
+
+@media (max-width: 700px) {
+  .tz-frame { padding: 52px 26px; }
+  .tz-rose { width: 26px; height: 26px; }
+  .tz-rose.tl, .tz-rose.tr { top: -13px; }
+  .tz-rose.bl, .tz-rose.br { bottom: -13px; }
+  .tz-rose.tl, .tz-rose.bl { left: -13px; }
+  .tz-rose.tr, .tz-rose.br { right: -13px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tz-ring, .tz-rose, .tz-gem, .tz-card, .tz-face { transition: none; }
+}

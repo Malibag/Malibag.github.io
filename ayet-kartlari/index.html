@@ -15,6 +15,7 @@
   <link rel="icon" href="../assets/mark.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,340;0,9..144,400;0,9..144,440;0,9..144,500;1,9..144,380;1,9..144,400&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"><link rel="stylesheet" href="../style.css?v=8">
+  <link rel="stylesheet" href="ayet.css?v=1">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Ayet Kartları","description":"Kur’an-ı Kerim mealini sade kartlarla okuyun; kaldığınız yerden devam edin, kartları kaydedin ve okuma istatistiklerinizi takip edin.","applicationCategory":"MobileApplication","operatingSystem":"Android","url":"https://malibag.github.io/ayet-kartlari/","image":"https://malibag.github.io/assets/social/ayet-kartlari.jpg","author":{"@type":"Person","name":"M. Ali Bağcı","email":"bagcimuhammetali@gmail.com"}}</script>
 </head>
 <body>
@@ -32,6 +33,22 @@
         </div>
         <div class="detail-gallery" aria-label="Ayet Kartları uygulama ekranları"><figure class="phone"><img src="../assets/screenshots/ayet-kartlari/ana-sayfa.webp" alt="Ayet kartlarını keşfedin" width="610" height="1210" loading="eager"></figure><figure class="phone"><img src="../assets/screenshots/ayet-kartlari/sakladiklarim.webp" alt="Önemli kartları saklayın" width="610" height="1210" loading="lazy"></figure><figure class="phone"><img src="../assets/screenshots/ayet-kartlari/istatistiklerim.webp" alt="Okuma ilerlemenizi görün" width="610" height="1210" loading="lazy"></figure></div>
       </section>
+      <section class="tezhip" aria-labelledby="ayet-baslik">
+        <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="tz-gul" viewBox="-14 -14 28 28"><circle r="13.5" fill="#12203a"/><g fill="none" stroke="currentColor" stroke-width="1"><circle r="12.5" stroke-opacity=".5"/><circle r="2.4"/><path id="tz-yaprak" d="M0-3.6C3-6 3-9.6 0-11.8C-3-9.6-3-6 0-3.6Z"/><use href="#tz-yaprak" transform="rotate(45)"/><use href="#tz-yaprak" transform="rotate(90)"/><use href="#tz-yaprak" transform="rotate(135)"/><use href="#tz-yaprak" transform="rotate(180)"/><use href="#tz-yaprak" transform="rotate(225)"/><use href="#tz-yaprak" transform="rotate(270)"/><use href="#tz-yaprak" transform="rotate(315)"/></g></symbol></svg>
+        <span class="eyebrow">Günün ayeti</span>
+        <h2 id="ayet-baslik">Bugün için bir ayet.</h2>
+        <p class="tz-sub">Uygulamadaki Diyanet mealinden; her gün başka bir ayet.</p>
+        <div class="tz-frame">
+          <span class="tz-ring" aria-hidden="true"></span><span class="tz-ring inner" aria-hidden="true"></span>
+          <svg class="tz-rose tl" aria-hidden="true"><use href="#tz-gul"/></svg><svg class="tz-rose tr" aria-hidden="true"><use href="#tz-gul"/></svg><svg class="tz-rose bl" aria-hidden="true"><use href="#tz-gul"/></svg><svg class="tz-rose br" aria-hidden="true"><use href="#tz-gul"/></svg>
+          <span class="tz-gem t" aria-hidden="true"></span><span class="tz-gem b" aria-hidden="true"></span><span class="tz-gem l" aria-hidden="true"></span><span class="tz-gem r" aria-hidden="true"></span>
+          <div class="tz-card" aria-live="polite">
+            <figure class="tz-face front"><blockquote class="tz-meal"></blockquote><figcaption class="tz-ref"></figcaption></figure>
+            <figure class="tz-face back"><blockquote class="tz-meal"></blockquote><figcaption class="tz-ref"></figcaption></figure>
+          </div>
+        </div>
+        <button class="tz-more" type="button">Bir ayet daha</button>
+      </section>
       <section class="detail-section" style="--accent:#2f634f">
         <div class="detail-intro"><div><span class="eyebrow">Uygulama hakkında</span><h2>Sakin ve düzenli bir okuma alanı.</h2><p>Puan, rozet veya yarışma baskısı olmadan; sade, saygılı ve huzurlu bir okuma deneyimi için tasarlandı.</p></div><div class="feature-list"><article class="feature-item"><b>01</b><strong>Kartlarla sakin okuma</strong><p>Ayet meallerini kısa ve anlaşılır kartlar hâlinde okuyun.</p></article><article class="feature-item"><b>02</b><strong>Kaldığınız yerden devam</strong><p>Okuma akışınıza daha sonra aynı noktadan dönün.</p></article><article class="feature-item"><b>03</b><strong>Kaydedin ve izleyin</strong><p>Beğendiğiniz kartları saklayın, okuma istatistiklerinizi takip edin.</p></article><article class="feature-item"><b>04</b><strong>21 dil desteği</strong><p>Meal içeriklerini desteklenen 21 dil arasından seçin.</p></article></div></div>
         <div class="trust-grid"><article class="trust-card"><span>Meal kaynağı</span><strong>Diyanet İşleri Başkanlığı meali esas alınarak hazırlanmıştır.</strong></article><article class="trust-card"><span>Bilgilendirme</span><strong>Fetva, tefsir veya dinî hüküm verme uygulaması değildir.</strong></article><article class="trust-card"><span>Gizlilik</span><strong>Gizlilik politikası açık biçimde yayımlanır.</strong></article></div>
@@ -40,6 +57,7 @@
     </main>
     <footer class="footer"><span>© 2026 <strong>M. Ali Bağcı</strong></span><a href="../">Tüm uygulamalar</a></footer>
   </div>
-  <script src="../i18n.js?v=2" defer></script>
+  <script src="../i18n.js?v=13" defer></script>
+  <script src="ayet.js?v=1" defer></script>
 </body>
 </html>
