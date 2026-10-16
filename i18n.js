@@ -189,6 +189,8 @@
       "Yakında": "Coming soon",
       "Google Play’den": "Google Play",
       "İndirin": "Download",
+      "Işığı açmak için ipi çek": "Pull the cord to turn on the light",
+      "Işığı aç": "Turn on the light",
       "Yolculuğu keşfet": "Explore the journey",
       "Yolculuk adımları": "Journey steps",
       "Rüyanı Anlat": "Tell Your Dream",
