@@ -16,32 +16,38 @@
   // Karanlıkta arkadaki bağlantılar klavyeyle de seçilemesin.
   const behind = [...document.querySelectorAll(".hero, .step-dots, main, .facts, .footer")];
 
+  // Konumlar SAYFA koordinatıdır (katmanlar sayfanın en üstüne bağlı); genişlik kaydırma çubuğu
+  // hariç alınır, böylece ip çekilince ya da kaydırınca yüzdeki ışık kaymaz.
   const place = () => {
     const box = img.getBoundingClientRect();
+    const vw = root.clientWidth;
     const nw = img.naturalWidth || 1254;
     const nh = img.naturalHeight || 1254;
     const scale = Math.max(box.width / nw, box.height / nh); // object-fit: cover
     const [px, py] = getComputedStyle(img).objectPosition.split(" ").map((v) => parseFloat(v) / 100);
     const w = nw * scale;
     const h = nh * scale;
-    const fx = box.left + (box.width - w) * px + w * FACE.x;
-    const fy = box.top + (box.height - h) * py + h * FACE.y;
+    const left = box.left + scrollX + (box.width - w) * px;
+    const top = box.top + scrollY + (box.height - h) * py;
+    const fx = left + w * FACE.x;
+    const fy = top + h * FACE.y;
     const r = w * FACE.r;
     root.style.setProperty("--fx", `${fx}px`);
     root.style.setProperty("--fy", `${fy}px`);
     root.style.setProperty("--r", `${r}px`);
-    const left = box.left + (box.width - w) * px;
-    const top = box.top + (box.height - h) * py;
     root.style.setProperty("--mx", `${left + w * MOON.x}px`);
     root.style.setProperty("--my", `${top + h * MOON.y}px`);
     root.style.setProperty("--mr", `${w * MOON.r}px`);
     // İp yüzün sağında, yüz hizasına kadar sarkar.
-    const cx = Math.min(innerWidth - 36, fx + Math.max(120, r * 1.4));
+    const cx = Math.min(vw - 36, fx + Math.max(120, r * 1.4));
     root.style.setProperty("--cx", `${cx}px`);
     root.style.setProperty("--len", `${Math.max(140, fy)}px`);
     // Yazı ipin altında ortalanır ama ekrandan taşmaz.
     const half = (hint?.offsetWidth ?? 0) / 2 + 12;
-    root.style.setProperty("--hx", `${Math.max(half, Math.min(cx, innerWidth - half))}px`);
+    root.style.setProperty("--hx", `${Math.max(half, Math.min(cx, vw - half))}px`);
+    // Karanlık bütün sayfayı kaplasın; önce sıfırlanır ki eski yükseklik ölçümü şişirmesin.
+    root.style.setProperty("--doc-h", "0px");
+    root.style.setProperty("--doc-h", `${root.scrollHeight}px`);
   };
 
   const setDark = (dark) => behind.forEach((el) => { el.inert = dark; });
@@ -73,5 +79,7 @@
   place();
   img.addEventListener("load", place);
   addEventListener("resize", place);
+  // Yazı tipleri ya da görseller yüklenip sayfa uzayınca karanlık ve ışık yeniden hizalansın.
+  if ("ResizeObserver" in window) new ResizeObserver(place).observe(document.body);
   cord.addEventListener("click", lightUp);
 })();

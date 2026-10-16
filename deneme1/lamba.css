@@ -1,12 +1,12 @@
 /* Deneme 1 — Rüya Kâtibi sayfası, lamba girişi. ruya.css'in üstüne yalnız karanlık katman, yüzdeki
-   ışık ve ip eklenir. Yüzün ekrandaki yeri (--fx, --fy, --r) ile ipin yeri (--cx, --len) lamba.js'ten gelir. */
-
-/* Karanlıkta sayfa kaydırılmaz; ip çekilince açılır. */
-html.is-dark, html.is-dark body { overflow: hidden; }
+   ışık ve ip eklenir. Yüzün sayfadaki yeri (--fx, --fy, --r), ipin yeri (--cx, --len) ve sayfa yüksekliği
+   (--doc-h) lamba.js'ten gelir. Katmanlar sayfanın en üstüne bağlıdır: karanlıkta sayfa kaydırılabilir,
+   ip ve yüzdeki ışık görselle birlikte yukarı çıkar (kaydırma çubuğu da hep durduğu için yüz kaymaz). */
 
 /* Gece: her yer koyu lacivert; yüz ve ay yumuşakça seçilir (iki ışık deliği, kesişen maske). */
 .darkness {
-  position: fixed; inset: 0; z-index: 80;
+  position: absolute; top: 0; left: 0; z-index: 80;
+  width: 100%; height: var(--doc-h, 100vh);
   background: rgba(5, 11, 26, .86);
   -webkit-mask-image:
     radial-gradient(circle var(--r, 140px) at var(--fx, 45%) var(--fy, 40%), rgba(0,0,0,.3) 0, rgba(0,0,0,.66) 50%, #000 100%),
@@ -21,16 +21,17 @@ html.is-dark, html.is-dark body { overflow: hidden; }
 
 /* Yüze düşen hafif, soğuk ay ışığı (ay sol üstte; ışık o yandan gelir). */
 .face-glow {
-  position: fixed; inset: 0; z-index: 81; pointer-events: none;
+  position: absolute; top: 0; left: 0; z-index: 81; pointer-events: none;
+  width: 100%; height: var(--doc-h, 100vh);
   background: radial-gradient(circle calc(var(--r, 140px) * .9) at calc(var(--fx, 45%) - var(--r, 140px) * .15) calc(var(--fy, 40%) - var(--r, 140px) * .2),
     rgba(200, 220, 255, .2) 0, rgba(160, 190, 240, .08) 45%, transparent 75%);
   mix-blend-mode: screen;
   transition: opacity 1.2s ease .2s;
 }
 
-/* Yukarıdan sarkan ip: gerçek bir düğme (fare, dokunma, Enter, Space). */
+/* Yukarıdan sarkan ip: gerçek bir düğme (fare, dokunma, Enter, Space). Sayfanın en üstüne bağlı. */
 .pull {
-  position: fixed; z-index: 90; top: 0; left: var(--cx, 70%);
+  position: absolute; z-index: 90; top: 0; left: var(--cx, 70%);
   width: 44px; height: var(--len, 34vh); margin: 0; padding: 0;
   border: 0; background: none; cursor: pointer;
   transform: translateX(-50%);
@@ -51,7 +52,7 @@ html.is-dark, html.is-dark body { overflow: hidden; }
 .pull:focus-visible { outline: none; }
 .pull:focus-visible .pull-bead { outline: 2px solid var(--gold, #c9a860); outline-offset: 4px; }
 .pull-hint {
-  position: fixed; z-index: 90; top: calc(var(--len, 34vh) + 16px); left: var(--hx, var(--cx, 70%));
+  position: absolute; z-index: 90; top: calc(var(--len, 34vh) + 16px); left: var(--hx, var(--cx, 70%));
   transform: translateX(-50%);
   font: 500 10px/1 var(--mono, monospace); letter-spacing: .28em; text-transform: uppercase;
   color: rgba(205, 218, 240, .72); white-space: nowrap; pointer-events: none;
