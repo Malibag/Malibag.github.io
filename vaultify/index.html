@@ -14,6 +14,7 @@
   <link rel="icon" href="../assets/icons/vaultify.jpg" type="image/jpeg">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,340;0,9..144,400;0,9..144,440;0,9..144,500;1,9..144,380;1,9..144,400&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"><link rel="stylesheet" href="../style.css?v=9">
+  <link rel="stylesheet" href="vaultify.css?v=1">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Vaultify: Belge Asistanı","description":"Belgelerinizi düzenlemenize, belge durumlarını takip etmenize ve önemli tarihler için hatırlatıcı oluşturmanıza yardımcı olan Android belge asistanı.","applicationCategory":"MobileApplication","operatingSystem":"Android","url":"https://malibag.github.io/vaultify/","image":"https://malibag.github.io/assets/social/vaultify.jpg","author":{"@type":"Person","name":"M. Ali Bağcı","email":"bagcimuhammetali@gmail.com"}}</script>
 </head>
 <body class="vault-page">
@@ -33,6 +34,27 @@
           <img class="vault-feature-graphic" src="../assets/social/vaultify.jpg" alt="Vaultify — Belgeler düzenli, önemli tarihler takipte" width="1280" height="625">
         </div>
       </section>
+      <section class="desk-demo" style="--accent:#7a213a" aria-labelledby="masa-baslik">
+        <div class="dd-head"><span class="eyebrow">Dağınık masadan düzenli klasörlere</span><h2 id="masa-baslik">Belgeler yerine, tarihler takibe.</h2><p>Sözleşme, poliçe, garanti, ruhsat… Her belge kendi klasörüne geçer; yaklaşan bir tarih olduğunda hatırlatıcı sizi uyarır.</p></div>
+        <div class="dd-stage">
+          <div class="dd-desk">
+            <article class="dd-doc" data-folder="sozlesme" style="--x:4%;--y:8%;--r:-8deg;--mx:0%;--my:0%"><strong>Kira sözleşmesi</strong><i></i><i></i><span>Bitiş tarihi</span></article>
+            <article class="dd-doc" data-folder="sigorta" style="--x:21%;--y:44%;--r:6deg;--mx:58%;--my:3%"><strong>Kasko poliçesi</strong><i></i><i></i><span>Yenileme tarihi</span></article>
+            <article class="dd-doc" data-folder="garanti" style="--x:39%;--y:4%;--r:-3deg;--mx:29%;--my:27%"><strong>Buzdolabı garantisi</strong><i></i><i></i><span>Garanti sonu</span></article>
+            <article class="dd-doc" data-folder="sozlesme" style="--x:56%;--y:40%;--r:9deg;--mx:1%;--my:52%"><strong>İş sözleşmesi</strong><i></i><i></i><span>Başlangıç tarihi</span></article>
+            <article class="dd-doc" data-folder="sigorta" style="--x:71%;--y:2%;--r:-10deg;--mx:59%;--my:53%"><strong>DASK poliçesi</strong><i></i><i></i><span>Yenileme tarihi</span></article>
+            <article class="dd-doc" data-folder="arac" style="--x:84%;--y:38%;--r:5deg;--mx:30%;--my:63%"><strong>Araç ruhsatı</strong><i></i><i></i><span>Muayene tarihi</span></article>
+          </div>
+          <div class="dd-folders">
+            <div class="dd-folder" data-folder="sozlesme"><strong>Sözleşmeler</strong><b>0</b></div>
+            <div class="dd-folder" data-folder="sigorta"><strong>Sigorta</strong><b>0</b></div>
+            <div class="dd-folder" data-folder="garanti"><strong>Garantiler</strong><b>0</b></div>
+            <div class="dd-folder" data-folder="arac"><strong>Araç</strong><b>0</b><svg class="dd-bell" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a1.5 1.5 0 0 1 1.5 1.5v.6A6 6 0 0 1 18 10v4.2l1.7 2.6c.4.6 0 1.2-.7 1.2H5c-.7 0-1.1-.6-.7-1.2L6 14.2V10a6 6 0 0 1 4.5-5.9v-.6A1.5 1.5 0 0 1 12 2Zm-2.5 17h5a2.5 2.5 0 0 1-5 0Z"/></svg></div>
+          </div>
+          <div class="dd-toast" role="status" hidden><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a1.5 1.5 0 0 1 1.5 1.5v.6A6 6 0 0 1 18 10v4.2l1.7 2.6c.4.6 0 1.2-.7 1.2H5c-.7 0-1.1-.6-.7-1.2L6 14.2V10a6 6 0 0 1 4.5-5.9v-.6A1.5 1.5 0 0 1 12 2Zm-2.5 17h5a2.5 2.5 0 0 1-5 0Z"/></svg><span><strong>Araç muayenesi yaklaşıyor</strong><small>Hatırlatıcı · 12 gün kaldı</small></span></div>
+        </div>
+        <div class="dd-actions"><button class="dd-btn dd-go" type="button">Düzenle</button><button class="dd-btn ghost dd-reset" type="button" hidden>Yeniden dağıt</button></div>
+      </section>
       <section class="detail-section" style="--accent:#7a213a">
         <div class="detail-intro"><div><span class="eyebrow">Esnek belge düzeni</span><h2>Her belge farklıdır.</h2><p>Vaultify, hangi bilgilerin yer alacağını ve nasıl sıralanacağını seçmenize imkân verir. Hazır formatlardan birini kullanın veya kişisel ya da profesyonel ihtiyaçlarınıza uygun özel bir format oluşturun.</p></div><div class="feature-list"><article class="feature-item"><b>01</b><strong>Kamera, galeri ve dosyalar</strong><p>Belgelerinizi kamera, galeri veya cihaz dosyalarından ekleyin.</p></article><article class="feature-item"><b>02</b><strong>Klasörler ve özel formatlar</strong><p>Kendi klasörlerinizi kullanın; hazır belge formatlarından yararlanın veya özel formatlar oluşturun.</p></article><article class="feature-item"><b>03</b><strong>İhtiyacınıza uygun alanlar</strong><p>Özel bilgiler, tarihler, notlar, parasal değerler, sayılar ve birimler ekleyin.</p></article><article class="feature-item"><b>04</b><strong>Esnek hatırlatıcılar</strong><p>Her belge için birden fazla hatırlatıcı kurun; tam tarih ve saati ya da önemli bir tarihten önceki zamanı seçin.</p></article><article class="feature-item"><b>05</b><strong>Kronolojik süreç notları</strong><p>Belgeyle ilgili gelişmeleri tarih-saat damgalı süreç notları olarak saklayın.</p></article><article class="feature-item"><b>06</b><strong>Kapsamlı arama</strong><p>Belge başlıkları, bilgi alanları ve süreç notları içerisinde arama yapın.</p></article><article class="feature-item"><b>07</b><strong>Yedekleme ve geri yükleme</strong><p>Verilerinizi yedekleyin ve gerektiğinde geri yükleyin.</p></article><article class="feature-item"><b>08</b><strong>Hesapsız, çevrimdışı ve reklamsız</strong><p>Hesap oluşturmadan, zorunlu internet bağlantısı veya reklam olmadan kayıtlarınıza erişin.</p></article></div></div>
         <div class="trust-grid"><article class="trust-card"><span>Her önemli adımı takip edin</span><strong>Bir belgenin ne zaman gönderildiğini, teslim edildiğini, yenilendiğini veya güncellendiğini kronolojik süreç notlarıyla kaydedin.</strong></article><article class="trust-card"><span>Verileriniz cihazınızda kalır</span><strong>Belgeleriniz ve uygulama kayıtlarınız yerel olarak saklanır. Verilerinizi ne zaman ve nereye aktaracağınıza siz karar verirsiniz.</strong></article><article class="trust-card"><span>Bilgilendirme</span><strong>Vaultify kişisel düzenleme ve hatırlatma aracıdır; hukuki, mali, muhasebe, belge doğrulama veya resmî kayıt hizmeti sunmaz.</strong></article></div>
@@ -41,6 +63,7 @@
     </main>
     <footer class="footer"><span>© 2026 <strong>M. Ali Bağcı</strong></span><a href="../">Tüm uygulamalar</a></footer>
   </div>
-  <script src="../i18n.js?v=3" defer></script>
+  <script src="../i18n.js?v=14" defer></script>
+  <script src="vaultify.js?v=1" defer></script>
 </body>
 </html>
