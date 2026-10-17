@@ -395,6 +395,8 @@ img { max-width: 100%; display: block; }
 
 /* — Duyarlı — */
 @media (max-width: 980px) {
+  /* Dar ekranda menü ortaya sabitlenmez, sağa yaslanır; yoksa EN düğmesi isimle çakışıyor. */
+  .site-nav { position: static; transform: none; gap: 12px; }
   .site-nav a:not(.nav-contact) { display: none; }
   .site-nav .language-switch { display:inline-flex!important; }
   .site-location { display: none; }
