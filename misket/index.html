@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Misket Yarışı · deneme</title>
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #9fd0f0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: #fff; -webkit-tap-highlight-color: transparent; }
+  canvas { display: block; touch-action: none; }
+  #hud { position: fixed; inset: 0; pointer-events: none; }
+  .panel { background: rgba(12, 18, 32, .62); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border-radius: 12px; }
+  #top { position: absolute; left: 12px; top: calc(10px + env(safe-area-inset-top, 0px)); padding: 8px 12px; }
+  #top .t { font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: .5px; }
+  #top .s { font-size: 12px; opacity: .85; margin-top: 2px; }
+  #board { position: absolute; right: 10px; top: calc(10px + env(safe-area-inset-top, 0px)); width: 196px; padding: 6px; pointer-events: auto; }
+  .row { display: flex; align-items: center; gap: 6px; font-size: 12.5px; padding: 3px 6px; border-radius: 7px; cursor: pointer; white-space: nowrap; }
+  .row:hover { background: rgba(255,255,255,.12); }
+  .row.sel { background: rgba(255, 210, 60, .3); }
+  .rk { width: 22px; text-align: right; opacity: .8; font-variant-numeric: tabular-nums; }
+  .dot { width: 11px; height: 11px; border-radius: 50%; flex: none; box-shadow: inset -2px -2px 3px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.4); }
+  .nm { overflow: hidden; text-overflow: ellipsis; flex: 1; }
+  .tm { opacity: .75; font-variant-numeric: tabular-nums; font-size: 11.5px; }
+  #btns { position: absolute; left: 50%; transform: translateX(-50%); bottom: calc(14px + env(safe-area-inset-bottom, 0px)); display: flex; gap: 8px; pointer-events: auto; }
+  #btns button { font: 600 14px system-ui, sans-serif; color: #fff; border: 0; padding: 10px 14px; border-radius: 999px; background: rgba(12,18,32,.7); cursor: pointer; }
+  #btns button.on { background: #f5b82e; color: #1b1b1b; }
+  #count { position: absolute; left: 50%; top: 38%; transform: translate(-50%, -50%); font-size: 96px; font-weight: 900; text-shadow: 0 6px 30px rgba(0,0,0,.45); }
+  #toast { position: absolute; left: 50%; top: 18%; transform: translateX(-50%); padding: 10px 18px; font-size: 18px; font-weight: 700; opacity: 0; transition: opacity .3s; }
+  #toast.on { opacity: 1; }
+  .lbl { position: absolute; left: 0; top: 0; font-size: 11.5px; font-weight: 700; padding: 2px 7px; border-radius: 6px; background: rgba(12,18,32,.72); border-left: 3px solid #fff; white-space: nowrap; will-change: transform; }
+  #res { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; pointer-events: auto; background: rgba(0,0,0,.35); }
+  #res .box { width: min(520px, calc(100% - 32px)); max-height: 80vh; overflow: auto; padding: 18px; }
+  #res h2 { margin: 0 0 6px; font-size: 22px; }
+  #res .win { font-size: 16px; margin-bottom: 12px; }
+  #res .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 10px; }
+  #res .p1 { color: #ffd54a; } #res .p2 { color: #e0e6ee; } #res .p3 { color: #f0a46a; }
+  #res button { margin-top: 14px; font: 700 15px system-ui; border: 0; border-radius: 999px; padding: 10px 18px; background: #f5b82e; cursor: pointer; }
+  #load { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #123; }
+  @media (max-width: 600px) {
+    #board { width: 150px; } .row { font-size: 11.5px; padding: 2px 4px; } .tm { display: none; }
+    #top .t { font-size: 18px; } #res .grid { grid-template-columns: 1fr; }
+  }
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<div id="load">Parkur kuruluyor…</div>
+<div id="hud">
+  <div id="top" class="panel"><div class="t" id="clock">0:00.0</div><div class="s" id="sub">Hazırlanıyor</div></div>
+  <div id="board" class="panel"></div>
+  <div id="count"></div>
+  <div id="toast" class="panel"></div>
+  <div id="labels"></div>
+  <div id="btns"><button id="bLead" class="on">Lider</button><button id="bAll">Genel</button><button id="bRe">Yeniden</button></div>
+  <div id="res"><div class="box panel"></div></div>
+</div>
+<script type="module" src="./app.js?v=1"></script>
+</body>
+</html>
