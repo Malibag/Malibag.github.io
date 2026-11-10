@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<title>Misket Yarışı · deneme</title>
+<title>Misket Yarışı</title>
 <style>
   html, body { margin: 0; height: 100%; overflow: hidden; background: #9fd0f0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: #fff; -webkit-tap-highlight-color: transparent; }
   canvas { display: block; touch-action: none; }
@@ -13,6 +13,20 @@
   #top { position: absolute; left: 12px; top: calc(10px + env(safe-area-inset-top, 0px)); padding: 8px 12px; }
   #top .t { font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: .5px; }
   #top .s { font-size: 12px; opacity: .85; margin-top: 2px; }
+  #top .h { font-size: 12.5px; font-weight: 700; color: #ffd54a; max-width: 230px; }
+  #top .n { font-size: 11.5px; opacity: .8; margin-top: 2px; }
+  #sync { position: absolute; left: 50%; top: calc(64px + env(safe-area-inset-top, 0px)); transform: translateX(-50%); padding: 6px 12px; font-size: 13px; font-weight: 700; }
+  .row.cut { border-bottom: 2px dashed rgba(255, 213, 74, .8); border-radius: 7px 7px 0 0; margin-bottom: 2px; }
+  #res .row.adv .nm { color: #b8f5a0; }
+  #bAuto { position: absolute; right: 10px; bottom: calc(66px + env(safe-area-inset-bottom, 0px)); pointer-events: auto; font: 600 13px system-ui, sans-serif; color: #1b1b1b; border: 0; padding: 8px 12px; border-radius: 999px; background: #ffd54a; cursor: pointer; }
+  #search { position: absolute; left: 50%; transform: translateX(-50%); bottom: calc(70px + env(safe-area-inset-bottom, 0px)); width: min(360px, calc(100% - 32px)); padding: 10px; pointer-events: auto; }
+  #search .bar { display: flex; gap: 6px; }
+  #sIn { flex: 1; min-width: 0; font: 15px system-ui, sans-serif; padding: 9px 12px; border-radius: 10px; border: 0; outline: none; }
+  #sClose { border: 0; border-radius: 10px; padding: 0 12px; font-size: 16px; background: rgba(255,255,255,.2); color: #fff; cursor: pointer; }
+  #sList { margin-top: 6px; max-height: 40vh; overflow: auto; }
+  #sList .row { font-size: 14px; padding: 7px 8px; }
+  #sInfo { font-size: 13.5px; line-height: 1.4; margin-top: 4px; }
+  .hint { font-size: 13px; opacity: .8; padding: 6px; }
   #board { position: absolute; right: 10px; top: calc(10px + env(safe-area-inset-top, 0px)); width: 196px; padding: 6px; pointer-events: auto; }
   .row { display: flex; align-items: center; gap: 6px; font-size: 12.5px; padding: 3px 6px; border-radius: 7px; cursor: pointer; white-space: nowrap; }
   .row:hover { background: rgba(255,255,255,.12); }
@@ -51,14 +65,17 @@
 <body>
 <div id="load">Parkur kuruluyor…</div>
 <div id="hud">
-  <div id="top" class="panel"><div class="t" id="clock">0:00.0</div><div class="s" id="sub">Hazırlanıyor</div></div>
+  <div id="top" class="panel"><div class="h" id="ttl"></div><div class="t" id="clock">0:00.0</div><div class="s" id="sub">Hazırlanıyor</div><div class="n" id="nxt"></div></div>
+  <div id="sync" class="panel" hidden>Canlı yarışa yetişiliyor…</div>
   <div id="board" class="panel"></div>
   <div id="count"></div>
   <div id="toast" class="panel"></div>
   <div id="labels"></div>
-  <div id="btns"><button id="bLead" class="on">Lider</button><button id="bAll">Genel</button><button id="bRe">Yeniden</button></div>
+  <div id="btns"><button id="bLead" class="on">Lider</button><button id="bFree">Serbest</button><button id="bFind">Misketini bul</button></div>
+  <button id="bAuto" hidden>Otomatik kamera</button>
+  <div id="search" class="panel" hidden><div class="bar"><input id="sIn" placeholder="Instagram adını yaz…" autocomplete="off" autocapitalize="off" spellcheck="false"><button id="sClose">✕</button></div><div id="sList"></div><div id="sInfo"></div></div>
   <div id="res"><div class="box panel"></div></div>
 </div>
-<script type="module" src="./app.js?v=1"></script>
+<script type="module" src="./app.js?v=3"></script>
 </body>
 </html>

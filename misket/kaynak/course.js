@@ -57,7 +57,7 @@ export function turtle(pose, segs) {
       p = add(p, mul(fwdOf(hd, pitch), ds));
       w = lerp(w0, w1, sm(t)); h = lerp(h0, h1, sm(Math.min(1, t * 3)));
       const bump = sg.bumps ? sg.bumps.amp * Math.sin(Math.PI * sg.bumps.n * t) ** 2 : 0;
-      S.push({ p: [p[0], p[1] + bump, p[2]], w, h });
+      S.push({ p: [p[0], p[1] + bump, p[2]], w, h, bm: sg.bank ?? 0.55 });
     }
     if (sg.mark) (marks[sg.mark] = marks[sg.mark] || []).push({ i0, i1: S.length - 1 });
   }
@@ -107,7 +107,7 @@ function frames(S, vBank) {
     const a = Math.max(0, i - 2), b = Math.min(n - 1, i + 2);
     let d = hd[b] - hd[a]; while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI;
     const k = d / ((s[b] - s[a]) || 1);
-    raw.push(Math.max(-0.55, Math.min(0.55, Math.atan(vBank * vBank * k / G))));
+    const bm = S[i].bm ?? 0.55; raw.push(Math.max(-bm, Math.min(bm, Math.atan(vBank * vBank * k / G))));
   }
   const bank = raw.map((_, i) => { let t = 0, c = 0; for (let j = -12; j <= 12; j++) { t += raw[Math.max(0, Math.min(n - 1, i + j))]; c++; } return t / c; });
   const L = [], U = [];
@@ -205,29 +205,34 @@ function funnel(name, C, Rr, Rh, hw, color, dir, low) {
   wall(Rr, y(Rr) - 0.05, k => y(Rr) + hwAt(k), shade(color, 1.15));
   wall(Rh, y(Rh) - 0.55, y(Rh) + 0.01, shade(color, 0.8));
   const rim = []; for (let k = 0; k <= nA; k++) rim.push(ring(Rr, y(Rr) + hwAt(k % nA), k));
-  return { name, kind: 'funnel', C, Rr, Rh, hw, y, mesh: m, rims: [rim], spoutBottom: y(Rh) - 0.55, len: 14, color, dir };
+  return { name, kind: 'funnel', C, Rr, Rh, hw, ya: a, yb: b, y, mesh: m, rims: [rim], spoutBottom: y(Rh) - 0.55, len: 14, color, dir };
 }
 
 // ---------- parkur ----------
 const COL = {
   red: [0.93, 0.27, 0.27], orange: [0.98, 0.55, 0.15], yellow: [0.98, 0.8, 0.2], green: [0.3, 0.78, 0.4],
-  teal: [0.15, 0.72, 0.72], blue: [0.25, 0.5, 0.95], purple: [0.6, 0.38, 0.9], pink: [0.95, 0.42, 0.7], white: [0.92, 0.92, 0.95]
+  teal: [0.15, 0.72, 0.72], blue: [0.25, 0.5, 0.95], purple: [0.6, 0.38, 0.9], pink: [0.95, 0.42, 0.7], white: [0.92, 0.92, 0.95],
+  lime: [0.6, 0.85, 0.25]
 };
+export const DT = 1 / 120;
 
 export function buildCourse(L = {}) {
-  const pieces = [], kins = [], pegs = [];
+  const pieces = [], kins = [], pegs = [], bumpers = [];
   const P = pc => { pieces.push(pc); return pieces.length - 1; };
 
-  // A: başlangıç -> büyük iniş -> eğimli U dönüş -> tümsekler -> huni 1
+  // A: başlangıç -> büyük iniş -> eğimli U dönüş -> BURGU -> tümsekler -> huni 1
   const A = turtle({ p: [0, 0, 0], hd: 0, pitch: 5, w: 3.0, h: 0.7 }, L.A || [
     { len: 7.5, pitch: 5 },
     { len: 4, w: 1.9 },
     { len: 15, pitch: 33, rv: 12 },
-    { len: 7, pitch: 7, rv: 8 },
-    { len: 24, turn: 180, pitch: 6, h: 0.85 },
-    { len: 18, pitch: 8, bumps: { n: 5, amp: 0.2 }, h: 0.7 },
+    { len: 7, pitch: 7, rv: 8, h: 1.1 },
+    { len: 24, turn: 180, pitch: 6, h: 1.1 },
+    { len: 5, pitch: 7, w: 1.7, h: 1.0 },
+    { len: 34, turn: 540, pitch: 7.5, h: 1.0, mark: 'helix' },
+    { len: 5, pitch: 6, h: 0.8, w: 1.9 },
+    { len: 12, pitch: 8, bumps: { n: 4, amp: 0.2 }, h: 0.75 },
     { len: 13, turn: -100, pitch: 9, h: 0.85 },
-    { len: 8, pitch: 18, rv: 9 },
+    { len: 8, pitch: 14, rv: 9 },
     { len: 6, pitch: 3 },
     { len: 12, turn: 70, pitch: 2, h: 0.8 },
   ]);
@@ -235,24 +240,28 @@ export function buildCourse(L = {}) {
   const gateI = 37;
   kins.push(gateKin(pieces[iA], gateI));
 
-  const f1 = funnelAt('H1', A.end, 3.0, 0.43, 1.3, +1, COL.yellow);
+  const f1 = funnelAt('H1', A.end, 3.0, 0.43, 1.3, L.f1side ?? +1, COL.yellow);
   const iF1 = P(f1);
 
-  // B: huniden düşüş -> dik iniş -> çivili tahta -> çarklı kapı -> zikzak -> çatal
+  // B: huniden düşüş -> çivili tahta -> çark -> KESKİN KESMELER (yaylı) -> zikzak -> çatal
   const B0 = trayStart(f1, (L.hdB ?? 200) * D);
   const B = turtle(B0, L.B || [
     { len: 3, pitch: 8 },
     { len: 4, w: 1.6, pitch: 14, h: 0.7 },
     { len: 9, pitch: 30, rv: 10 },
-    { len: 4, pitch: 20, w: 4.6, h: 1.0 },
+    { len: 4, pitch: 20, w: 4.6, h: 1.3 },
     { len: 16, pitch: 22, mark: 'pegs' },
     { len: 5, w: 1.6, pitch: 10, h: 0.9 },
     { len: 10, turn: -60, pitch: 7 },
     { len: 7, pitch: 6, w: 1.7, mark: 'wheel' },
-    { len: 22, turn: 170, pitch: 7, h: 0.9 },
-    { len: 9, pitch: 27, rv: 10, h: 0.75 },
-    { len: 6, pitch: 8 },
-    { len: 20, turn: -170, pitch: 6, h: 0.9 },
+    { len: 6, pitch: 9, h: 1.05 },
+    { len: 3.2, turn: 95, pitch: 9, h: 1.1, bank: 0.12, mark: 'sharp' },
+    { len: 2.5, pitch: 9, bank: 0.12 },
+    { len: 3.2, turn: -95, pitch: 9, h: 1.1, bank: 0.12, mark: 'sharp' },
+    { len: 4, pitch: 9, h: 0.9 },
+    { len: 13, turn: 120, pitch: 8, h: 0.9 },
+    { len: 7, pitch: 24, rv: 9, h: 0.75 },
+    { len: 11, turn: -120, pitch: 7, h: 0.9 },
     { len: 4, pitch: 7, w: 2.25, h: 0.6 },
     { len: 8, pitch: 8, mark: 'split' },
   ]);
@@ -260,15 +269,16 @@ export function buildCourse(L = {}) {
   addPegs(pegs, pieces[iB], B.marks.pegs[0], 0.85, 1.0);
   addPegs(pegs, pieces[iB], B.marks.split[0], 0.72, 1.3);
   kins.push(wheelKin(pieces[iB], Math.round((B.marks.wheel[0].i0 + B.marks.wheel[0].i1) / 2)));
+  B.marks.sharp.forEach((mk, k) => addSprings(bumpers, pieces[iB], mk, k ? +1 : -1));
 
-  // Çatal: 3 yol, sonra yeniden birleşme
+  // Çatal: 3 ayrı yol (duvarlar çakışmasın diye aralıklı), sonunda geniş toplama teknesine dökülür
   const fk = B.end, Fw = fwdOf(fk.hd, 0), Lw = leftOf(fk.hd);
   const loc = (f, l, dy) => add(add(add(fk.p, mul(Fw, f)), mul(Lw, l)), [0, dy, 0]);
-  const FL = 34, DR = 7, lw = 0.75;
+  const FL = 34, DR = 7, lw = 0.75, LO = 0.75;
   const laneDefs = [
-    { name: 'Uçurum', color: COL.orange, pts: [[-0.2, .75, 0.02], [2, .75, -.15], [6, 2.0, -.5], [10, 3.4, -.95], [13, 3.9, -1.35], [16.5, 3.9, -4.6], [19.5, 3.6, -5.9], [23, 2.9, -6.3], [27, 1.8, -6.6], [31, 0.85, -6.85], [FL + 0.2, .75, -DR + 0.03]] },
+    { name: 'Uçurum', color: COL.orange, pts: [[-0.2, LO, 0.02], [2, LO, -.15], [6, 2.1, -.5], [10, 3.5, -.95], [13, 4.0, -1.35], [16.5, 4.0, -4.6], [19.5, 3.7, -5.9], [23, 3.0, -6.3], [27, 1.9, -6.6], [31, 0.95, -6.85], [FL + 0.2, LO, -DR + 0.03]] },
     { name: 'Tümsek', color: COL.green, pts: [] },
-    { name: 'Kıvrım', color: COL.purple, pts: [[-0.2, -.75, 0.02], [3, -.75, -.4], [7, -2.6, -1.0], [11, -5.2, -1.8], [15, -6.3, -2.7], [19, -5.2, -3.6], [22.5, -3.2, -4.4], [25.5, -3.4, -5.2], [29, -2.0, -6.2], [32, -0.9, -6.85], [FL + 0.2, -.75, -DR + 0.03]] },
+    { name: 'Kıvrım', color: COL.purple, pts: [[-0.2, -LO, 0.02], [3, -LO, -.4], [7, -2.7, -1.0], [11, -5.3, -1.8], [15, -6.4, -2.7], [19, -5.3, -3.6], [22.5, -3.3, -4.4], [25.5, -3.5, -5.2], [29, -2.1, -6.2], [32, -1.0, -6.85], [FL + 0.2, -LO, -DR + 0.03]] },
   ];
   for (let f = 0; f < FL; f += 2.5) {
     const ff = f === 0 ? -0.2 : f, bump = (f > 3 && f < FL - 3 && Math.round(f / 2.5) % 2) ? 0.22 : 0;
@@ -278,38 +288,65 @@ export function buildCourse(L = {}) {
   const lanes = [];
   for (const ld of laneDefs) lanes.push(P(chute(ld.name, spline(ld.pts.map(q => loc(...q)), lw, 0.55).S, { color: ld.color, vBank: 4 })));
 
-  // C: toplayıcı daralma -> iniş -> rampa (sıçrama)
-  const C0 = { p: loc(FL, 0, -DR), hd: fk.hd, pitch: 6, w: 2.25, h: 0.6 };
+  // C: geniş toplama teknesi (yollar üstten dökülür) -> daralma -> iniş -> rampa (sıçrama)
+  const C0 = { p: loc(FL - 0.4, 0, -DR - 0.45), hd: fk.hd, pitch: 6, w: 2.95, h: 0.3 };
   const Cc = turtle(C0, L.C || [
+    { len: 2, pitch: 6, h: 0.75 },
     { len: 9, w: 1.25, pitch: 9, h: 0.8 },
     { len: 10, turn: 40, pitch: 12 },
     { len: 8, pitch: 22, rv: 9, w: 1.5 },
     { len: 3.2, pitch: -16, rv: 3.5 },
   ]);
-  const iC = P(chute('C', Cc.S, { color: COL.teal }));
+  const iC = P(chute('C', Cc.S, { color: COL.teal, capStart: true }));
 
-  // D: iniş tablası -> dönen kol -> virajlar -> huni 2
+  // D: iniş tablası -> dönen kol -> BALON ALANI -> virajlar -> huni 2
   const ce = Cc.end, cF = fwdOf(ce.hd, 0);
   const D0 = { p: add(add(ce.p, mul(cF, -0.9)), [0, -2.6, 0]), hd: ce.hd, pitch: 5, w: 2.8, h: 1.4 };
   const Dd = turtle(D0, L.D || [
     { len: 15, pitch: 5 },
     { len: 4, w: 3.6, h: 0.9, pitch: 5 },
     { len: 8, pitch: 5, mark: 'spin' },
-    { len: 4, w: 1.6, pitch: 9 },
-    { len: 18, turn: -130, pitch: 8, h: 0.9 },
-    { len: 10, pitch: 20, rv: 9 },
-    { len: 14, turn: 110, pitch: 4, h: 0.9 },
-    { len: 8, pitch: 2 },
+    { len: 3, pitch: 7, w: 4.2, h: 1.0 },
+    { len: 13, pitch: 8, mark: 'balloons' },
+    { len: 4, w: 1.6, pitch: 9, h: 0.9 },
+    { len: 14, turn: -130, pitch: 9, h: 0.95 },
+    { len: 8, pitch: 20, rv: 9 },
+    { len: 10, turn: 110, pitch: 4, h: 0.95 },
+    { len: 6, pitch: 2 },
   ]);
   const iD = P(chute('D', Dd.S, { color: COL.pink, capStart: true }));
   kins.push(spinKin(pieces[iD], Math.round((Dd.marks.spin[0].i0 + Dd.marks.spin[0].i1) / 2)));
+  addBalloons(bumpers, pieces[iD], Dd.marks.balloons[0]);
 
   const f2 = funnelAt('H2', Dd.end, 3.6, 0.43, 1.3, L.f2side ?? -1, COL.teal);
   const iF2 = P(f2);
 
-  // E: final — büyük düşüş -> bitiş düzlüğü
+  // E: huni 2 altı -> iniş -> KESKİN KESMELER (yaylı) -> yavaşlatan tepe -> huni 3
   const E0 = trayStart(f2, Dd.end.hd + (L.hdE ?? 150) * D);
   const E = turtle(E0, L.E || [
+    { len: 3, pitch: 8 },
+    { len: 5, pitch: 12, w: 1.6, h: 0.9 },
+    { len: 8, pitch: 20, rv: 9 },
+    { len: 3, pitch: 6, h: 1.45 },
+    { len: 3.4, turn: -110, pitch: 9, h: 1.45, bank: 0.12, mark: 'sharp' },
+    { len: 3, pitch: 9, bank: 0.12 },
+    { len: 3.4, turn: 110, pitch: 9, h: 1.45, bank: 0.12, mark: 'sharp' },
+    { len: 4, pitch: 10, h: 0.9 },
+    { len: 5, pitch: 14 },
+    { len: 6, pitch: -7, rv: 6, h: 0.9 },
+    { len: 3, pitch: 12, rv: 5 },
+    { len: 14, turn: 80, pitch: 6 },
+    { len: 6, pitch: 3, w: 1.8 },
+  ]);
+  const iE = P(chute('E', E.S, { color: COL.lime, capStart: true }));
+  E.marks.sharp.forEach((mk, k) => addSprings(bumpers, pieces[iE], mk, k ? -1 : +1));
+
+  const f3 = funnelAt('H3', E.end, 3.6, 0.43, 1.3, L.f3side ?? +1, COL.purple);
+  const iF3 = P(f3);
+
+  // F: final — büyük düşüş -> bitiş düzlüğü
+  const F0 = trayStart(f3, E.end.hd + (L.hdF ?? 200) * D);
+  const Fn = turtle(F0, L.F || [
     { len: 3, pitch: 8 },
     { len: 5, pitch: 10, w: 1.8, h: 0.8 },
     { len: 18, pitch: 38, rv: 12 },
@@ -317,27 +354,28 @@ export function buildCourse(L = {}) {
     { len: 22, pitch: 3, w: 2.6, h: 1.0 },
     { len: 14, pitch: -7, h: 1.1 },
   ]);
-  const iE = P(chute('E', E.S, { color: COL.white, capStart: true, capEnd: true }));
+  const iF = P(chute('F', Fn.S, { color: COL.white, capStart: true, capEnd: true }));
   const finishS = 3 + 5 + 18 + 9 + 18;
 
   const link = (a, ...b) => { pieces[a].next = b; };
-  link(iA, iF1); link(iF1, iB); link(iB, ...lanes); lanes.forEach(l => { link(l, iC); pieces[l].alt = lanes.filter(x => x !== l); }); link(iC, iD); link(iD, iF2); link(iF2, iE); link(iE);
-  const order = [iA, iF1, iB, lanes, iC, iD, iF2, iE];
+  link(iA, iF1); link(iF1, iB); link(iB, ...lanes); lanes.forEach(l => { link(l, iC); pieces[l].alt = lanes.filter(x => x !== l); });
+  link(iC, iD); link(iD, iF2); link(iF2, iE); link(iE, iF3); link(iF3, iF); link(iF);
+  const order = [iA, iF1, iB, lanes, iC, iD, iF2, iE, iF3, iF];
   let off = 0;
   for (const o of order) {
     if (Array.isArray(o)) { const Lm = Math.min(...o.map(i => pieces[i].len)); o.forEach(i => { pieces[i].pOff = off; pieces[i].scale = Lm / pieces[i].len; }); off += Lm; }
     else { pieces[o].pOff = off; pieces[o].scale = 1; off += pieces[o].len; }
   }
-  const finishP = pieces[iE].pOff + finishS;
+  const finishP = pieces[iF].pOff + finishS;
 
   let minY = Infinity;
   for (const pc of pieces) for (let i = 1; i < pc.mesh.pos.length; i += 3) minY = Math.min(minY, pc.mesh.pos[i]);
-  shiftAll(pieces, kins, pegs, 1.5 - minY);
+  shiftAll(pieces, kins, pegs, bumpers, 1.5 - minY);
 
-  return { pieces, kins, pegs, start: iA, gate: gateI, lanes, finish: { piece: iE, s: finishS, p: finishP }, total: off };
+  return { pieces, kins, pegs, bumpers, start: iA, gate: gateI, lanes, finish: { piece: iF, s: finishS, p: finishP }, total: off };
 }
 
-function shiftAll(pieces, kins, pegs, dy) {
+function shiftAll(pieces, kins, pegs, bumpers, dy) {
   const sh = p => { p[1] += dy; };
   for (const pc of pieces) {
     for (let i = 1; i < pc.mesh.pos.length; i += 3) pc.mesh.pos[i] += dy;
@@ -347,6 +385,7 @@ function shiftAll(pieces, kins, pegs, dy) {
   }
   for (const k of kins) k.base[1] += dy;
   for (const p of pegs) p.p[1] += dy;
+  for (const b of bumpers) b.p[1] += dy;
 }
 
 function funnelAt(name, end, Rr, Rh, hw, side, color) {
@@ -369,15 +408,28 @@ function addPegs(pegs, pc, mk, gapX, gapS) {
       pegs.push({ p: add(F.P[i], mul(F.L[i], a)), u: F.U[i], r: 0.07, h: 0.45 });
   }
 }
+// Yay: keskin virajın dış duvarındaki geri teptiren plaka (side: +1 sol duvar, -1 sağ duvar)
+function addSprings(bumpers, pc, mk, side) {
+  for (const t of [0.3, 0.55, 0.8]) {
+    const i = Math.round(mk.i0 + (mk.i1 - mk.i0) * t), F = pc.F;
+    const p = add(add(F.P[i], mul(F.L[i], side * (pc.W[i] / 2 - 0.07))), mul(F.U[i], 0.42));
+    bumpers.push({ kind: 'spring', shape: 'box', p, q: frameQuat(pc, i), he: [0.32, 0.2, 0.035], n: mul(F.L[i], -side) });
+  }
+}
+// Balonlar: geniş tablada misketi geri teptiren yuvarlak tamponlar
+function addBalloons(bumpers, pc, mk) {
+  const rows = [[-0.6, 0.6], [-1.25, 0, 1.25], [-0.6, 0.6], [-1.25, 0, 1.25], [0]];
+  const n = mk.i1 - mk.i0;
+  rows.forEach((lat, k) => {
+    const i = Math.round(mk.i0 + n * (0.1 + 0.8 * k / (rows.length - 1))), F = pc.F;
+    for (const a of lat) bumpers.push({ kind: 'balloon', shape: 'ball', r: 0.3, p: add(add(F.P[i], mul(F.L[i], a)), mul(F.U[i], 0.3)), q: [0, 0, 0, 1], u: F.U[i] });
+  });
+}
 // ---------- hareketli parçalar ----------
 function frameQuat(pc, i) { return quatFromBasis(pc.F.T[i], pc.F.U[i], mul(pc.F.L[i], -1)); } // yerel x=T, y=U, z=-L
 function gateKin(pc, i) {
   const q = frameQuat(pc, i), w = pc.W[i];
-  return {
-    type: 'gate', base: add(pc.F.P[i], mul(pc.F.U[i], 0.45)), q, up: pc.F.U[i],
-    parts: [{ shape: 'box', he: [0.05, 0.45, w / 2 - 0.02], p: [0, 0, 0], q: [0, 0, 0, 1] }],
-    pose(t, open) { const lift = open == null ? 0 : Math.min(1.4, Math.max(0, (t - open) * 3)); return { p: add(this.base, mul(this.up, lift)), q: this.q }; }
-  };
+  return { type: 'gate', base: add(pc.F.P[i], mul(pc.F.U[i], 0.45)), q0: q, up: pc.F.U[i], parts: [{ shape: 'box', he: [0.05, 0.45, w / 2 - 0.02], p: [0, 0, 0], q: [0, 0, 0, 1] }] };
 }
 function wheelKin(pc, i) {
   // yarım genişlikte çark: sol yarıdaki misketleri tutar/fırlatır, sağ yarı serbest
@@ -387,18 +439,36 @@ function wheelKin(pc, i) {
     const a = 2 * Math.PI * k / 5;
     parts.push({ shape: 'box', he: [R / 2 - 0.02, 0.025, hz], p: [Math.cos(a) * R / 2, Math.sin(a) * R / 2, zc], q: quatAxis([0, 0, 1], a) });
   }
-  return {
-    type: 'wheel', base: add(pc.F.P[i], mul(pc.F.U[i], R + 0.03)), q0, w: 2.6,
-    parts, pose(t) { return { p: this.base, q: quatMul(this.q0, quatAxis([0, 0, 1], this.w * t)) }; }
-  };
+  return { type: 'wheel', base: add(pc.F.P[i], mul(pc.F.U[i], R + 0.03)), q0, dq: quatAxis([0, 0, 1], 2.6 * DT), parts };
 }
 function spinKin(pc, i) {
   const q0 = frameQuat(pc, i), R = 1.2;
   return {
-    type: 'spin', base: add(pc.F.P[i], mul(pc.F.U[i], 0.17)), q0, w: 1.3,
+    type: 'spin', base: add(pc.F.P[i], mul(pc.F.U[i], 0.17)), q0, dq: quatAxis([0, 1, 0], 1.3 * DT),
     parts: [
       { shape: 'box', he: [R, 0.14, 0.05], p: [0, 0, 0], q: [0, 0, 0, 1] },
-      { shape: 'cyl', r: 0.12, hh: 0.3, p: [0, 0.16, 0], q: [0, 0, 0, 1] }],
-    pose(t) { return { p: this.base, q: quatMul(this.q0, quatAxis([0, 1, 0], this.w * t)) }; }
+      { shape: 'cyl', r: 0.12, hh: 0.3, p: [0, 0.16, 0], q: [0, 0, 0, 1] }]
   };
+}
+
+// ---------- dışa aktarma: tüm sayılar sabitlenir, her cihaz aynı veriyi okur ----------
+export function exportCourse(c) {
+  const r = (v, k = 1e4) => Math.round(v * k) / k;
+  const ra = (a, k) => a.map(v => Array.isArray(v) ? ra(v, k) : r(v, k));
+  const pieces = c.pieces.map(pc => {
+    const o = {
+      name: pc.name, kind: pc.kind, color: ra(pc.color, 1e3), len: r(pc.len), pOff: r(pc.pOff), scale: r(pc.scale, 1e6), next: pc.next || [], alt: pc.alt || [],
+      mesh: { pos: ra(pc.mesh.pos, 1e4), idx: pc.mesh.idx, col: ra(pc.mesh.col, 1e3) }, rims: pc.rims.map(rm => ra(rm, 1e3))
+    };
+    if (pc.kind === 'chute') Object.assign(o, { F: { P: ra(pc.F.P, 1e5), T: ra(pc.F.T, 1e5), L: ra(pc.F.L, 1e5), U: ra(pc.F.U, 1e5), s: ra(pc.F.s, 1e5) }, W: ra(pc.W, 1e4), H: ra(pc.H, 1e4) });
+    else Object.assign(o, { C: ra(pc.C, 1e5), Rr: pc.Rr, Rh: pc.Rh, hw: pc.hw, ya: r(pc.ya, 1e9), yb: pc.yb, spoutBottom: r(pc.spoutBottom, 1e5) });
+    return o;
+  });
+  const pegs = c.pegs.map(pg => { const q = quatYto(pg.u), cc = add(pg.p, mul(pg.u, pg.h / 2)); return { c: ra(cc, 1e5), q: ra(q, 1e7), r: pg.r, h: pg.h }; });
+  const kins = c.kins.map(k => ({
+    type: k.type, base: ra(k.base, 1e5), q0: ra(k.q0, 1e8), up: k.up ? ra(k.up, 1e6) : undefined, dq: k.dq ? ra(k.dq, 1e12) : undefined,
+    parts: k.parts.map(pt => ({ shape: pt.shape, he: pt.he ? ra(pt.he, 1e5) : undefined, r: pt.r, hh: pt.hh != null ? r(pt.hh, 1e5) : undefined, p: ra(pt.p, 1e5), q: ra(pt.q, 1e8) }))
+  }));
+  const bumpers = c.bumpers.map(b => ({ kind: b.kind, shape: b.shape, p: ra(b.p, 1e5), q: ra(b.q, 1e8), he: b.he, r: b.r, n: b.n ? ra(b.n, 1e4) : undefined, u: b.u ? ra(b.u, 1e4) : undefined }));
+  return { v: 2, MR, G, DT, pieces, pegs, kins, bumpers, start: c.start, gate: c.gate, lanes: c.lanes, finish: { piece: c.finish.piece, s: c.finish.s, p: r(c.finish.p) }, total: r(c.total) };
 }
