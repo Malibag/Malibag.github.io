@@ -2,12 +2,13 @@
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { ConvexGeometry } from 'three/addons/geometries/ConvexGeometry.js';
 import RAPIER from 'https://cdn.jsdelivr.net/npm/@dimforge/rapier3d-deterministic-compat@0.19.3/rapier.mjs';
-import { makeSim, funnelY } from './sim.js';
-import { SLOTS, HEAT_SEC, ADV, skeleton, slotStart, trDate, raceName } from './turnuva.js';
+import { makeSim, funnelY, OPEN_T } from './sim.js?v=4';
+import { SLOTS, HEAT_SEC, ADV, skeleton, slotStart, trDate, raceName } from './turnuva.js?v=4';
 
 const Q = new URLSearchParams(location.search);
-const VER = '3';
+const VER = '4';
 const [course, NAMES] = await Promise.all([
   fetch('course.json?v=' + VER).then(r => r.json()),
   fetch('katilimcilar.json?v=' + VER).then(r => r.json()),
@@ -77,8 +78,8 @@ course.pieces.forEach((pc, pi) => {
   for (const rim of pc.rims) {
     const pts = rim.filter((_, i) => i % 3 === 0 || i === rim.length - 1).map(p => new THREE.Vector3(...p));
     if (pts.length < 2) continue;
-    const curve = new THREE.CatmullRomCurve3(pts, pc.kind === 'funnel');
-    const tube = new THREE.Mesh(new THREE.TubeGeometry(curve, pts.length * 2, 0.05, 6, pc.kind === 'funnel'), rimMat);
+    const curve = new THREE.CatmullRomCurve3(pts, !!pc.rimClosed);
+    const tube = new THREE.Mesh(new THREE.TubeGeometry(curve, pts.length * 2, 0.05, 6, !!pc.rimClosed), rimMat);
     tube.castShadow = true; scene.add(tube);
   }
   if (pc.kind === 'chute') pc.F.P.forEach((p, i) => { if (i % 3 === 0) allPts.push([p[0], p[1], p[2], pc.W[i] / 2, pc]); });
@@ -162,7 +163,12 @@ const stripeTex = (() => {
 })();
 const bumpVis = course.bumpers.map((b, k) => {
   const grp = new THREE.Group(); grp.position.set(...b.p); grp.quaternion.set(...b.q);
-  if (b.kind === 'balloon') {
+  if (b.kind === 'bpeg') { // balon çubuk: şişkin, parlak, çarpınca esner
+    const hue = [0xff3b5c, 0x3bb4ff, 0xffd23b, 0x7bff5a, 0xc56bff, 0xff8a2b][k % 6];
+    const mat = new THREE.MeshPhysicalMaterial({ color: hue, roughness: 0.15, clearcoat: 1, clearcoatRoughness: 0.1, emissive: hue, emissiveIntensity: 0 });
+    const s = new THREE.Mesh(new THREE.CapsuleGeometry(b.r, b.hh * 2 - b.r * 2, 6, 16), mat); s.castShadow = true; grp.add(s);
+    grp.userData = { mat, mesh: s, pulse: 0 };
+  } else if (b.kind === 'balloon') {
     const hue = [0xff3b5c, 0x3bb4ff, 0xffd23b, 0x7bff5a, 0xc56bff][k % 5];
     const mat = new THREE.MeshPhysicalMaterial({ color: hue, roughness: 0.15, clearcoat: 1, clearcoatRoughness: 0.1, emissive: hue, emissiveIntensity: 0 });
     const s = new THREE.Mesh(new THREE.SphereGeometry(b.r, 24, 16), mat); s.castShadow = true; grp.add(s);
@@ -176,10 +182,39 @@ const bumpVis = course.bumpers.map((b, k) => {
   scene.add(grp); return grp;
 });
 
+// sabit katı engeller: çatal ayırıcıları (beyaz), fırlatma rampası (sarı)
+for (const bl of course.blocks || []) {
+  const g = new ConvexGeometry(bl.pts.map(p => new THREE.Vector3(...p)));
+  const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: new THREE.Color().setRGB(...bl.color.map(lin)), roughness: 0.35, metalness: 0.1, flatShading: true }));
+  m.castShadow = m.receiveShadow = true; scene.add(m);
+}
+// hız şeridi: yolun sol yarısında akan oklar
+const arrowTex = (() => {
+  const c = document.createElement('canvas'); c.width = 64; c.height = 64; const g = c.getContext('2d');
+  g.fillStyle = '#1b2a6b'; g.fillRect(0, 0, 64, 64);
+  g.strokeStyle = '#ffe14a'; g.lineWidth = 10; g.lineJoin = 'miter'; g.beginPath(); g.moveTo(10, 46); g.lineTo(32, 20); g.lineTo(54, 46); g.stroke();
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.wrapS = t.wrapT = THREE.RepeatWrapping; t.anisotropy = 4; return t;
+})();
+for (const bz of course.boosts || []) {
+  const F = course.pieces[bz.piece].F, pos = [], uv = [], idx = [];
+  for (let i = bz.i0; i <= bz.ir; i++) {
+    for (const [a, u] of [[bz.lat0 + 0.06, 0], [bz.lat1 - 0.14, 1]]) { for (let d = 0; d < 3; d++) pos.push(F.P[i][d] + F.L[i][d] * a + F.U[i][d] * 0.014); uv.push(u * 1.6, F.s[i] / 0.7); }
+    if (i < bz.ir) { const b = (i - bz.i0) * 2; idx.push(b, b + 2, b + 1, b + 1, b + 2, b + 3); }
+  }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); g.setIndex(idx);
+  scene.add(new THREE.Mesh(g, new THREE.MeshBasicMaterial({ map: arrowTex, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: -6, polygonOffsetUnits: -12 })));
+}
+
 // hareketli parçalar
 const kinGroups = course.kins.map(k => {
   const grp = new THREE.Group();
-  const col = { gate: 0xf2f2f2, wheel: 0xffc21a, spin: 0xff4a4a }[k.type];
+  const col = { gate: 0xf2f2f2, wheel: 0xffc21a, spin: 0xff4a4a, swing: 0xff7a1a }[k.type];
+  if (k.type === 'swing') { // çekicin asıldığı direkler + kiriş (sabit)
+    const fr = new THREE.Group(), fm = new THREE.MeshStandardMaterial({ color: 0x2b2f36, roughness: 0.4, metalness: 0.6 }), z = k.span / 2 + 0.12;
+    for (const s of [-1, 1]) { const p = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, k.H + 0.25, 10), fm); p.position.set(0, -k.H / 2 + 0.12, s * z); p.castShadow = true; fr.add(p); }
+    const beam = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 2 * z + 0.14, 10), fm); beam.rotation.x = Math.PI / 2; beam.position.y = 0.1; beam.castShadow = true; fr.add(beam);
+    fr.position.set(...k.base); fr.quaternion.set(...k.q0); scene.add(fr);
+  }
   const mat = new THREE.MeshStandardMaterial({ color: col, roughness: 0.35, metalness: 0.15 });
   const hub = new THREE.MeshStandardMaterial({ color: 0x2b2f36, roughness: 0.4, metalness: 0.6 });
   for (const pt of k.parts) {
@@ -304,11 +339,11 @@ function syncMarbles() {
   marbles.instanceMatrix.needsUpdate = true;
   course.kins.forEach((k, i) => { const b = sim.kinBodies[i], t = b.translation(), r = b.rotation(); kinGroups[i].position.set(t.x, t.y, t.z); kinGroups[i].quaternion.set(r.x, r.y, r.z, r.w); });
   bumpVis.forEach((g, k) => { // yay/balon çarpma efekti
-    const b = course.bumpers[k], ud = g.userData, R2 = b.kind === 'balloon' ? 0.26 : 0.2; let hit = false;
+    const b = course.bumpers[k], ud = g.userData, R2 = b.kind === 'balloon' ? 0.26 : b.kind === 'bpeg' ? 0.09 : 0.2; let hit = false;
     for (let m = 0; m < ids.length && !hit; m++) { const t = sim.bodies[m].translation(), dx = t.x - b.p[0], dy = t.y - b.p[1], dz = t.z - b.p[2]; if (dx * dx + dy * dy + dz * dz < R2) hit = true; }
     ud.pulse = hit ? 1 : Math.max(0, ud.pulse - 0.06);
     ud.mat.emissiveIntensity = ud.pulse * 0.9;
-    const s = 1 + ud.pulse * (b.kind === 'balloon' ? 0.18 : 0.08); ud.mesh.scale.set(s, b.kind === 'balloon' ? 1 / Math.sqrt(s) : s, s);
+    const soft = b.kind === 'balloon' || b.kind === 'bpeg', s = 1 + ud.pulse * (b.kind === 'balloon' ? 0.18 : b.kind === 'bpeg' ? 0.25 : 0.08); ud.mesh.scale.set(s, soft ? 1 / Math.sqrt(s) : s, s);
   });
 }
 
@@ -346,7 +381,7 @@ function setMode(m) { // 'lead' | 'free' | 'follow'
 }
 function updateAutoChip() { $('bAuto').hidden = !(camManual && !camFree); }
 function autoCam(dt, rank) {
-  if (!sim || sim.t < 3.5 || target == null) return false;
+  if (!sim || sim.t < OPEN_T - 0.5 || target == null) return false;
   const id = targetId(rank), b = sim.bodies[id], t = b.translation(), v = b.linvel(), pc = course.pieces[sim.piece[id]];
   const p = tmpL.set(t.x, t.y, t.z);
   if (pc.kind === 'funnel') {
@@ -392,7 +427,7 @@ function updateCam(dt, rank) {
   }
   const gy = terrainH(cam.position.x, cam.position.z) + 0.8; if (cam.position.y < gy) cam.position.y = gy;
   cam.lookAt(controls.target);
-  if (sim && target != null && sim.t > 3.5) {
+  if (sim && target != null && sim.t > OPEN_T - 0.5) {
     const q = sim.bodies[targetId(rank)].translation();
     marker.visible = true; marker.position.set(q.x, q.y + 0.62 + Math.sin(performance.now() / 180) * 0.06, q.z);
   } else marker.visible = false;
@@ -506,8 +541,8 @@ function updateUI(dt, rank) {
   if (sim && !shownWin && sim.nFin > 0) { shownWin = true; toast((race.final ? 'Kazanan: ' : 'Elemeyi kazanan: ') + NAMES[ids[rank[0]]]); }
   if (toastT > 0 && (toastT -= dt) <= 0) $('toast').classList.remove('on');
   if (sim && !endShown && sim.ended) { endShown = true; showResults(rank); }
-  const c = $('count'); // geri sayım (kapı 4. saniyede açılır)
-  c.textContent = !sim || sim.t < 0.4 || sim.t > 4.6 ? '' : sim.t < 3.4 ? String(Math.ceil(3.4 - sim.t)) : 'BAŞLA!';
+  const c = $('count'); // geri sayım: misketler düşüp yerleşir, sonra 3-2-1, kapı OPEN_T'de açılır
+  c.textContent = !sim || sim.t < OPEN_T - 3.6 || sim.t > OPEN_T + 0.6 ? '' : sim.t < OPEN_T - 0.6 ? String(Math.ceil(OPEN_T - 0.6 - sim.t)) : 'BAŞLA!';
   const ls = sim && sim.open != null ? rank.slice(0, 3) : []; // etiketler: ilk 3 + takip edilen
   if (sim && target != null && target >= 0 && !ls.includes(target)) ls.push(target);
   lblPool.forEach((d, k) => {
@@ -555,6 +590,7 @@ if (Q.has('t') && sim) { // test görüntüsü: belirtilen saniyeye sar
   const until = +Q.get('t'); while (sim.t < until) sim.step(); simStartMs = nowMs() - until * 1000;
   const rk = sim.ranking(); for (let i = 0; i < 400; i++) updateCam(1 / 60, rk);
   if (Q.get('cam') === 'free') { setMode('free'); cam.position.set(center.x + 70, box.max.y + 25, center.z + 70); controls.target.copy(center); controls.update(); }
+  else if (Q.has('cam')) { const v = Q.get('cam').split(',').map(Number); setMode('free'); cam.position.set(v[0], v[1], v[2]); controls.target.set(v[3], v[4], v[5]); controls.update(); }
 }
 let last = performance.now();
 function frame(nowP) {
@@ -566,6 +602,7 @@ function frame(nowP) {
     behind = sim.ended ? 0 : tgt - sim.t;
   }
   const rank = sim ? sim.ranking() : [];
+  arrowTex.offset.y -= dt * 2.2;
   syncMarbles(); updateCam(dt, rank); updateUI(dt, rank);
   renderer.render(scene, cam);
   requestAnimationFrame(frame);

@@ -16,8 +16,8 @@ const qn = q => { const l = Math.sqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2] + 
 const rq = q => ({ x: q[0], y: q[1], z: q[2], w: q[3] });
 export const funnelY = (pc, r) => pc.C[1] - pc.ya * (pc.Rr - r) - pc.yb * (1 / r - 1 / pc.Rr);
 
-export const OPEN_T = 4;        // kapı yarış başlangıcından 4 sn sonra açılır (geri sayım)
-export const AFTER_WIN = 50;    // kazanandan 50 sn sonra yarış kapanır
+export const OPEN_T = 7;        // misketler yukarıdan düşüp yerleşir, geri sayım, kapı 7. saniyede açılır
+export const AFTER_WIN = 60;    // kazanandan 60 sn sonra yarış kapanır
 export const MAX_T = 330;       // güvenlik sınırı
 
 export function makeSim(R, course, { n = 100, seed = 1 } = {}) {
@@ -33,11 +33,16 @@ export function makeSim(R, course, { n = 100, seed = 1 } = {}) {
   for (const pg of course.pegs) world.createCollider(R.ColliderDesc.cylinder(pg.h / 2, pg.r).setTranslation(pg.c[0], pg.c[1], pg.c[2]).setRotation(rq(pg.q)).setRestitution(0.5).setFriction(0.1));
   const MAXR = R.CoefficientCombineRule.Max;
   for (const b of course.bumpers) {
-    const cd = b.shape === 'ball' ? R.ColliderDesc.ball(b.r) : R.ColliderDesc.cuboid(b.he[0], b.he[1], b.he[2]);
+    const cd = b.shape === 'ball' ? R.ColliderDesc.ball(b.r) : b.shape === 'cyl' ? R.ColliderDesc.cylinder(b.hh, b.r) : R.ColliderDesc.cuboid(b.he[0], b.he[1], b.he[2]);
     cd.setTranslation(b.p[0], b.p[1], b.p[2]).setRotation(rq(b.q)).setFriction(0.05)
-      .setRestitution(b.kind === 'balloon' ? 1.12 : 1.15).setRestitutionCombineRule(MAXR);
+      .setRestitution(b.kind === 'balloon' ? 1.12 : b.kind === 'bpeg' ? 1.1 : 1.15).setRestitutionCombineRule(MAXR);
     world.createCollider(cd);
   }
+  for (const bl of course.blocks || []) { // ayırıcılar, rampa
+    const cd = R.ColliderDesc.convexHull(new Float32Array(bl.pts.flat()));
+    if (cd) world.createCollider(cd.setFriction(0.3).setRestitution(0.2));
+  }
+  const boosts = course.boosts || [];
   const kinState = course.kins.map(k => ({ q: k.q0.slice() }));
   const kinBodies = course.kins.map(k => {
     const b = world.createRigidBody(R.RigidBodyDesc.kinematicPositionBased().setTranslation(k.base[0], k.base[1], k.base[2]).setRotation(rq(k.q0)));
@@ -49,20 +54,19 @@ export function makeSim(R, course, { n = 100, seed = 1 } = {}) {
     return b;
   });
 
-  // başlangıç dizilimi: kapının arkasında ızgara (sıra tohumla karışık)
+  // başlangıç: misketler kapının arkasındaki alanın üstünde karışık hücrelerden aynı anda düşer, kendiliğinden yerleşir
   const A = course.pieces[course.start], F = A.F, bodies = [];
-  const order = shuffle(Array.from({ length: n }, (_, i) => i), rnd);
-  let slot = 0;
-  for (let row = 0; slot < n; row++) {
-    const i = course.gate - 3 - Math.round(row * 0.37 / 0.2); if (i < 2) throw new Error('başlangıç alanı küçük');
-    const w = A.W[i], per = Math.floor((w - 0.25) / 0.37);
-    for (let k = 0; k < per && slot < n; k++, slot++) {
-      const a = -(per - 1) * 0.37 / 2 + k * 0.37 + (row % 2 ? 0.09 : -0.09) + (rnd() - 0.5) * 0.05;
-      const p = add(add(F.P[i], mul(F.L[i], a)), mul(F.U[i], MR + 0.02 + (row % 3) * 0.01));
-      const b = world.createRigidBody(R.RigidBodyDesc.dynamic().setTranslation(p[0], p[1], p[2]).setLinearDamping(0.06).setAngularDamping(0.15).setCanSleep(false));
-      world.createCollider(R.ColliderDesc.ball(MR).setFriction(0.45).setRestitution(0.3).setDensity(2.5), b);
-      bodies[order[slot]] = b;
-    }
+  const cells = [];
+  for (let lay = 0; lay < 3; lay++) for (let r = 0; r < 13; r++) for (let c = 0; c < 6; c++) cells.push([lay, r, c]);
+  const pick = shuffle(cells, rnd);
+  if (n > cells.length) throw new Error('başlangıç alanı küçük');
+  for (let m = 0; m < n; m++) {
+    const [lay, r, c] = pick[m], i = course.gate - 4 - r * 2 - (lay % 2);
+    const a = -1.05 + c * 0.42 + (rnd() - 0.5) * 0.06;
+    const p = add(add(F.P[i], mul(F.L[i], a)), mul(F.U[i], 1.0 + lay * 0.7 + rnd() * 0.15));
+    const b = world.createRigidBody(R.RigidBodyDesc.dynamic().setTranslation(p[0], p[1], p[2]).setLinearDamping(0.06).setAngularDamping(0.15).setCanSleep(false));
+    world.createCollider(R.ColliderDesc.ball(MR).setFriction(0.45).setRestitution(0.3).setDensity(2.5), b);
+    bodies[m] = b;
   }
 
   const st = {
@@ -111,7 +115,15 @@ export function makeSim(R, course, { n = 100, seed = 1 } = {}) {
         st.idx[m] = c.i; const pc = course.pieces[c.pi];
         st.prog[m] = pc.pOff + c.s * pc.scale; st.lost[m] = 0;
       } else st.lost[m] += dt * 3;
-      if (st.prog[m] > st.best[m] + 0.3) { st.best[m] = st.prog[m]; st.stuckT[m] = 0; } else st.stuckT[m] += dt * 3;
+      for (const bz of boosts) { // hız şeridi: şeritteki misket yol yönünde hızlanır
+        const i = st.idx[m];
+        if (st.piece[m] !== bz.piece || i < bz.i0 || i > bz.i1) continue;
+        const pc = course.pieces[bz.piece], o = sub(p, pc.F.P[i]), lat = dot(o, pc.F.L[i]);
+        if (lat < bz.lat0 || lat > bz.lat1 || dot(o, pc.F.U[i]) > 0.75) continue;
+        const T = pc.F.T[i], v = b.linvel(), vt = v.x * T[0] + v.y * T[1] + v.z * T[2];
+        if (vt < bz.vmax) { const k = b.mass() * Math.min(bz.acc * dt * 3, bz.vmax - vt); b.applyImpulse({ x: T[0] * k, y: T[1] * k, z: T[2] * k }, true); }
+      }
+      if (st.prog[m] > st.best[m] + 0.3) { st.best[m] = st.prog[m]; st.stuckT[m] = 0; } else if (st.open != null) st.stuckT[m] += dt * 3;
       if (st.fin[m] < 0 && st.prog[m] >= course.finish.p) {
         st.fin[m] = st.t; st.nFin++; if (st.firstFin < 0) st.firstFin = st.t;
         b.setLinearDamping(1.6); b.setAngularDamping(1.5);
@@ -137,6 +149,7 @@ export function makeSim(R, course, { n = 100, seed = 1 } = {}) {
       const lift = st.open == null ? 0 : Math.min(1.4, Math.max(0, (tn - st.open) * 3));
       return { p: add(k.base, mul(k.up, lift)), q: k.q0 };
     }
+    if (k.type === 'swing') { const j = ((st.steps + 1) % (k.tab.length / 4)) * 4; return { p: k.base, q: k.tab.slice(j, j + 4) }; }
     ks.q = qmul(ks.q, k.dq);
     if (st.steps % 600 === 0) ks.q = qn(ks.q);
     return { p: k.base, q: ks.q };
